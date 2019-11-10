@@ -1,0 +1,1837 @@
+<div class="card border-primary">
+    <div class="card-header">
+        <div>
+
+            <button type="button" *ngIf="statusView==='Registered'" (click)="onBack()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i> Back
+            </button>
+            <!-- <button *ngIf="statusRec === 'Eform' " type="button" (click)="reject()" class="btn btn-outline-danger btn-sm">
+                <i class="fa fa-times fa-lg"></i> Reject
+            </button>
+            <button *ngIf="statusRec === 'Eform'" type="button" (click)="backToRegistered()" class="btn btn-outline-warning btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i> Back To Registered
+            </button>
+            <button *ngIf="statusRec === 'Eddx'" type="button" (click)="backToVerified()" class="btn btn-outline-warning btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i> Back To Verified
+            </button> -->
+            <button type="button" (click)="validate()" class="btn btn-outline-success btn-sm">
+                <i class="fa fa-check fa-lg"></i> Confirm
+            </button>
+            <button *ngIf="buttonSuspense && statusSuspense" type="button" (click)="suspense()" class="btn btn-outline-danger btn-sm">
+                <i class="fa fa-ban fa-lg"></i> Suspense
+            </button>
+            <button *ngIf="buttonSuspense && !statusSuspense" type="button" (click)="suspense()" class="btn btn-outline-success btn-sm">
+                <i class="fa fa-check-circle fa-lg"></i> Active
+            </button>
+        </div>
+    </div>
+    <div *ngIf ="merchantWip">
+        {{merchantWip.id}} - {{idMerchant}}
+    </div>
+        <ngb-alert [dismissible]="false" type="primary" *ngIf ="moduleName">
+            <strong> {{moduleName}}</strong>
+            <span class="pull-right"
+                *ngIf ="merchantPriority=='VIP' || merchantPriority == 'VVIP'">
+                <div class="spinner-grow text-danger" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="h6">{{merchantPriority}}</p>
+            </span>
+
+            <span class="pull-right">
+                <select *ngIf="merchantLevelSelected" [(ngModel)]="merchantLevelSelected" class="form-control">
+                    <option *ngFor="let level of levels" [value]="level.code" [selected]="level.code == merchantLevelSelected">
+                        {{level.name}}
+                    </option>
+                </select>
+            </span>
+        
+        </ngb-alert>
+    <div style="padding :25px 25px 25px 25px">
+        <ngb-tabset>
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div>
+                        <button *ngIf="storeDataChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Store Data
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Nama Outlet *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="250" [(ngModel)]="merchantWip.storeName" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.storeName == '' || merchantWip.storeName == null || merchantWip.storeName == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.storeName == '' || merchantWip.storeName == null || merchantWip.storeName == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.storeName" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>                            
+
+                            <tr>
+                                <td>Tipe Merchant *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="tipeMerchantSelected"
+                                        [(ngModel)]="tipeMerchantSelected" class="form-control">
+                                        <option *ngFor="let tipeMerchant of lookupTipeMerchant" 
+                                            [value]="tipeMerchant.id"
+                                            [selected]="tipeMerchant.id == tipeMerchantSelected.id">{{tipeMerchant.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.tipeMerchant" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Usaha *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="jenisUsahaSelected" [(ngModel)]="jenisUsahaSelected" class="form-control">
+                                        <option *ngFor="let jenisUsaha of lookupJenisUsaha" 
+                                            [value]="jenisUsaha.id"
+                                            [selected]="jenisUsaha.id == jenisUsahaSelected">{{jenisUsaha.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.jenisUsaha" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat kantor *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="500"[(ngModel)]="merchantWip.alamat" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.alamat == '' || merchantWip.alamat == null || merchantWip.alamat == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.alamat == '' || merchantWip.alamat == null || merchantWip.alamat == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.alamat" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Provinsi *</td>
+                                <td>
+                                    <select [disabled]="readOnly" [(ngModel)]="provinsiSelected" class="form-control" (change)="onFilterCity($event.target.value)">
+                                        <option value="0">- Pilih Provinsi -</option>
+                                        <option *ngFor="let province of listProvince" 
+                                            [value]="province.id"
+                                            [selected]="province.id == provinsiSelected">{{province.name}}
+                                        </option>
+                                    </select>
+                                    <div
+                                        *ngIf="submitted && (provinsiSelected == '0')">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView=='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="provinceSelected" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kabupaten/Kota *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="citySelected2" [(ngModel)]="citySelected2" class="form-control" (change)="onFilterKecamatan($event.target.value)">
+                                        <option value = "0">- Pilih Kabupaten/Kota -</option>
+                                        <option *ngFor="let city of listCity" 
+                                            [value]="city.id" 
+                                            [selected] = "city.id == citySelected2">{{city.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (citySelected2 == '0')">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView=='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="citySelected3" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kecamatan *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="kecamatanSelected2" [(ngModel)]="kecamatanSelected2" class="form-control" (change)="onFilterKelurahan($event.target.value)">
+                                        <option value="0">- Pilih Kecamatan -</option>
+                                        <option *ngFor="let kecamatan of listKecamatan" 
+                                            [value]="kecamatan.id" 
+                                            [selected]="kecamatan.id == kecamatanSelected2">{{kecamatan.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (kecamatanSelected2 == '0')">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.kecamatan" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kelurahan *</td>
+                                <td>
+                                    <select [disabled]="readOnly"  *ngIf="kelurahanSelected2" [(ngModel)]="kelurahanSelected2" class="form-control">
+                                        <option value="0">- Pilih Kelurahan -</option>
+                                        <option *ngFor="let kelurahan of listKelurahan" 
+                                            [value]="kelurahan.id"
+                                            [selected]="kelurahan.id == kelurahanSelected2">{{kelurahan.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (kelurahanSelected2 == '0')">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.kelurahan" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kode Pos *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="5" [(ngModel)]="merchantWip.postalCode" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.postalCode == '' || merchantWip.postalCode == null || merchantWip.postalCode == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.postalCode == '' || merchantWip.postalCode == null || merchantWip.postalCode == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.postalCode" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Longitude *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersFloatOnly maxlength="50" [(ngModel)]="merchantWip.longitude" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.longitude == '' || merchantWip.longitude == null || merchantWip.longitude == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.longitude == '' || merchantWip.longitude == null || merchantWip.longitude == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.longitude" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Latitude *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersFloatOnly maxlength="50"[(ngModel)]="merchantWip.latitude" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.latitude == '' || merchantWip.latitude == null || merchantWip.latitude == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.latitude == '' || merchantWip.latitude == null || merchantWip.latitude == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.lattitude" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Store Phone Number *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="25" [(ngModel)]="merchantWip.storePhoneNumber" class="form-control">
+                                    <!-- [ngClass]="{ 'is-invalid': submitted && (merchantWip.storePhoneNumber == '' || merchantWip.storePhoneNumber == null || merchantWip.storePhoneNumber == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.storePhoneNumber == '' || merchantWip.storePhoneNumber == null || merchantWip.storePhoneNumber == undefined)"> -->
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <!-- <div style="color: red"> *Field is required</div>
+                                    </div> -->
+                                    <div
+                                        *ngIf="submitted && (merchantWip.storePhoneNumber == '' || merchantWip.storePhoneNumber == null || merchantWip.storePhoneNumber == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                
+                                
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.storePhoneNumber" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Lokasi Bisnis <span *ngIf="tipeMerchantSelected==tipeMerchantUmkm">*</span>
+                                </td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="200" [(ngModel)]="merchantWip.lokasiBisnis" class="form-control"
+                                        [ngClass]="{ 'is-invalid': submitted && (merchantWip.lokasiBisnis == '' || merchantWip.lokasiBisnis == null || merchantWip.lokasiBisnis == undefined) && (tipeMerchantSelected == tipeMerchantUmkm) }"/>
+                                    <div *ngIf="submitted && (merchantWip.lokasiBisnis == '' || merchantWip.lokasiBisnis == null || merchantWip.lokasiBisnis == undefined) && (tipeMerchantSelected==tipeMerchantUmkm)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <!-- <td *ngIf="tipeMerchantSelected===tipeMerchantModern || tipeMerchantSelected==tipeMerchantECommerce">
+                                    <input [disabled]="readOnly" type="text" maxlength="200"[(ngModel)]="merchantWip.lokasiBisnis" class="form-control"/>
+                                </td> -->
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.lokasiBisnis" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Jenis Lokasi Bisnis <span *ngIf="tipeMerchantSelected==tipeMerchantUmkm">*</span>
+                                </td>
+                                <!-- *ngIf="tipeMerchantSelected==tipeMerchantUmkm" -->
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="200" [(ngModel)]="merchantWip.jenisLokasiBisnis" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.jenisLokasiBisnis == '' || merchantWip.jenisLokasiBisnis == null || merchantWip.jenisLokasiBisnis == undefined) && (tipeMerchantSelected == tipeMerchantUmkm)}" />
+                                    <div *ngIf="submitted && (merchantWip.jenisLokasiBisnis == '' || merchantWip.jenisLokasiBisnis == null || merchantWip.jenisLokasiBisnis == undefined) && (tipeMerchantSelected == tipeMerchantUmkm)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+
+                                <!-- <td *ngIf="tipeMerchantSelected == tipeMerchantModern || tipeMerchantSelected==tipeMerchantECommerce">
+                                    <input [disabled]="readOnly" type="text" maxlength="200" [(ngModel)]="merchantWip.jenisLokasiBisnis" class="form-control">
+                                </td> -->
+
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.jenisLokasiBisnis" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jam Operasional *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="50" [(ngModel)]="merchantWip.jamOperasional" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.jamOperasional == '' || merchantWip.jamOperasional == null || merchantWip.jamOperasional == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.jamOperasional == '' || merchantWip.jamOperasional == null || merchantWip.jamOperasional == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.jamOperasional" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div *ngIf="statusView==='Verifier'">
+                        <button type="button" (click)="highRiskValidation()" class="btn btn-outline-success btn-sm">
+                            <i class="fa fa-check fa-lg"></i> Cek High Risk
+                        </button>
+                        <div *ngIf="statusValidation" class="col-md-6 card border-primary">
+                            <div class="row ">
+                                <div class="col-md-6">Pekerjaan</div>
+                                <div class="col-md-6">{{riskJob}}</div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6">Jenis Usaha</div>
+                                <div class="col-md-6">{{riskTypeOfBusiness}}</div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6">List Teroris</div>
+                                <div class="col-md-6">{{riskTeroris}}</div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6">List APU PPT</div>
+                                <div class="col-md-6">{{riskApupt}}</div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-6">Internal Name Risk</div>
+                                <div class="col-md-6">{{riskInternalName}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="ownerDataCheck()">
+                        <button *ngIf="ownerDataChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Owner Data
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Title *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf = "ownerTitleSelected" [(ngModel)]="ownerTitleSelected" class="form-control">
+                                        <option *ngFor="let title of lookupOwnerTitle" 
+                                            [value]="title.id" [selected] = "title.id == ownerTitleSelected">{{title.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerTitle" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Depan *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="250" [(ngModel)]="merchantWip.ownerWIP.ownerFirstName" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerFirstName == '' || merchantWip.ownerWIP.ownerFirstName == null || merchantWip.ownerWIP.ownerFirstName == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerFirstName == '' || merchantWip.ownerWIP.ownerFirstName == null || merchantWip.ownerWIP.ownerFirstName == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerFirstName" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Belakang *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="250" [(ngModel)]="merchantWip.ownerWIP.ownerLastName" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerLastName == '' || merchantWip.ownerWIP.ownerLastName == null || merchantWip.ownerWIP.ownerLastName == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerLastName == '' || merchantWip.ownerWIP.ownerLastName == null || merchantWip.ownerWIP.ownerLastName == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerLastName" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="500" [(ngModel)]="merchantWip.ownerWIP.ownerAddress" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerAddress == '' || merchantWip.ownerWIP.ownerAddress == null || merchantWip.ownerWIP.ownerAddress == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerAddress == '' || merchantWip.ownerWIP.ownerAddress == null || merchantWip.ownerWIP.ownerAddress == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerAddress" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RT</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="5" [(ngModel)]="merchantWip.ownerWIP.ownerRt" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerRt" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RW</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="5" [(ngModel)]="merchantWip.ownerWIP.ownerRw" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerRw" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Provinsi *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="provinceOwnerSelected2" [(ngModel)]="provinceOwnerSelected2"
+                                        class="form-control" (change)="onFilterOwnerCity($event.target.value)">
+                                        <option value="0">- Pilih Provinsi -</option>
+                                        <option *ngFor="let province of listOwnerProvince" [value]="province.id"
+                                            [selected]="province.id == provinceOwnerSelected2">{{province.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (provinceOwnerSelected2 == '0')">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerProvinsi" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Kabupaten/Kota *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="kabupatenOwnerSelected2" [(ngModel)]="kabupatenOwnerSelected2"
+                                        class="form-control" (change)="onFilterOwnerKecamatan($event.target.value)">
+                                        <option value="0">- Pilih Kabupaten/Kota -</option>
+                                        <option *ngFor="let city of listOwnerCity" [value]="city.id" [selected]="city.id == kabupatenOwnerSelected2">
+                                            {{city.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (kabupatenOwnerSelected2 == '0')">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerKabupaten" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kecamatan *</td>
+                                <!-- <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="50" [(ngModel)]="merchantWip.ownerWIP.ownerKecamatan"
+                                        class="form-control"
+                                        [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerKecamatan == '' || merchantWip.ownerWIP.ownerKecamatan == null || merchantWip.ownerWIP.ownerKecamatan == undefined) }" />
+                                    <div
+                                        *ngIf="submitted && (merchantWip.ownerWIP.ownerKecamatan == '' || merchantWip.ownerWIP.ownerKecamatan == null || merchantWip.ownerWIP.ownerKecamatan == undefined)">
+                                        <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div>
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td> -->
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="kecamatanOwnerSelected2" [(ngModel)]="kecamatanOwnerSelected2"
+                                        class="form-control" (change)="onFilterOwnerKelurahan($event.target.value)">
+                                        <option value="0">- Pilih Kecamatan -</option>
+                                        <option *ngFor="let kecamatan of listOwnerKecamatan" [value]="kecamatan.id" [selected]="kecamatan.id == kecamatanOwnerSelected2">
+                                            {{kecamatan.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (kecamatanOwnerSelected2 == '0')">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerKecamatan" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Kelurahan *</td>
+                                <!-- <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="50"[(ngModel)]="merchantWip.ownerWIP.ownerKelurahan" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerKelurahan == '' || merchantWip.ownerWIP.ownerKelurahan == null || merchantWip.ownerWIP.ownerKelurahan == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerKelurahan == '' || merchantWip.ownerWIP.ownerKelurahan == null || merchantWip.ownerWIP.ownerKelurahan == undefined)">
+                                        <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div>
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td> -->
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf="kelurahanOwnerSelected2" [(ngModel)]="kelurahanOwnerSelected2"
+                                        class="form-control">
+                                        <option value="0">- Pilih Kelurahan -</option>
+                                        <option *ngFor="let kelurahan of listOwnerKelurahan" [value]="kelurahan.id"
+                                            [selected]="kelurahan.id == kelurahanOwnerSelected2">
+                                            {{kelurahan.name}}
+                                        </option>
+                                    </select>
+                                    <div *ngIf="submitted && (kelurahanOwnerSelected2 == '0')">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerKelurahan" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+            
+                            <tr>
+                                <td>Kode Pos *</td>
+                                <td>
+
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="5" [(ngModel)]="merchantWip.ownerWIP.ownerKodePos" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerKodePos" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe ID *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="idTypeSelected" [(ngModel)]="idTypeSelected" class="form-control">
+                                        <option *ngFor="let idType of lookupIdType" 
+                                        [value]="idType.id" [selected]="idType.id == idTypeSelected">{{idType.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerTipeId" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No ID *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="50" [(ngModel)]="merchantWip.ownerWIP.ownerNoID" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerNoID == '' || merchantWip.ownerWIP.ownerNoID == null || merchantWip.ownerWIP.ownerNoID == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerNoID == '' || merchantWip.ownerWIP.ownerNoID == null || merchantWip.ownerWIP.ownerNoID == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerNoId" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Masa Berlaku ID *</td>
+                                <td>
+                                    <!-- <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantWip.ownerWIP.ownerTangalExpiredID" class="form-control" /> -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <button (click)="dOwnerTanggalExpiredID.toggle()">
+                                                    <i class="fa fa-calendar fa-lg"></i>
+                                                </button>
+                                                <input [disabled]="readOnly" [disabled]="seumurHidupChecked" type="text" class="form-control"
+                                                    ngbDatepicker #dOwnerTanggalExpiredID="ngbDatepicker" [(ngModel)]="ownerTanggalExpiredID"
+                                                    [ngClass]="{ 'is-invalid': submitted && (ownerTanggalExpiredID == null || ownerTanggalExpiredID == undefined) }" />
+                                                <br>
+                                                <div *ngIf="submitted && (ownerTanggalExpiredID == null || ownerTanggalExpiredID == undefined)">
+                                                    <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                                    <div style="color: red"> *Field is required</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input [disabled]="readOnly" type="checkbox" class="form-check-input" id="seumurHidup"
+                                                    (change)="seumurHidupCheckSelected()" [checked]="seumurHidupChecked">
+                                                <label class="form-check-label" for="seumurHidup">Seumur Hidup</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerTanggalExpiredId" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No NPWP</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="50" [(ngModel)]="merchantWip.ownerWIP.ownerNpwp"
+                                        class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerNpwp" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Kelamin *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="genderSelected" [(ngModel)]="genderSelected" class="form-control">
+                                        <option *ngFor="let gender of lookupGender" 
+                                        [value]="gender.id" [selected]="gender.id == genderSelected">{{gender.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerJenisKelamin" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Telp *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="25"[(ngModel)]="merchantWip.ownerWIP.ownerNoTelp" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerNoTelp == '' || merchantWip.ownerWIP.ownerNoTelp == null || merchantWip.ownerWIP.ownerNoTelp == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerNoTelp == '' || merchantWip.ownerWIP.ownerNoTelp == null || merchantWip.ownerWIP.ownerNoTelp == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerNoTelp" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Telp Lain *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="25"[(ngModel)]="merchantWip.ownerWIP.ownerTelpLain" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerTelpLain == '' || merchantWip.ownerWIP.ownerTelpLain == null || merchantWip.ownerWIP.ownerTelpLain == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerTelpLain == '' || merchantWip.ownerWIP.ownerTelpLain == null || merchantWip.ownerWIP.ownerTelpLain == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerNoTelpLain" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pekerjaan *</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf = "pekerjaanselected" [(ngModel)]="pekerjaanselected" class="form-control">
+                                        <option *ngFor="let pekerjaan of lookupPekerjaan" 
+                                            [value]="pekerjaan.id" [selected]="pekerjaan.id == pekerjaanselected ">{{pekerjaan.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerPekerjaan" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="250"[(ngModel)]="merchantWip.ownerWIP.ownerEmail" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerEmail" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tempat Lahir *</td>
+                                <td>
+                                    <input 
+                                        [disabled]="readOnly" 
+                                        type="text" 
+                                         maxlength="50"
+                                        [(ngModel)]="merchantWip.ownerWIP.ownerTempatLahir" 
+                                        class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerTempatLahir == '' || merchantWip.ownerWIP.ownerTempatLahir == null || merchantWip.ownerWIP.ownerTempatLahir == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerTempatLahir == '' || merchantWip.ownerWIP.ownerTempatLahir == null || merchantWip.ownerWIP.ownerTempatLahir == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerTempatLahir" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Lahir *</td>
+                                <td>
+                                    <div class="input-group">
+                                        <button (click)="d.toggle()">
+                                            <i class="fa fa-calendar fa-lg"></i>
+                                        </button>
+                                        <input [disabled]="readOnly" type="text" class="form-control" ngbDatepicker #d="ngbDatepicker" [(ngModel)]="ownerTanggalLahir"
+                                            [ngClass]="{ 'is-invalid': submitted && (ownerTanggalLahir == null || ownerTanggalLahir == undefined) }" />
+                                        <br>
+                                        <div *ngIf="submitted && (ownerTanggalLahir == null || ownerTanggalLahir == undefined)">
+                                            <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                            <div style="color: red"> *Field is required</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerTanggalLahir" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Ibu Kandung *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="250"[(ngModel)]="merchantWip.ownerWIP.ownerNamaIbuKandung" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.ownerWIP.ownerNamaIbuKandung == '' || merchantWip.ownerWIP.ownerNamaIbuKandung == null || merchantWip.ownerWIP.ownerNamaIbuKandung == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.ownerWIP.ownerNamaIbuKandung == '' || merchantWip.ownerWIP.ownerNamaIbuKandung == null || merchantWip.ownerWIP.ownerNamaIbuKandung == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentOwnerWip.ownerNamaIbuKandung" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="settlementCheck()">
+                        <button *ngIf="settlementChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Settlement & Report Configuration
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <h3 class="card-title">Settlement & Report Configuration</h3>
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>
+                                    <span style="font-size:1.2em; font-weight: bold" >Merchant Group *</span>
+                                   </td>
+                                <td>
+                                    <!-- <input [disabled]="readOnly" type="text" [(ngModel)]="merchantWip" class="form-control" /> -->
+                                    <select (change)="merchantGroupChanged()" [disabled]="readOnly" 
+                                        *ngIf="merchantGroupSelected" 
+                                        [(ngModel)]="merchantGroupSelected"
+                                        class="form-control">
+                                        <option *ngFor="let merchantGroup of lookupMerchantGroup" 
+                                            [value]="merchantGroup.id"
+                                            [selected]="merchantGroup.id == merchantGroupSelected">
+                                            {{merchantGroup.merchantGroupName}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.merchantGroupId"
+                                            class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Settlement Config *</td>
+                                <td>
+                                    <select (change)="settlementConfigChanged()" [disabled]="readOnly" *ngIf ="settlementConfigSelected" [(ngModel)]="settlementConfigSelected" class="form-control">
+                                        <option *ngFor="let settlementConfig of lookupSettlementConfig" 
+                                            [value]="settlementConfig.id" [selected]="settlementConfig.id == settlementConfigSelected" >
+                                            {{settlementConfig.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.settlementConfig"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Rekening Toko</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly  maxlength="50"[(ngModel)]="merchantWip.settlementConfigWIP.noRekeningToko" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.noRekeningToko" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Bank Tujuan Settlement</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="100" [(ngModel)]="merchantWip.settlementConfigWIP.namaBankTujuanSettlement" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.namaBankTujuanSettlement" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Pemilik Rekening</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="250" [(ngModel)]="merchantWip.settlementConfigWIP.namaPemilikRekening" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.namaPemilikRekening" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe Rekening</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="50" [(ngModel)]="merchantWip.settlementConfigWIP.tipeRekening" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.tipeRekening" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Report Settlement Config</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf = "reportSettlementConfigSelected" [(ngModel)]="reportSettlementConfigSelected" class="form-control">
+                                        <option *ngFor="let reportSetCon of lookupReportSettlementConfig" 
+                                            [value]="reportSetCon.id" [selected]="reportSetCon.id == reportSettlementConfigSelected">{{reportSetCon.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.reportSettlementConfig" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Settlement Execution Config</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="settlementExecutionConfigSelected" [(ngModel)]="settlementExecutionConfigSelected" class="form-control">
+                                        <option *ngFor="let setExcon of lookupSettlementExecutionConfig" 
+                                            [value]="setExcon.id" [selected]="setExcon.id == settlementExecutionConfigSelected" >{{setExcon.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.settlementExecutionConfig"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report Via</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="sendRptViaSelected" [(ngModel)]="sendRptViaSelected" class="form-control">
+                                        <option *ngFor="let sendRptVia of lookupSendRptVia" 
+                                            [value]="sendRptVia.id" [selected]="sendRptVia.id == sendRptViaSelected">{{sendRptVia.name}}
+                                        </option>
+                                    </select>
+
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.sendReportVia"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="255"[(ngModel)]="merchantWip.settlementConfigWIP.sendReportUrl" class="form-control"/>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.sendReportUrl"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <h3 class="card-title">Merchant Fee Information</h3>
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Processing Configuration</td>
+                                <td>
+                                    <select (change)="processingConfigChanged()" [disabled]="readOnly" *ngIf ="processingConfigSelected" [(ngModel)]="processingConfigSelected" class="form-control">
+                                        <option *ngFor="let processingConfig of lookupProcessingConfig" 
+                                            [value]="processingConfig.id" [selected]="processingConfig.id == processingConfigSelected">{{processingConfig.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.processingConfiguration"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Processing Fee</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="processingFeeSelected" [(ngModel)]="processingFeeSelected" class="form-control">
+                                        <option *ngFor="let processingFee of lookupProcessingFee" 
+                                            [value]="processingFee.id" [selected]="processingFee.id == processingFeeSelected">{{processingFee.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.processingFee" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Processing Fee Value</td>
+                                <td>
+                                    <input *ngIf="processingFeeSelected=='8085'" type="text" opNumbersOnly maxlength="2" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.processingFeeValue" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.processingFeeValue == null || merchantWip.settlementConfigWIP.processingFeeValue == undefined) }" />
+                                    <input *ngIf="processingFeeSelected=='8084'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.processingFeeValue"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.processingFeeValue == null || merchantWip.settlementConfigWIP.processingFeeValue == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.processingFeeValue == null || merchantWip.settlementConfigWIP.processingFeeValue == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.processingFeeValue" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rental Edc Fee</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="7" [(ngModel)]="merchantWip.settlementConfigWIP.rentalEdcFee" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.rentalEdcFee == null || merchantWip.settlementConfigWIP.rentalEdcFee == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.rentalEdcFee == null || merchantWip.settlementConfigWIP.rentalEdcFee == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.rentalEdcFee" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR</td>
+                                <td>
+                                    <select [disabled]="readOnly" *ngIf ="mdrSelected" [(ngModel)]="mdrSelected" class="form-control">
+                                        <option *ngFor="let mdr of lookupMDR" 
+                                            [value]="mdr.id" [selected]="mdr.id == mdrSelected">{{mdr.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdr"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money On Us</td>
+                                <td>
+                                    <input *ngIf ="mdrSelected=='8083'" [disabled]="readOnly" type="text"  opNumbersOnly maxlength="2" [(ngModel)]="merchantWip.settlementConfigWIP.mdrEmoneyOnUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOnUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOnUs == undefined) }" />
+                                    <input *ngIf ="mdrSelected=='8082'" [disabled]="readOnly" type="text" opNumbersOnly maxlength="7" [(ngModel)]="merchantWip.settlementConfigWIP.mdrEmoneyOnUs" class="form-control"
+                                        [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOnUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOnUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOnUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOnUs == undefined)">
+
+                                    
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrEmoneyOnUs"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money Off Us</td>
+                                <td>
+                                    <input *ngIf="mdrSelected=='8083'" type="text" opNumbersOnly maxlength="2"  [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrEmoneyOffUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOffUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOffUs == undefined) }" />
+                                    <input *ngIf="mdrSelected=='8082'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrEmoneyOffUs"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOffUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOffUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrEmoneyOffUs == null || merchantWip.settlementConfigWIP.mdrEmoneyOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                    
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrEmoneyOffUs"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit On Us</td>
+                                <td>
+                                    <input *ngIf="mdrSelected=='8083'" type="text" opNumbersOnly maxlength="2" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrDebitOnUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrDebitOnUs == null || merchantWip.settlementConfigWIP.mdrDebitOnUs == undefined) }" />
+                                    <input *ngIf="mdrSelected=='8082'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrDebitOnUs"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrDebitOnUs == null || merchantWip.settlementConfigWIP.mdrDebitOnUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrDebitOnUs == null || merchantWip.settlementConfigWIP.mdrDebitOnUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrDebitOnUs"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit Off Us</td>
+                                <td>
+                                    <input *ngIf="mdrSelected=='8083'" type="text" opNumbersOnly maxlength="2" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrDebitOffUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrDebitOffUs == null || merchantWip.settlementConfigWIP.mdrDebitOffUs == undefined) }" />
+                                    <input *ngIf="mdrSelected=='8082'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrDebitOffUs"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrDebitOffUs == null || merchantWip.settlementConfigWIP.mdrDebitOffUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrDebitOffUs == null || merchantWip.settlementConfigWIP.mdrDebitOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrDebitOffUs"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit On Us</td>
+                                <td>
+                                    <input *ngIf="mdrSelected=='8083'" type="text" opNumbersOnly maxlength="2"  [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrCreditOnUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrCreditOnUs == null || merchantWip.settlementConfigWIP.mdrCreditOnUs == undefined) }" />
+                                    <input *ngIf="mdrSelected=='8082'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrCreditOnUs"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrCreditOnUs == null || merchantWip.settlementConfigWIP.mdrCreditOnUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrCreditOnUs == null || merchantWip.settlementConfigWIP.mdrCreditOnUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrCreditOnUs"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit Off Us</td>
+                                <td>
+                                    <input *ngIf="mdrSelected=='8082'" type="text" opNumbersOnly maxlength="7" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrCreditOffUs" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrCreditOffUs == null || merchantWip.settlementConfigWIP.mdrCreditOffUs == undefined) }" />
+                                    <input *ngIf="mdrSelected=='8083'" type="text" opNumbersOnly maxlength="2" [disabled]="readOnly" [(ngModel)]="merchantWip.settlementConfigWIP.mdrCreditOffUs"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.mdrCreditOffUs == null || merchantWip.settlementConfigWIP.mdrCreditOffUs == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.mdrCreditOffUs == null || merchantWip.settlementConfigWIP.mdrCreditOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.mdrCreditOffUs" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Other Fee</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="7" [(ngModel)]="merchantWip.settlementConfigWIP.otherFee" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.otherFee == null || merchantWip.settlementConfigWIP.otherFee == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.otherFee == null || merchantWip.settlementConfigWIP.otherFee == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.otherFee"  class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FMS Fee</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" opNumbersOnly maxlength="7" [(ngModel)]="merchantWip.settlementConfigWIP.fmsFee"
+                                        class="form-control" [ngClass]="{ 'is-invalid': submitted && (merchantWip.settlementConfigWIP.fmsFee == null || merchantWip.settlementConfigWIP.fmsFee == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.settlementConfigWIP.fmsFee == null || merchantWip.settlementConfigWIP.fmsFee == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentSettlementConfigWip.fmsFee" class="form-control"
+                                            placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="otherInfoCheck()">
+                        <button *ngIf="otherInfoChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Other Info
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Merchant ID *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text" maxlength="25" [(ngModel)]="merchantWip.merchantOutletID" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.merchantOutletID == '' || merchantWip.merchantOutletID == null || merchantWip.merchantOutletID == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.merchantOutletID == '' || merchantWip.merchantOutletID == null || merchantWip.merchantOutletID == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.merchantOutletId" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant PAN</td>
+                                <td>
+                                    <input [disabled]="true"
+                                    placeholder="Generated by system" 
+                                     type="text"  maxlength="19" 
+                                     [(ngModel)]="merchantWip.merchantPan" 
+                                     class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" 
+                                                type="text" 
+                                                [(ngModel)]="commentMerchantWip.merchantPan" 
+                                                class="form-control" 
+                                                aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                    <!--  -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Referal Code *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="25" [(ngModel)]="merchantWip.referralCode" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.referralCode == '' || merchantWip.referralCode == null || merchantWip.referralCode == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.referralCode == '' || merchantWip.referralCode == null || merchantWip.referralCode == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.referralCode" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Category Code </td>
+                                <td>
+                                <select [disabled]="readOnly" 
+                                    *ngIf="merchantCategoryCodeSelected" 
+                                    [(ngModel)]="merchantCategoryCodeSelected" 
+                                    class="form-control">
+                                    <option *ngFor="let merchantCategotyCode of lookupMerchantCategoryCode" 
+                                        [value]="merchantCategotyCode.id"
+                                        [selected]="merchantCategotyCode.id == merchantCategoryCodeSelected.id">
+                                        {{merchantCategotyCode.name}}
+                                    </option>
+                                </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" 
+                                            type="text" 
+                                            [(ngModel)]="commentMerchantWip.merchantCategoryCode" 
+                                            class="form-control"
+                                            placeholder="comment" 
+                                            aria-label="" 
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+
+
+                                <!-- <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="25" [(ngModel)]="merchantWip.merchantCategoryCode" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.merchantCategoryCode == '' || merchantWip.merchantCategoryCode == null || merchantWip.merchantCategoryCode == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.merchantCategoryCode == '' || merchantWip.merchantCategoryCode == null || merchantWip.merchantCategoryCode == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.merchantCategoryCode" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td> -->
+                            </tr>
+                        </table>
+                        <h3 class="card-title">Secure Payment Configuration</h3>
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>API Key *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="50"  [(ngModel)]="merchantWip.apiKey" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.apiKey == '' || merchantWip.apiKey == null || merchantWip.apiKey == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.apiKey == '' || merchantWip.apiKey == null || merchantWip.apiKey == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.apikey" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Secret ID *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="50" [(ngModel)]="merchantWip.secretID" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.secretID == '' || merchantWip.secretID == null || merchantWip.secretID == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.secretID == '' || merchantWip.secretID == null || merchantWip.secretID == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.secretId" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Notes *</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  maxlength="200" [(ngModel)]="merchantWip.notes" class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantWip.notes == '' || merchantWip.notes == null || merchantWip.notes == undefined) }" />
+                                    <div *ngIf="submitted && (merchantWip.notes == '' || merchantWip.notes == null || merchantWip.notes == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.notes" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="outletCheck()">
+                        <button *ngIf="outletChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Outlet
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+<!-- *ngIf="merchantWip.merchantOutlets" -->
+                        <!-- 
+                        <table *ngIf="merchantOutlet" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Merchant Name</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.merchantName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Outlet Sign</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.merchantOutletSign" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Type</td>
+                                <td>
+                                    <select [disabled]="readOnly" [(ngModel)]="merchantOutlet.deviceType" class="form-control">
+                                        <option *ngFor="let device of lookupDeviceType" [value]="device.name">{{device.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Group</td>
+                                <td>
+                                    <select [disabled]="readOnly" [(ngModel)]="merchantOutlet.deviceGroup" class="form-control">
+                                        <option *ngFor="let deviceGroup of lookupDeviceGroup" [value]="deviceGroup.name">{{deviceGroup.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Brand</td>
+                                <td>
+                                    <select [disabled]="readOnly" [(ngModel)]="merchantOutlet.deviceBrand" class="form-control">
+                                        <option *ngFor="let deviceBrand of lookupDeviceBrand" [value]="deviceBrand.name">{{deviceBrand.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Label</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.terminalLabel" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Phone Number</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.terminalPhoneNumber" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Provider</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.terminalProvider" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr><tr>
+                                <td>Registration Longitude</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.registrationLongitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration Latitude</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.registrationLatitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Metode Pembayaran</td>
+                                <td>
+                                    <div class="form-check">
+                                        <input [disabled]="readOnly" type="checkbox" class="form-check-input" id="mpQr" 
+                                            [checked]="metodePembayaran.QR"
+                                            [(ngModel)]="metodePembayaran.QR">
+                                        <label class="form-check-label" for="mpQr">QR</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input [disabled]="readOnly" type="checkbox" class="form-check-input" id="mpCbem" [checked]="metodePembayaran.CHIP_BASED_E_MONEY" [(ngModel)]="metodePembayaran.CHIP_BASED_E_MONEY">
+                                        <label class="form-check-label" for="mpCbem">Chip Based E-Money</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input [disabled]="readOnly" type="checkbox" class="form-check-input" id="mpDC" [checked]="metodePembayaran.DEBIT_CARD" [(ngModel)]="metodePembayaran.DEBIT_CARD">
+                                        <label class="form-check-label" for="mpDC">DEBIT CARD</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input [disabled]="readOnly" type="checkbox" class="form-check-input" id="mpCC" [checked]="metodePembayaran.CREDIT_CARD" [(ngModel)]="metodePembayaran.CREDIT_CARD">
+                                        <label class="form-check-label" for="mpCC">CREDIT CARD</label>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Owner Name</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.deviceOwnerName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Owner Address</td>
+                                <td>
+                                    <input [disabled]="readOnly" type="text"  [(ngModel)]="merchantOutlet.deviceOwnerAddress" class="form-control" />
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    -->
+                        <!-- <div class="btn-group" role="group"> -->
+                        <div *ngIf ="addMerchantOutlet">
+                            <button type="button" (click)="addnewOutlet()" class="btn btn-outline-primary "> Add New  <i
+                                    class="fa fa-plus fa-lg"></i></button>
+                            <br>
+                        </div>
+                        <!-- </div> -->
+                        
+                        <table class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px" ></th>
+                                    <th>No.</th>
+                                    <th>Merchant Name</th>
+                                    <th>Device Type</th>
+                                    <th>Device Group</th>
+                                    <th>Device Brand</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tr *ngFor="let m of merchantOutletList; let i = index">
+                                <td><button (click)="loadMerchantOutlet(i)" type="button" class="btn mr-2 btn-outline-warning btn-sm">
+                                        <i class="fa fa-list fa-lg"></i></button></td>
+                                <td>{{i+1}}</td>
+                                <td>
+                                    {{m.merchantName}}
+                                </td>
+                                <td>
+                                    {{m.deviceType}}
+                                </td>
+                                <td>
+                                    {{m.deviceGroup}}
+                                </td>
+                                <td>
+                                    {{m.deviceBrand}}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button *ngIf="addMerchantOutlet" type="button" (click)="deleteOutlet(m)" class="btn btn-outline-danger btn-sm">Delete <i class="fa fa-times fa-lg"></i></button>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <br>
+                            <ngb-pagination size="sm" [collectionSize]="totalDataOutlets" [(page)]="curPageOutlets" [maxSize]="totalRecordOutlets"
+                                (pageChange)="loadPageOutlets()" [boundaryLinks]="true"></ngb-pagination>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="otherCheck()">
+                        <button *ngIf="otherChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Other
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantWip" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th *ngIf="statusView==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            
+                            <!--  -->
+                            
+                            <!--  -->
+                            <tr>
+                                <td>Merchant KTP </td>
+                                <td>
+                                    <img src="{{imgUrlMerchantKtpPath}}" style="width:150px; height:150px">
+                                    <br>
+                                    <!-- <input [disabled]="readOnly" type="text" [(ngModel)]="merchantWip.ktpPath" class="form-control" /> -->
+                                    <input [disabled]="readOnly" type="file" #imageKtpMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImageMerchantKtp(imageKtpMr)" name="file" />
+                                    <div *ngIf="tipeMerchantUmkm == tipeMerchantSelected && submitted && (imgUrlMerchantKtpPath == '' || imgUrlMerchantKtpPath == null || imgUrlMerchantKtpPath == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.ktpPath" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Selfie</td>
+                                <td>
+                                    <img src="{{imgUrlMerchantSelfiePath}}" style="width:150px; height:150px">
+                                    <br>
+                                    <input [disabled]="readOnly" type="file" #imageSelfieMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImageMerchantSelfie(imageSelfieMr)" name="file" />
+                                    <div *ngIf="tipeMerchantUmkm == tipeMerchantSelected && submitted && (imgUrlMerchantSelfiePath == '' || imgUrlMerchantSelfiePath == null || imgUrlMerchantSelfiePath == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.selfiePath" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Photo Location</td>
+                                <td>
+                                    <img src="{{imgUrlMerchantPhotoLocPath}}" style="width:150px; height:150px">
+                                    <br>
+                                    <input [disabled]="readOnly" type="file" #imagePhotoLocMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImagePathLoc(imagePhotoLocMr)" name="file" />
+                                    <div *ngIf="tipeMerchantUmkm == tipeMerchantSelected && submitted && (imgUrlMerchantPhotoLocPath == '' || imgUrlMerchantPhotoLocPath == null || imgUrlMerchantPhotoLocPath == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.merchantPhotoPath" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Photo Location 2</td>
+                                <td>
+                                    <img src="{{imgUrlMerchantPhotoLoc2Path}}" style="width:150px; height:150px">
+                                    <br>
+                                    <input [disabled]="readOnly" type="file" #imagePhotoLoc2Mr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImagePathLoc2(imagePhotoLoc2Mr)" name="file" />
+                                    <div *ngIf="tipeMerchantUmkm == tipeMerchantSelected && submitted && (imgUrlMerchantPhotoLoc2Path == '' || imgUrlMerchantPhotoLoc2Path == null || imgUrlMerchantPhotoLoc2Path == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.merchantPhoto2Path" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Signature</td>
+                                <td>
+                                    <img src="{{imgUrlMerchantSignaturePath}}" style="width:150px; height:150px">
+                                    <br>
+                                    <input [disabled]="readOnly" type="file" #imageSignatureMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImageSignaturePath(imageSignatureMr)" name="file" />
+                                    <div *ngIf="tipeMerchantUmkm == tipeMerchantSelected && submitted && (imgUrlMerchantSignaturePath == '' || imgUrlMerchantSignaturePath == null || imgUrlMerchantSignaturePath == undefined)">
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.signPath" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Logo</td>
+                                <td>
+                                    <img src="{{imgUrlMerchantLogoPath}}" style="width:150px; height:150px">
+                                    <br>
+                                    <input [disabled]="readOnly" type="file" #imageLogoMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImageLogoPath(imageLogoMr)" name="file" />
+                                    <!-- <input [disabled]="readOnly" type="text" [(ngModel)]="merchantWip.logoPath" class="form-control" /> -->
+                                </td>
+                                <td *ngIf="statusView==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <input [disabled]="readOnly" type="text" [(ngModel)]="commentMerchantWip.logoPath" class="form-control" placeholder="comment" aria-label=""
+                                            aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
+
+    </div>
+</div>

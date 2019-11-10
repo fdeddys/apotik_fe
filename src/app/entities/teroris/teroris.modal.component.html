@@ -1,0 +1,167 @@
+<!-- {{fromSend | json}} -->
+<style>
+    input{
+        width: 100%;
+    }
+</style>
+<div class="modal-header" *ngIf="statusRec!=='View'" >
+    <h4 class="modal-title">
+        <span class="badge badge-light" style="color:cornflowerblue"> Add/Edit </span> </h4>
+    <!-- <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+</div>
+<div class="modal-body">
+    <table class="table table-sm  table-striped">
+        <tr>
+            <th style="width: 30%">
+                <!-- <span class="badge badge-pill badge-danger">Add</span> -->
+                <span class="badge badge-pill badge-primary"> {{teroris.id}}  </span>
+            </th>
+            <th style="width: 70%">
+                <button type="button" class="btn btn-outline-primary" style="color:green">
+                    Status <span class="badge badge-light" style="color:red"> {{statusRec}} </span>
+                    <span class="badge badge-light" style="color:purple"> {{viewMsg}}</span>
+                </button>
+
+            </th>
+        </tr>
+        <tr>
+            <td>Nama</td>
+            <td>
+                <input type="text" size="50%"  maxlength="250" [(ngModel)]="teroris.name"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.name == '' || teroris.name == null || teroris.name == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.name == '' || teroris.name == null || teroris.name == undefined)">
+                    <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Nama Alias</td>
+            <td>
+                <input type="text" size="50%" maxlength="250"  [(ngModel)]="teroris.nameAlias"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.nameAlias == '' || teroris.nameAlias == null || teroris.nameAlias == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.nameAlias == '' || teroris.nameAlias == null || teroris.nameAlias == undefined)">
+                    <!-- <div *ngIf="form.nameAlias.errors.required"> {{form.nameAlias.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Tempat Lahir</td>
+            <td>
+                <input type="text" size="50%" maxlength="50"  [(ngModel)]="teroris.birthPlace"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.birthPlace == '' || teroris.birthPlace == null || teroris.birthPlace == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.birthPlace == '' || teroris.birthPlace == null || teroris.birthPlace == undefined)">
+                    <!-- <div *ngIf="form.birthPlace.errors.required"> {{form.birthPlace.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Tanggal Lahir</td>
+            <td>
+                <input  type="text" ngbDatepicker #d="ngbDatepicker" [(ngModel)]="tglLahir"
+                [ngClass]="{ 'is-invalid': submitted && ( tglLahir == null || tglLahir == undefined) }" />
+                <br>
+                <div *ngIf="submitted && ( tglLahir == null || tglLahir == undefined)">
+                    <!-- <div *ngIf="form.birthPlace.errors.required"> {{form.birthPlace.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+                <button (click)="d.toggle()"  
+                [disabled]="statusRec==='View'" 
+                 >
+                    <i class="fa fa-calendar fa-lg"></i>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td>Kewarganegaraan</td>
+            <td>
+                <input type="text" size="50%" maxlength="50"  [(ngModel)]="teroris.nationality"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.nationality == '' || teroris.nationality == null || teroris.nationality == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.nationality == '' || teroris.nationality == null || teroris.nationality == undefined)">
+                    <!-- <div *ngIf="form.nationality.errors.required"> {{form.nationality.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>
+                <input type="text" size="50%" maxlength="500" [(ngModel)]="teroris.address"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.address == '' || teroris.address == null || teroris.address == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.address == '' || teroris.address == null || teroris.address == undefined)">
+                    <!-- <div *ngIf="form.address.errors.required"> {{form.address.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <!-- <tr>
+                <td >Type ID</td>
+                <td>
+                    <select class="form-control" id="tipe_id" name="tipeid" [(ngModel)]="teroris.idType" >
+                      <option value="KTP">KTP</option>
+                      <option value="SIM">SIM</option>
+                      <option value="PASSPORT">PASSPORT</option>
+                    </select>
+                </td>
+              </tr> -->
+        <tr>
+            <td>type</td>
+            <td>
+                <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
+                    (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" #instance="ngbTypeahead"
+                    [ngClass]="{ 'is-invalid': submitted && (model == '' || model == null || model == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (model == '' || model == null || model == undefined)">
+                    <!-- <div *ngIf="form.birthPlace.errors.required"> {{form.birthPlace.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>No. ID</td>
+            <td>
+                <input type="text" size="50%" maxlength="50"  [(ngModel)]="teroris.idNumber"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.idNumber == '' || teroris.idNumber == null || teroris.idNumber == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.idNumber == '' || teroris.idNumber == null || teroris.idNumber == undefined)">
+                    <!-- <div *ngIf="form.idNumber.errors.required"> {{form.idNumber.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Pekerjaan</td>
+            <td>
+                <input type="text" size="50%" maxlength="50" [(ngModel)]="teroris.job"
+                [ngClass]="{ 'is-invalid': submitted && (teroris.job == '' || teroris.job == null || teroris.job == undefined) }" />
+                <br>
+                <div *ngIf="submitted && (teroris.job == '' || teroris.job == null || teroris.job == undefined)">
+                    <!-- <div *ngIf="form.job.errors.required"> {{form.job.errors.message}}</div> -->
+                    <div style="color: red"> *Field is required</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+
+</div>
+<div class="modal-footer">
+    <div *ngIf="statusRec!=='View' ">
+        <button type="button" class="btn btn-outline-danger" (click)="validate()">Save
+            <i class="fa fa-save fa-lg"></i>
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="closeForm()">Close
+            <i class="fa fa-times fa-lg"></i>
+        </button>
+    </div>
+</div>

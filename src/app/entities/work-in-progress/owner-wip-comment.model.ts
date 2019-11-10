@@ -1,0 +1,32 @@
+export class OwnerWipComment {
+    constructor(
+        public errCode?: any,
+        public errDesc?: any,
+        public id?: number,
+        public ownerWipId?: number,
+        public ownerTitle?: string,
+        public ownerFirstName?: string,
+        public ownerLastName?: string,
+        public ownerAddress?: string,
+        public ownerRt?: string,
+        public ownerRw?: string,
+        public ownerKelurahan?: string,
+        public ownerKecamatan?: string,
+        public ownerProvinsi?: string,
+        public ownerKabupaten?: string,
+        public ownerKodePos?: string,
+        public ownerTipeId?: string,
+        public ownerNoId?: string,
+        public ownerTanggalExpiredId?: string,
+        public ownerJenisKelamin?: string,
+        public ownerNoTelp?: string,
+        public ownerTelpLain?: string,
+        public ownerPekerjaan?: string,
+        public ownerEmail?: string,
+        public ownerTempatLahir?: string,
+        public ownerTanggalLahir?: string,
+        public ownerNamaIbuKandung?: string,
+        public ownerNpwp?: string,
+
+    ) {}
+}

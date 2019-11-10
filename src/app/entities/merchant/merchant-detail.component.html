@@ -1,0 +1,1698 @@
+<div class="card border-primary">
+    <div class="card-header">
+        <div>
+
+            <button type="button" (click)="onBack()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i>  Back
+            </button>
+            <button type="button" (click)="onConfirm()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-check fa-lg"></i>  Confirm
+            </button>
+        </div>
+    </div>
+    <div style="padding :25px 25px 25px 25px">
+        <ngb-tabset>
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div>
+                        <button *ngIf="storeDataChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Store Data
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchant" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Store Name</td>
+                                <td>
+                                    <input type="text" maxlength="250" [(ngModel)]="merchant.storeName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe Merchant</td>
+                                <td>
+                                    <select  *ngIf="tipeMerchantSelected" [(ngModel)]="tipeMerchantSelected.id" class="form-control">
+                                        <option *ngFor="let tipeMerchant of lookupTipeMerchant" 
+                                            [value]="tipeMerchant.id"
+                                            [selected]="tipeMerchant.id == tipeMerchantSelected.id"
+                                            >{{tipeMerchant.name}}
+                                        </option>
+                                    </select>
+                                    {{tipeMerchantSelected | json}}
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Usaha</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.jenisUsaha" class="form-control">
+                                        <option *ngFor="let jenisUsaha of lookupJenisUsaha" 
+                                            [value]="jenisUsaha.id"
+                                            >{{jenisUsaha.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>
+                                    <input type="text" maxlength="500" [(ngModel)]="merchant.alamat" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kelurahan</td>
+                                <td>
+                                    <input type="text"  maxlength="200"[(ngModel)]="merchant.kelurahan" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kecamatan</td>
+                                <td>
+                                    <input type="text" maxlength="200" [(ngModel)]="merchant.kecamatan" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Provinsi</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.provinsi" class="form-control">
+                                        <option *ngFor="let province of lookupProvince" 
+                                            [value]="province.id"
+                                            >{{province.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kabupaten/Kota</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.kabupatenKota" class="form-control">
+                                        <option *ngFor="let city of lookupCity" 
+                                            [value]="city.id"
+                                            >{{city.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kode Pos</td>
+                                <td>
+                                    <input type="number" maxlength="5" [(ngModel)]="merchant.postalCode" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Longitude</td>
+                                <td>
+                                    <input type="text" maxlength="50" [(ngModel)]="merchant.longitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Latitude</td>
+                                <td>
+                                    <input type="text" maxlength="50"  [(ngModel)]="merchant.latitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Store Phone Number</td>
+                                <td>
+                                    <input type="text" maxlength="25"  [(ngModel)]="merchant.storePhoneNumber" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lokasi Bisnis</td>
+                                <td>
+                                    <input type="text" maxlength="200" [(ngModel)]="merchant.lokasiBisnis" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Lokasi Bisnis</td>
+                                <td>
+                                    <input type="text" maxlength="200" [(ngModel)]="merchant.jenisLokasiBisnis" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jam Operasional</td>
+                                <td>
+                                    <input type="text" maxlength="50"  [(ngModel)]="merchant.jamOperasional" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="ownerDataCheck()">
+                        <button *ngIf="ownerDataChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Owner Data
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchant.owner" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Title</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerTitle" class="form-control">
+                                        <option *ngFor="let title of lookupOwnerTitle" 
+                                            [value]="title.name"
+                                            >{{title.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>First Name</td>
+                                <td>
+                                    <input type="text" maxlength="250"  [(ngModel)]="merchant.owner.ownerFirstName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Last Name</td>
+                                <td>
+                                    <input type="text"  maxlength="250" [(ngModel)]="merchant.owner.ownerLastName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>
+                                    <input type="text"  maxlength="500" [(ngModel)]="merchant.owner.ownerAddress" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RT</td>
+                                <td>
+                                    <input type="text"  maxlength="5" [(ngModel)]="merchant.owner.ownerRt" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RW</td>
+                                <td>
+                                    <input type="text"  maxlength="5" [(ngModel)]="merchant.owner.ownerRw" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kelurahan</td>
+                                <td>
+                                    <input type="text"  maxlength="200" [(ngModel)]="merchant.owner.ownerKelurahan" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kecamatan</td>
+                                <td>
+                                    <input type="text"  maxlength="200" [(ngModel)]="merchant.owner.ownerKecamatan" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Provinsi</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerProvinsi" class="form-control">
+                                        <option *ngFor="let province of lookupProvince" 
+                                            [value]="province.id"
+                                            >{{province.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kabupaten/Kota</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerKabupaten" class="form-control">
+                                        <option *ngFor="let city of lookupCity" 
+                                            [value]="city.id"
+                                            >{{city.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kode Pos</td>
+                                <td>
+                                    <input type="text"  maxlength="5" [(ngModel)]="merchant.owner.ownerKodePos" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe ID</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerTipeID" class="form-control">
+                                        <option *ngFor="let idType of lookupIdType" 
+                                            [value]="idType.name"
+                                            >{{idType.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No ID</td>
+                                <td>
+                                    <input type="text"  maxlength="50" [(ngModel)]="merchant.owner.ownerNoID" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Expired ID</td>
+                                <td>
+                                    <!-- <input type="text"  [(ngModel)]="merchant.owner.ownerTangalExpiredID" class="form-control" /> -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <button (click)="dOwnerTanggalExpiredID.toggle()">
+                                                    <i class="fa fa-calendar fa-lg"></i>
+                                                </button>
+                                                <input [disabled]="seumurHidupChecked" type="text" class="form-control" ngbDatepicker #dOwnerTanggalExpiredID="ngbDatepicker" [(ngModel)]="ownerTanggalExpiredID" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="seumurHidup" 
+                                                    (change)="seumurHidupCheckSelected()"
+                                                    [checked]="seumurHidupChecked">
+                                                <label class="form-check-label" for="seumurHidup">Seumur Hidup</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Kelamin</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerJenisKelamin" class="form-control">
+                                        <option *ngFor="let gender of lookupGender" [value]="gender.id">{{gender.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Telp</td>
+                                <td>
+                                    <input type="text"  maxlength="25" [(ngModel)]="merchant.owner.ownerNoTelp" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Telp Lain</td>
+                                <td>
+                                    <input type="text"  maxlength="25" [(ngModel)]="merchant.owner.ownerTelpLain" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pekerjaan</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.owner.ownerPekerjaan" class="form-control">
+                                        <option *ngFor="let pekerjaan of lookupPekerjaan" [value]="pekerjaan.id">{{pekerjaan.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>
+                                    <input type="text"  maxlength="250" [(ngModel)]="merchant.owner.ownerEmail" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tempat Lahir</td>
+                                <td>
+                                    <input type="text"  maxlength="100" [(ngModel)]="merchant.owner.ownerTempatLahir" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Lahir</td>
+                                <td>
+                                    <div class="input-group">
+                                        <button (click)="d.toggle()">
+                                            <i class="fa fa-calendar fa-lg"></i>
+                                        </button>
+                                        <input type="text" class="form-control" ngbDatepicker #d="ngbDatepicker"
+                                            [(ngModel)]="ownerTanggalLahir" />
+                                    </div>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Ibu Kandung</td>
+                                <td>
+                                    <input type="text"  maxlength="250" [(ngModel)]="merchant.owner.ownerNamaIbuKandung" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="settlementCheck()">
+                        <button *ngIf="settlementChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Settlement & Report Configuration
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <h3 class="card-title">Settlement & Report Configuration</h3>
+                        <table *ngIf="merchant.merchantGroup.merchantGroupSettlementInfo" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Settlement Config</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.settlementConfig.settlementConfig" class="form-control">
+                                        <option *ngFor="let settlementConfig of lookupSettlementConfig" [value]="settlementConfig.name">{{settlementConfig.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>No Rekening Toko</td>
+                                <td>
+                                    <input type="text"  maxlength="50" [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.nomorRekening" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Bank Tujuan Settlement</td>
+                                <td>
+                                    <input type="text"  maxlength="100" [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Pemilik Rekening</td>
+                                <td>
+                                    <input type="text"  maxlength="250" [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe Rekening</td>
+                                <td>
+                                    <input type="text"  maxlength="25" [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.tipeRekening" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Report Settlement Config</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.reportSettlementConfigLookup" class="form-control">
+                                        <option *ngFor="let reportSetCon of lookupReportSettlementConfig" [value]="reportSetCon.id">{{reportSetCon.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Settlement Execution Config</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.settlementExecutionConfigLookup" class="form-control">
+                                        <option *ngFor="let setExcon of lookupSettlementExecutionConfig" [value]="setExcon.id">{{setExcon.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report Via</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.sendReportViaLookup" class="form-control">
+                                        <option *ngFor="let sendRptVia of lookupSendRptVia" [value]="sendRptVia.id">{{sendRptVia.name}}
+                                        </option>
+                                    </select>
+
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report</td>
+                                <td>
+                                    <input type="text"  maxlength="255" [(ngModel)]="merchant.merchantGroup.merchantGroupSettlementInfo.sendReportUrl" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <h3 class="card-title">Merchant Fee Information</h3>
+                        <table *ngIf="merchant.merchantGroup.merchantGroupFeeInfo" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Processing Configuration</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.settlementConfig.processingConfiguration" class="form-control">
+                                        <option *ngFor="let processingConfig of lookupSettlementConfig" [value]="processingConfig.name">{{processingConfig.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Processing Fee</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.processingFeeLookup" class="form-control">
+                                        <option *ngFor="let processingFee of lookupProcessingFee" [value]="processingFee.id">{{processingFee.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Processing Fee Value</td>
+                                <td>
+                                    <input type="number"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.processingFeeValue" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rental Edc Fee</td>
+                                <td>
+                                    <input type="number" min =0 max= 1000000 [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.rentalEdcFee" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR</td>
+                                <td>
+                                    <select [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrLookup" class="form-control">
+                                        <option *ngFor="let mdr of lookupMDR" [value]="mdr.id">{{mdr.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money On Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money Off Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit On Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit Off Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit On Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit Off Us</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Other Fee :</td>
+                                <td>
+                                        <!-- -->
+                                    <input type="text"   [(ngModel)]="merchant.merchantGroup.merchantGroupFeeInfo.otherFee" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="otherInfoCheck()">
+                        <button *ngIf="otherInfoChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Other Infos
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchant" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Merchant IDs</td>
+                                <td>
+                                    <input type="text" maxlength="25" [(ngModel)]="merchant.merchantOutletID" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant PAN</td>
+                                <td>
+                                    <input type="text"  placeholder="Generated by system" [(ngModel)]="merchant.merchantPan" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Referal Code</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.referralCode" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Category Code</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantCategoryCode" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>API Key</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.apiKey" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Secret ID</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.secretID" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Notes</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.notes" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="outletCheck()">
+                        <button *ngIf="outletChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Merchant Outlet
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        
+                        <!-- <table *ngIf="merchant.merchantOutlets" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Merchant Name</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.merchantName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Outlet Sign</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.merchantOutletSign" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Type</td>
+                                <td>
+                                    <select [(ngModel)]="merchantOutlet.deviceType" class="form-control">
+                                        <option *ngFor="let device of lookupDeviceType" [value]="device.name">{{device.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Group</td>
+                                <td>
+                                    <select [(ngModel)]="merchantOutlet.deviceGroup" class="form-control">
+                                        <option *ngFor="let deviceGroup of lookupDeviceGroup" [value]="deviceGroup.name">{{deviceGroup.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Device Brand</td>
+                                <td>
+                                    <select [(ngModel)]="merchantOutlet.deviceBrand" class="form-control">
+                                        <option *ngFor="let deviceBrand of lookupDeviceBrand" [value]="deviceBrand.name">{{deviceBrand.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Label</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.terminalLabel" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Phone Number</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.terminalPhoneNumber" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Terminal Provider</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.terminalProvider" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr><tr>
+                                <td>Registration Longitude</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.registrationLongitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Registration Latitude</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.registrationLatitude" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Metode Pembayaran</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="metodePembayaran" class="form-control" />
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="mpQr" 
+                                            [checked]="metodePembayaran.QR"
+                                            [(ngModel)]="metodePembayaran.QR">
+                                        <label class="form-check-label" for="mpQr">QR</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="mpCbem" [checked]="metodePembayaran.CHIP_BASED_E_MONEY" [(ngModel)]="metodePembayaran.CHIP_BASED_E_MONEY">
+                                        <label class="form-check-label" for="mpCbem">Chip Based E-Money</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="mpDC" [checked]="metodePembayaran.DEBIT_CARD" [(ngModel)]="metodePembayaran.DEBIT_CARD">
+                                        <label class="form-check-label" for="mpDC">DEBIT CARD</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="mpCC" [checked]="metodePembayaran.CREDIT_CARD" [(ngModel)]="metodePembayaran.CREDIT_CARD">
+                                        <label class="form-check-label" for="mpCC">CREDIT CARD</label>
+                                    </div>
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Owner Name</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.deviceOwnerName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Owner Address</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchantOutlet.deviceOwnerAddress" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table> -->
+
+                        <table class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th >No.</th>
+                                    <th >Merchant Name</th>
+                                    <th >Device Type</th>
+                                    <th >Device Group</th>
+                                    <th >Device Brand</th>
+                                    <th >Action</th>
+                                </tr>
+                            </thead>
+                            <tr *ngFor="let m of merchant.merchantOutlets; let i = index">
+                                <td><button (click)="loadMerchantOutlet(i)" type="button" class="btn mr-2 btn-outline-warning btn-sm"> <i class="fa fa-list fa-lg"></i></button></td>
+                                <td>{{i+1}}</td>
+                                <td>
+                                    {{m.merchantName}}
+                                </td>
+                                <td>
+                                    {{m.deviceType}}
+                                </td>
+                                <td>
+                                    {{m.deviceGroup}}
+                                </td>
+                                <td>
+                                    {{m.deviceBrand}}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        
+                                        <button type="button" class="btn btn-outline-danger btn-sm" >Delete <i class="fa fa-times fa-lg"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>
+                    <div (click)="otherCheck()">
+                        <button *ngIf="otherChecked" type="button" class="btn btn-outline-success btn-sm btn-circle">
+                            <i class="fa fa-check-circle fa-lg"></i>
+                        </button>
+                        Other
+                    </div>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchant" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th ></th>
+                                    <th ></th>
+                                    <th *ngIf="statusRec==='Verifier'"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Merchant Group</td>
+                                <td>
+                                    <input type="text"  [(ngModel)]="merchant.merchantGroup.merchantGroupName" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant KTP</td>
+                                <td>
+                                    <!-- <input type="text" [(ngModel)]="merchant.ktpPath" class="form-control" /> -->
+                                
+                                    <input type="file" #imageKtpMr class="btn btn-outline-warning btn-sm" accept="image/*"
+                                        (change)="processFileImageMerchantKtp(imageKtpMr)" name="file" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Selfie</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="merchant.selfiePath" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Photo Location</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="merchant.merchantPhotoPath" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Photo Location 2</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="merchant.merchantPhoto2Path" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Signature</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="merchant.signPath" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Merchant Logo</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="merchant.logoPath" class="form-control" />
+                                </td>
+                                <td *ngIf="statusRec==='Verifier'">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-times fa-lg"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="comment" aria-label="" aria-describedby="basic-addon1">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
+
+    </div>
+</div>

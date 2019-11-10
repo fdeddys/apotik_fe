@@ -1,0 +1,79 @@
+<!-- <op-navigation></op-navigation> -->
+
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">Report Reject</h5>
+        <div>
+            <!--  SEARCH -->
+            <form>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label for="from">Process Date From</label>
+                            <input type="text" class="form-control form-half" ngbDatepicker #dStart="ngbDatepicker"
+                                [(ngModel)]="dateStartMdl" name="dateStart" />
+                            <button (click)="dStart.toggle()">
+                                <i class="fa fa-calendar fa-lg"></i>
+                            </button>
+                        </div>
+                        <div class="col">
+                            <label for="to">To</label>
+                            <input type="text" class="form-control form-half" ngbDatepicker #dEnd="ngbDatepicker"
+                                [(ngModel)]="dateEndMdl" name="dateEnd" />
+                            <button (click)="dEnd.toggle()">
+                                <i class="fa fa-calendar fa-lg"></i>
+                            </button>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-outline-success btn-sm" (click)="onFilter()">Search
+                    <i class="fa fa-search fa-lg"></i>
+                </button>
+            </form>
+        </div>
+        <div style="height:400px; padding: 15px 15px 15px 15px; ">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <!-- <th>Action</th> -->
+                            <th scope="col">Submit Date</th>
+                            <th scope="col">Merchant Outlet ID</th>
+                            <th scope="col">Store Name</th>
+                            <th scope="col">Rejected By</th>
+                            <th scope="col">Rejected Date</th>
+                            <th scope="col">Rejected Code</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col">Agent ID</th>
+                            <th scope="col">Merchant Type</th>
+                            <th scope="col">Device Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let report of reportList ">
+                            <!-- <button type="button" (click)="open(report)" class="btn btn-outline-warning btn-sm">
+                                <i class="fa fa-list-ul fa-sm"></i>
+                            </button> -->
+                            <td>{{report.submitDate}}</td>
+                            <td>{{report.merchantOutletId}}</td>
+                            <td>{{report.storeName}}</td>
+                            <td>{{report.rejectedBy}}</td>
+                            <td>{{report.rejectDate}}</td>
+                            <td>{{report.rejectCode}}</td>
+                            <td>{{report.notes}}</td>
+                            <td>{{report.agentId}}</td>
+                            <td>{{report.merchantType}}</td>
+                            <td>{{report.deviceType}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord" (pageChange)="loadPage()"
+            [boundaryLinks]="true"></ngb-pagination> -->
+
+    </div>
+</div>

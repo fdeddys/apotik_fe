@@ -1,0 +1,95 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">Pending Document</h5>
+        <div>
+            <!--  SEARCH -->
+            <form>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label for="from">Created Date From</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-half" ngbDatepicker #dStart="ngbDatepicker"
+                                    [(ngModel)]="dateStartMdl" name="dateStart" />
+                                <button (click)="dStart.toggle()">
+                                    <i class="fa fa-calendar fa-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="to">Created Date To</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-half" ngbDatepicker #dEnd="ngbDatepicker"
+                                    [(ngModel)]="dateEndMdl" name="dateEnd" />
+                                <button (click)="dEnd.toggle()">
+                                    <i class="fa fa-calendar fa-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="intputName">Nama Merchant</label>
+                            <input type="email" class="form-control" id="intputName" aria-describedby="emailHelp"
+                                [(ngModel)]='searchTerm.name' name="searchName" placeholder="Enter Name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="level">Level</label>
+                            <select [(ngModel)]="searchTerm.level" class="form-control" [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let level of levelList" [value]="level.code">
+                                    {{level.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="documentType">Document Type</label>
+                            <select [(ngModel)]="searchTerm.documentType" class="form-control" [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let dt of documentTypeList" [value]="dt.code">
+                                    {{dt.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col">
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="submit" class="btn btn-outline-success btn-sm" (click)="onFilter()">Filter
+                        <i class="fa fa-search fa-lg"></i>
+                    </button>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" (click)="clearFilter()">Clear Filter
+                        <i class="fa fa-refresh fa-lg"></i>
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+
+        <div style="height:550px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Date & Time</th>
+                        <th scope="col">Level</th>
+                        <th scope="col">Nama Merchant</th>
+                        <th scope="col">Document Pending</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pd of pendingDocumentList ">
+                        <td>{{pd.latestApproval | date:'dd-MMM-yyyy HH:mm'}}</td>
+                        <td>{{pd.level}}</td>
+                        <td>{{pd.merchantName}}</td>
+                        <td>
+                            <span *ngFor="let data of pd.documentPendingData">{{data}}<br/></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord" (pageChange)="loadPage()"
+            [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

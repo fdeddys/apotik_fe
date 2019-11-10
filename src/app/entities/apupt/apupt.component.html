@@ -1,0 +1,67 @@
+<div class="card border-primary">
+  <div class="card-body">
+    <h5 class="card-title">List Apupt</h5>
+    <div>
+        <!-- SEARCH -->
+        <form>
+          <div class="form-group">
+            <label for="inputName">Nama</label>
+            <input type="text" class="form-control" id="inputName"
+                [(ngModel)]='searchTerm.name'
+                name="searchName"
+                placeholder="Enter Name">
+          </div>
+          <button type="submit" class="btn btn-outline-success btn-sm" (click)="onFilter()">Search <i class="fa fa-search fa-lg"></i></button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="open('addnew', null)">Addnew
+          <i class="fa fa-plus-circle fa-lg"></i>
+        </button>
+        </form>
+      </div>
+      <!-- <br>
+      <div class="btn-group" role="group" aria-label="Basic example">
+        
+        <button type="button" class="btn btn-outline-warning btn-sm">Preview
+          <i class="fa fa-search-plus fa-lg"></i> 
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm">Upload
+          <i class="fa fa-upload fa-lg"></i> 
+        </button>
+      </div>
+      <br> -->
+      <div style="height:400px; padding: 15px 15px 15px 15px; ">
+        <table class="table table-sm table-hover table-striped">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+                <th scope="col">Name</th>
+              <th scope="col">Alias</th>
+              <th scope="col">Birthdate</th>
+              <th scope="col">Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let apupt of apuptList">
+              <td>
+                <button type="button"
+                  class="btn btn-outline-warning btn-sm"
+                  (click)="open('edit', apupt)">
+                    <i class="fa fa-list fa-lg"></i>
+                </button>
+              </td>
+              <td>{{apupt.name}}</td>
+              <td>{{apupt.aliasName}}</td>
+              <td>{{apupt.birthDate | date: 'dd-MM-yyyy' }}</td>
+              <td>{{apupt.position}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ngb-pagination size="sm"  [collectionSize]="totalData" 
+        [(page)]="curPage" 
+        [maxSize]="totalRecord" 
+        (pageChange)="loadPage($event)"
+        [boundaryLinks]="true"></ngb-pagination>
+
+  </div>
+</div>

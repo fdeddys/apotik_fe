@@ -1,0 +1,731 @@
+<style>
+input {
+    width: 100%;
+}
+</style>
+
+<div class="card border-primary">
+    <div class="card-header">
+        <div  *ngIf="statusRec!=='View'" >
+
+            <button type="button" (click)="onBack()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i>  Back
+            </button>
+            <button type="button" (click)="validate()" class="btn btn-outline-success btn-sm">
+                <i class="fa fa-check fa-lg"></i>  Confirm
+            </button>
+            <button *ngIf="idParams > 0 && merchantGroup.statusSuspense" type="button" (click)="suspense()" class="btn btn-outline-danger btn-sm">
+                <i class="fa fa-ban fa-lg"></i> Suspense
+            </button>
+            <button *ngIf="idParams >0 && !merchantGroup.statusSuspense" type="button" (click)="suspense()" class="btn btn-outline-success btn-sm">
+                <i class="fa fa-check-circle fa-lg"></i> Activate
+            </button>
+        </div>
+    </div>
+    <div style="padding :25px 25px 25px 25px">
+        <!-- {{merchantGroup | json}} -->
+        <ngb-tabset>
+            <ngb-tab title="Merchant Group">
+
+                <ng-template ngbTabContent>
+                    <!-- <p> -->
+                        <!-- <input type="text" style="width:75%" [(ngModel)]="merchantGroup.siup" /> -->
+                        <!--  -->
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6"></div>
+                                <div class="col-6">
+                                    <img *ngIf="imgUrlGroupPhoto" src="{{imgUrlGroupPhoto}}" style="width:150px; height:150px" >
+                                    <br>
+                                    <input type="file" 
+                                        #imageGroupPhoto
+                                        class="btn btn-outline-warning btn-sm"
+                                        accept="image/*"
+                                        (change)="processFileImageGroupPhoto(imageGroupPhoto)" 
+                                        name="file"/>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- </p> -->
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantGroup" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width:15%"></th>
+                                    <th style="width:35%"></th>
+                                    <th style="width:15%"></th>
+                                    <th style="width:35%"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Tipe Merchant *</td>
+                                <td>
+                                    <!-- <ng-template #rtTipeMerchant let-r="result" let-t="term">
+                                        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+                                    </ng-template>
+                                    
+                                    <input id="typeahead-template" 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="tipeMerchantSelected" 
+                                        [ngbTypeahead]="searchTipeMerchant" 
+                                        [resultTemplate]="rtTipeMerchant"
+                                        [inputFormatter]="formatter"  
+                                        /> -->
+                                    <select *ngIf="tipeMerchantSelected" [(ngModel)]="tipeMerchantSelected" 
+                                    [ngClass]="{ 'is-invalid': submitted && (tipeMerchantSelected == '' || tipeMerchantSelected == null || tipeMerchantSelected == undefined) }">
+                                        <option *ngFor="let tipeMerchant of lookupTipeMerchant" 
+                                            [value]="tipeMerchant.id"
+                                            [selected]="tipeMerchant.id == tipeMerchantSelected"
+                                            >{{tipeMerchant.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (tipeMerchantSelected == '' || tipeMerchantSelected == null || tipeMerchantSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                    <!-- {{tipeMerchantSelected | json}}    -->
+                                </td>
+                                <td>Merchant Group Nm *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="250" [(ngModel)]="merchantGroup.merchantGroupName" autofocus
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupName == '' || merchantGroup.merchantGroupName == null || merchantGroup.merchantGroupName == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupName == '' || merchantGroup.merchantGroupName == null || merchantGroup.merchantGroupName == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Perusahaan *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="250"  [(ngModel)]="merchantGroup.namaPT"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.namaPT == '' || merchantGroup.namaPT == null || merchantGroup.namaPT == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.namaPT == '' || merchantGroup.namaPT == null || merchantGroup.namaPT == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td>Jenis Usaha *</td>
+                                <td>
+                                    <select *ngIf="jenisUsahaSelected" [(ngModel)]="jenisUsahaSelected"
+                                    [ngClass]="{ 'is-invalid': submitted && (jenisUsahaSelected == '' || jenisUsahaSelected == null || jenisUsahaSelected == undefined) }">
+                                        <option *ngFor="let jenisUsaha of lookupJenisUsaha" 
+                                            [value]="jenisUsaha.id"
+                                            [selected]="jenisUsaha.id == jenisUsahaSelected"
+                                            >{{jenisUsaha.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (jenisUsahaSelected == '' || jenisUsahaSelected == null || jenisUsahaSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                    <!-- {{jenisUsahaSelected | json}} -->
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Alamat *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="250" [(ngModel)]="merchantGroup.alamat"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.alamat == '' || merchantGroup.alamat == null || merchantGroup.alamat == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.alamat == '' || merchantGroup.alamat == null || merchantGroup.alamat == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td>Rt/rw</td>
+                                <td><input type="number" style="width:45%" maxlength="5" [(ngModel)]="merchantGroup.rt" /> /
+                                    <input type="number" style="width:45%" maxlength="5" [(ngModel)]="merchantGroup.rw" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kelurahan *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="50" [(ngModel)]="merchantGroup.kelurahan"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.kelurahan == '' || merchantGroup.kelurahan == null || merchantGroup.kelurahan == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.kelurahan == '' || merchantGroup.kelurahan == null || merchantGroup.kelurahan == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td>Kecamatan *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="50" [(ngModel)]="merchantGroup.kecamatan"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.kecamatan == '' || merchantGroup.kecamatan == null || merchantGroup.kecamatan == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.kecamatan == '' || merchantGroup.kecamatan == null || merchantGroup.kecamatan == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Provinsi *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:90%" [(ngModel)]="merchantGroup.provinsiLookup" /> -->
+                                    <!-- <ng-template #rtProvince let-r="result" let-t="term">
+                                        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+                                    </ng-template>
+                                    
+                                    <input id="typeahead-template" 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="provinceSelected" 
+                                        [ngbTypeahead]="searchProvince" 
+                                        [resultTemplate]="rtProvince"
+                                        [inputFormatter]="formatter" /> -->
+                                    <select *ngIf="provinceSelected" [(ngModel)]="provinceSelected"
+                                    [ngClass]="{ 'is-invalid': submitted && (provinceSelected == '' || provinceSelected == null || provinceSelected == undefined) }">
+                                        <option *ngFor="let province of lookupProvince" 
+                                            [value]="province.id"
+                                            [selected]="province.id == provinceSelected"
+                                            >{{province.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (provinceSelected == '' || provinceSelected == null || provinceSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                    <!-- {{provinceSelected | json}} -->
+                                </td>
+                                <td>Kabupaten / kota *</td>
+                                <td>
+                                    <!-- <ng-template #rtCity let-r="result" let-t="term">
+                                        <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+                                    </ng-template>
+                                    
+                                    <input id="typeahead-template" 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="citySelected" 
+                                        [ngbTypeahead]="searchCity" 
+                                        [resultTemplate]="rtCity"
+                                        [inputFormatter]="formatter"  
+                                        /> -->
+                                    <select *ngIf="citySelected" [(ngModel)]="citySelected"
+                                    [ngClass]="{ 'is-invalid': submitted && (citySelected == '' || citySelected == null || citySelected == undefined) }">
+                                        <option *ngFor="let city of lookupCity" 
+                                            [value]="city.id"
+                                            [selected]="city.id == citySelected"
+                                            >{{city.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (citySelected == '' || citySelected == null || citySelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Negara *</td>
+                                <td>
+                                    <input type="text" style="width:99%" maxlength="30"  [(ngModel)]="merchantGroup.negara"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.negara == '' || merchantGroup.negara == null || merchantGroup.negara == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.negara == '' || merchantGroup.negara == null || merchantGroup.negara == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                                <td>Postal Code</td>
+                                <td>
+                                    <input type="text" opNumbersMgOnly style="width:99%" maxlength="5" [(ngModel)]="merchantGroup.postalCode"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SIUP</td>
+                                <td>
+                                    <!-- <input type="text" style="width:75%" [(ngModel)]="merchantGroup.siup" /> -->
+                                    <input type="file" 
+                                        #imageSiup
+                                        class="btn btn-outline-warning btn-sm"
+                                        accept="image/*"
+                                        (change)="processFileImageSiup(imageSiup)" 
+                                        name="file"/>
+                                        <!--  (change)="fileChange($event)"-->
+                                </td>
+                                <td>NPWP</td>
+                                <td>
+                                    <!-- <input type="text" style="width:75%" [(ngModel)]="merchantGroup.npwp" />
+                                    <button type="button" class="btn btn-outline-warning btn-sm">Browse
+                                        <i class="fa fa-search-plus fa-lg"></i>
+                                    </button> -->
+                                    <input type="file" 
+                                        #imageNpwp
+                                        class="btn btn-outline-warning btn-sm"
+                                        accept="image/*"
+                                        (change)="processFileImageNpwp(imageNpwp)" 
+                                        name="file"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlSiup" src="{{imgUrlSiup}}" style="width:150px; height:150px" >
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlNpwp" src="{{imgUrlNpwp}}" style="width:150px; height:150px" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PKS</td>
+                                <td>
+                                    <input type="file" 
+                                        #imagePks
+                                        class="btn btn-outline-warning btn-sm"
+                                        accept="image/*"
+                                        (change)="processFileImagePks(imagePks)" 
+                                        name="file"/>
+                                </td>
+                                <td>KTP Direksi</td>
+                                <td>
+                                    <!-- <input type="text" style="width:75%" [(ngModel)]="merchantGroup.ktpDireksi" />
+                                    <button type="button" class="btn btn-outline-warning btn-sm">Browse
+                                        <i class="fa fa-search-plus fa-lg"></i>
+                                    </button> -->
+                                    <input type="file" 
+                                        #imageKtp
+                                        class="btn btn-outline-warning btn-sm"
+                                        accept="image/*"
+                                        (change)="processFileImageKtp(imageKtp)" 
+                                        name="file"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlPks"  src="{{imgUrlPks}}"  width="150px" height="200px">   
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlKtp" src="{{imgUrlKtp}}"  width="150px" height="200px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Akta Pendirian</td>
+                                <td>
+                                    <input type="file" #imageAktaPendirian class="btn btn-outline-warning btn-sm" accept="image/*" (change)="processFileImageAktaPendirian(imageAktaPendirian)"
+                                        name="file" />
+                                </td>
+                                <td>KTP Penanggung Jawab</td>
+                                <td>
+                                    <input type="file" #imageKtpPenanggungJawab class="btn btn-outline-warning btn-sm" accept="image/*" (change)="processFileImageKtpPenanggungJawab(imageKtpPenanggungJawab)"
+                                        name="file" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlAktaPendirian" src="{{imgUrlAktaPendirian}}" width="150px" height="200px">
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlKtpPenanggungJawab" src="{{imgUrlKtpPenanggungJawab}}" width="150px" height="200px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Persetujuan Menkumham untuk Akta</td>
+                                <td>
+                                    <input type="file" #imagePersetujuanMenkumham class="btn btn-outline-warning btn-sm" accept="image/*" (change)="processFileImagePersetujuanMenkumham(imagePersetujuanMenkumham)"
+                                        name="file" />
+                                </td>
+                                <td>Tanda Daftar Perusahaan</td>
+                                <td>
+                                    <input type="file" #imageTandaDaftarPerusahaan class="btn btn-outline-warning btn-sm" accept="image/*" (change)="processFileImageTandaDaftarPerusahaan(imageTandaDaftarPerusahaan)"
+                                        name="file" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlPersetujuanMenkumham" src="{{imgUrlPersetujuanMenkumham}}" width="150px" height="200px">
+                                </td>
+                                <td></td>
+                                <td>
+                                    <img *ngIf="imgUrlTandaDaftarPerusahaan" src="{{imgUrlTandaDaftarPerusahaan}}" width="150px" height="200px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PIC Group</td>
+                                <td><input type="text" maxlength="250" style="width:99%" [(ngModel)]="merchantGroup.picGroup" /></td>
+                                <td>No Telp PIC</td>
+                                <td><input type="text" maxlength="25" style="width:99%" [(ngModel)]="merchantGroup.noTelpPic" /></td>
+                            </tr>
+                            <tr>
+                                <td>Email PIC</td>
+                                <td><input type="text" maxlength="500" style="width:99%" [(ngModel)]="merchantGroup.emailPic" /></td>
+                                <td>Website Perusahaan</td>
+                                <td><input type="text" maxlength="250" style="width:99%" [(ngModel)]="merchantGroup.websitePerusahaan" /></td>
+                            </tr>
+
+                        </table>
+                    </div>            
+                    
+                    <!-- {{imgURL}} -->
+                    <!-- <img src="http://localhost:8080/api/images/previewFile" style="width:20%" > -->
+                    <!-- <img src="{{imgURL}}" style="width:20%" > -->
+                    <!-- <img src="{{imgURL}}"  style="width:20%" > -->
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>Settlement Information</ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantGroup" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width:30%"></th>
+                                    <th style="width:70%"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>No Rekening *</td>
+                                <td>
+                                    <input type="text" opNumbersOnly  maxlength="255" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.nomorRekening"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupSettlementInfo.nomorRekening == '' || merchantGroup.merchantGroupSettlementInfo.nomorRekening == null || merchantGroup.merchantGroupSettlementInfo.nomorRekening == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupSettlementInfo.nomorRekening == '' || merchantGroup.merchantGroupSettlementInfo.nomorRekening == null || merchantGroup.merchantGroupSettlementInfo.nomorRekening == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Nama Bank Tujuan Settlement *</td>
+                                <td>
+                                    <input type="text" style="width:99%"  maxlength="255" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == '' || merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == null || merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == '' || merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == null || merchantGroup.merchantGroupSettlementInfo.namaBankTujuanSettlement == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Nama Pemilik Rekening *</td>
+                                <td>
+                                    <input type="text" style="width:99%"  maxlength="255" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == '' || merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == null || merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == '' || merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == null || merchantGroup.merchantGroupSettlementInfo.namaPemilikRekening == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe Rekening *</td>
+                                <td>
+                                    <input type="text" style="width:99%"  maxlength="255"  [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.tipeRekening"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupSettlementInfo.tipeRekening == '' || merchantGroup.merchantGroupSettlementInfo.tipeRekening == null || merchantGroup.merchantGroupSettlementInfo.tipeRekening == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupSettlementInfo.tipeRekening == '' || merchantGroup.merchantGroupSettlementInfo.tipeRekening == null || merchantGroup.merchantGroupSettlementInfo.tipeRekening == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Report Settlement Config *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.reportSettlementConfigLookup" /> -->
+                                    <select *ngIf="rptSetCfgSelected" [(ngModel)]="rptSetCfgSelected"
+                                    [ngClass]="{ 'is-invalid': submitted && (rptSetCfgSelected == '' || rptSetCfgSelected == null || rptSetCfgSelected == undefined) }">
+                                        <option *ngFor="let rptSetCfg of lookupRptSetCfg" 
+                                            [value]="rptSetCfg.id"
+                                            [selected]="rptSetCfg.id == rptSetCfgSelected"
+                                            >{{rptSetCfg.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (rptSetCfgSelected == '' || rptSetCfgSelected == null || rptSetCfgSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Settlement Execution Config *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.settlementExecutionConfigLookup" /> -->
+                                    <select *ngIf="settExecCfgSelected" [(ngModel)]="settExecCfgSelected"
+                                        [ngClass]="{ 'is-invalid': submitted && (settExecCfgSelected == '' || settExecCfgSelected == null || settExecCfgSelected == undefined) }">
+                                        <option *ngFor="let settExecCfg of lookupSettExecCfg" 
+                                            [value]="settExecCfg.id"
+                                            [selected]="settExecCfg.id == settExecCfgSelected"
+                                            >{{settExecCfg.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (settExecCfgSelected == '' || settExecCfgSelected == null || settExecCfgSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report via *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.sendReportViaLookup" /> -->
+                                    <select *ngIf="sendRptViaSelected" [(ngModel)]="sendRptViaSelected"
+                                    [ngClass]="{ 'is-invalid': submitted && (sendRptViaSelected == '' || sendRptViaSelected == null || sendRptViaSelected == undefined) }">
+                                        <option *ngFor="let sendRptVia of lookupSendRptVia" 
+                                            [value]="sendRptVia.id"
+                                            [selected]="sendRptVia.id == sendRptViaSelected"
+                                            >{{sendRptVia.name}}
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (sendRptViaSelected == '' || sendRptViaSelected == null || sendRptViaSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Send Report *</td>
+                                <td>
+                                    <input type="text" style="width:99%"  maxlength="255"  [(ngModel)]="merchantGroup.merchantGroupSettlementInfo.sendReportUrl"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupSettlementInfo.sendReportUrl == '' || merchantGroup.merchantGroupSettlementInfo.sendReportUrl == null || merchantGroup.merchantGroupSettlementInfo.sendReportUrl == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupSettlementInfo.sendReportUrl == '' || merchantGroup.merchantGroupSettlementInfo.sendReportUrl == null || merchantGroup.merchantGroupSettlementInfo.sendReportUrl == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+                <ng-template ngbTabTitle>Fee Information</ng-template>
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantGroup" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width:15%"></th>
+                                    <th style="width:35%"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Processing fee *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.processingFeeLookup" /> -->
+                                    <select *ngIf="processingFeeSelected" 
+                                            [(ngModel)]="processingFeeSelected"
+                                            [ngClass]="{ 'is-invalid': submitted && (processingFeeSelected == '' || processingFeeSelected == null || processingFeeSelected == undefined) }">
+                                        <option *ngFor="let processingFee of lookupProcessingFee" 
+                                            [value]="processingFee.id"
+                                            [selected]="processingFeeSelected == processingFee.id"
+                                            >{{processingFee.name}}
+                                            <!--  -->
+                                        </option>
+                                    </select>
+                                    <br>
+                                    <div *ngIf="submitted && (processingFeeSelected == '' || processingFeeSelected == null || processingFeeSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Processing fee value *</td>
+                                <td>
+                                    <input type="number" min="0" max="9999999" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.processingFeeValue"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.processingFeeValue == null || merchantGroup.merchantGroupFeeInfo.processingFeeValue == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.processingFeeValue == null || merchantGroup.merchantGroupFeeInfo.processingFeeValue == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rental EDC Fee</td>
+                                <td><input type="number" min = "0" max="9999999" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.rentalEdcFee" /></td>
+                            </tr>
+                            <tr>
+                                <td>MDR *</td>
+                                <td>
+                                    <!-- <input type="text" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrLookup" /> -->
+                                    <select *ngIf="mdrSelected" 
+                                        [(ngModel)]="mdrSelected"
+                                        [ngClass]="{ 'is-invalid': submitted && (mdrSelected == '' || mdrSelected == null || mdrSelected == undefined) }">
+                                        <option *ngFor="let mdr of lookupMDR" 
+                                            [value]="mdr.id"
+                                            [selected]="mdr.id == mdrSelected"
+                                            >{{mdr.name}}
+                                        </option>
+                                    </select>
+                                    <br> 
+                                    <div *ngIf="submitted && (mdrSelected == '' || mdrSelected == null || mdrSelected == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money On Us *</td>
+                                <td>
+                                    <input type="number" max="9999999" min="0" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrEmoneyOnUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR E-Money Off Us *</td>
+                                <td>
+                                    <input type="number" max="9999999" min="0"  style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrEmoneyOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit On Us *</td>
+                                <td>
+                                    <input type="number" max="9999999" min="0"  style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrDebitOnUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Debit Off Us *</td>
+                                <td>
+                                    <input type="number"  max="9999999" min="0" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrDebitOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit On Us *</td>
+                                <td>
+                                    <input type="number"  max="9999999" min="0" style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs == null || merchantGroup.merchantGroupFeeInfo.mdrCreditOnUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MDR Credit Off Us *</td>
+                                <td>
+                                    <input type="number" max="9999999" min="0"  style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs == null || merchantGroup.merchantGroupFeeInfo.mdrCreditOffUs == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Other Fee</td>
+                                <td><input type="number" min=0 max=9999999 style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.otherFee" /></td>
+                            </tr>
+                            <tr>
+                                <td>FMS Fee</td>
+                                <td><input type="number" min=0 max=9999999 style="width:99%" [(ngModel)]="merchantGroup.merchantGroupFeeInfo.fmsFee" /></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab title="Internal Contact Person">
+                <ng-template ngbTabContent>
+                    <div style="padding: 10px 10px 10px 10px">
+                        <table *ngIf="merchantGroup" class="table table-sm  table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width:15%"></th>
+                                    <th style="width:35%"></th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <td>Bussiness PIC *</td>
+                                <td>
+                                    <input type="text" style="width:90%"  maxlength="250"  [(ngModel)]="merchantGroup.internalContactPerson.businessPic"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.internalContactPerson.businessPic == '' || merchantGroup.internalContactPerson.businessPic == null || merchantGroup.internalContactPerson.businessPic == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.internalContactPerson.businessPic == '' || merchantGroup.internalContactPerson.businessPic == null || merchantGroup.internalContactPerson.businessPic == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Technical PIC *</td>
+                                <td>
+                                    <input type="text" style="width:90%"  maxlength="250"[(ngModel)]="merchantGroup.internalContactPerson.technicalPic"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.internalContactPerson.technicalPic == '' || merchantGroup.internalContactPerson.technicalPic == null || merchantGroup.internalContactPerson.technicalPic == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.internalContactPerson.technicalPic == '' || merchantGroup.internalContactPerson.technicalPic == null || merchantGroup.internalContactPerson.technicalPic == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Settlement / Operation PIC *</td>
+                                <td>
+                                    <input type="text" style="width:90%" maxlength="250" [(ngModel)]="merchantGroup.internalContactPerson.settleOperationPic"
+                                    [ngClass]="{ 'is-invalid': submitted && (merchantGroup.internalContactPerson.settleOperationPic == '' || merchantGroup.internalContactPerson.settleOperationPic == null || merchantGroup.internalContactPerson.settleOperationPic == undefined) }" />
+                                    <br>
+                                    <div *ngIf="submitted && (merchantGroup.internalContactPerson.settleOperationPic == '' || merchantGroup.internalContactPerson.settleOperationPic == null || merchantGroup.internalContactPerson.settleOperationPic == undefined)">
+                                        <!-- <div *ngIf="form.name.errors.required"> {{form.name.errors.message}}</div> -->
+                                        <div style="color: red"> *Field is required</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Notes</td>
+                                <td><input type="text" style="width:90%"  maxlength="250"[(ngModel)]="merchantGroup.internalContactPerson.notes" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+
+        </ngb-tabset>
+
+    </div>
+</div>

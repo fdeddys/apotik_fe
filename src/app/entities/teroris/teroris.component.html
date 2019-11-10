@@ -1,0 +1,99 @@
+<!-- <op-navigation></op-navigation> -->
+
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">List Teroris</h5>
+        <!-- <h5 class="card-title">Special title treatment</h5> -->
+        <!-- <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        <div>
+            <!--  SEARCH -->
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Nama</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        [(ngModel)]='searchTerm.name' name="searchName" placeholder="Enter Name">
+                </div>
+                <button type="submit" class="btn btn-outline-success btn-sm" (click)="onFilter()">Search 
+                    <i class="fa fa-search fa-lg"></i>
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="open('addnew', null)">Addnew
+                    <i class="fa fa-plus-circle fa-lg"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- <br>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            
+            <button type="button" class="btn btn-outline-warning btn-sm">Preview
+                <i class="fa fa-search-plus fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm">Upload
+                <i class="fa fa-upload fa-lg"></i>
+            </button>
+        </div>
+        <br> -->
+        <div style="height:400px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Alias</th>
+                        <th scope="col">Birth Date</th>
+                        <th scope="col">Birth Place</th>
+                        <th scope="col">Nationality</th>
+                        <!-- <th scope="col"></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let teroris of terorisList ">
+                        <button type="button" (click)="open('edit',teroris)" class="btn btn-outline-warning btn-sm">
+                            <i class="fa fa-list-ul fa-sm"></i>
+                        </button>
+                        <td>{{teroris.name}}</td>
+                        <td>{{teroris.nameAlias}}</td>
+                        <td>{{teroris.birthDate | date:'dd-MMM-yyyy'}}</td>
+                        <td>{{teroris.birthPlace }}</td>
+                        <td>{{teroris.nationality}}</td>
+                        <!-- <td>
+                  <button type="button" 
+                    (click)="open('edit',teroris)"
+                      class="btn btn-outline-danger btn-sm">Edit
+                        <i class="fa fa-edit fa-lg"></i> 
+                  </button> -->
+                        <!-- </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
+            (pageChange)="loadPage()" [boundaryLinks]="true"></ngb-pagination>
+
+        <!-- <pre>Current page: {{page}}</pre> -->
+
+        <!-- <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav> -->
+
+    </div>
+</div>

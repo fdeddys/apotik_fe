@@ -1,0 +1,86 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">Wilayah Configuration</h5>
+        <div>
+            <!--  SEARCH -->
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <label for="provinsi">Provinsi</label>
+                        <select [(ngModel)]="provinsiSelected" class="form-control"  (change)="loadDati2()" name="provinsi">
+                            <option value="0">-Select Provinsi-</option>
+                            <option *ngFor="let prov of provinsiList" [value]="prov.id">
+                                {{prov.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="dati2">Dati2</label>
+                        <select [(ngModel)]="dati2Selected" class="form-control"  (change)="loadKecamatan()" name="dati2">
+                            <option value="0">-Select Dati2-</option>
+                            <option *ngFor="let dati2 of dati2List" [value]="dati2.id">
+                                {{dati2.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="kecamatan">Kecamatan</label>
+                        <select [(ngModel)]="kecamatanSelected" class="form-control" (change)="loadKelurahan()" name="kecamatan" [ngModelOptions]="{standalone: true}">
+                            <option value="0">-Select Kecamatan-</option>
+                            <option *ngFor="let kecamatan of kecamatanList" [value]="kecamatan.id">
+                                {{kecamatan.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="kelurahan">Kelurahan</label>
+                        <select [(ngModel)]="kelurahanSelected" class="form-control" >
+                            <option value="0">-Select Kelurahan-</option>
+                            <option *ngFor="let kelurahan of kelurahanList" [value]="kelurahan.id"
+                            name="kelurahan">
+                                {{kelurahan.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="submit" class="btn btn-outline-success btn-sm" (click)="add()">Add
+                    <i class="fa fa-plus fa-lg"></i>
+                </button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" (click)="clearSelected()">Clear Selected data
+                    <i class="fa fa-refresh fa-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div style="height:550px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Provinsi</th>
+                        <th scope="col">Dati2</th>
+                        <th scope="col">Kecamatan</th>
+                        <th scope="col">Kelurahan</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let wilayah of wilayahConfigList ">
+                        <td>{{wilayah.provinsi}}</td>
+                        <td>{{wilayah.dati2}}</td>
+                        <td>{{wilayah.kecamatan}}</td>
+                        <td>{{wilayah.kelurahan}}</td>
+                        <button type="button" (click)="remove(wilayah)" class="btn btn-outline-danger btn-sm">
+                            <i class="fa fa-trash fa-sm"></i>
+                        </button>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord" (pageChange)="loadPage()"
+            [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

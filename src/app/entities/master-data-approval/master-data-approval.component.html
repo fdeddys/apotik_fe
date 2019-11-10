@@ -1,0 +1,74 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">Master Data Approval</h5>
+        <div>
+            <!--  SEARCH -->
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Nama</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="name"
+                        [(ngModel)]='searchTerm.moduleName' 
+                        name="searchName" 
+                        placeholder="Enter Module Name">
+                </div>
+                <button type="submit" 
+                    class="btn btn-outline-success btn-sm" 
+                    (click)="onFilter()">Search <i class="fa fa-search fa-lg"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- <br>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="open(0)">Addnew
+                <i class="fa fa-plus-circle fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-warning btn-sm">Preview
+                <i class="fa fa-search-plus fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm">Upload
+                <i class="fa fa-upload fa-lg"></i>
+            </button>
+        </div> -->
+        
+        <div style="min-height:350px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Module </th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">latestMaker</th>
+                        <th scope="col">Maker Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let masterDataApproval of masterDataApprovalList ">
+                        <td>
+                            <button type="button" 
+                                (click)="openDetail(masterDataApproval.id, masterDataApproval.moduleName, masterDataApproval.action)" 
+                                class="btn btn-outline-danger btn-sm">
+                            <i class="fa fa-bars fa-sm"></i>
+                            </button>
+                        </td>  
+                        <td>{{masterDataApproval.moduleName}}</td>
+                        <td></td>
+                            <!-- {masterDataApproval.jsonApprovalData.newData.name}} -->
+                        <td>{{masterDataApproval.name}}</td>
+                        <td>{{masterDataApproval.masterDataId }}</td>
+                        <td>{{masterDataApproval.latestMaker }}</td>
+                        <td>{{masterDataApproval.latestMakerDate | date : 'yyyy-MM-dd hh:mm:ss' }}</td>
+                        <!-- <td>{{masterDataApproval.jsonApprovalData | json  }}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord" (pageChange)="loadPage($event)"
+            [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span class="badge badge-light" style="color:cornflowerblue"> Confirm</span>
+    </h4>
+</div>
+<div class="modal-body">
+    <table class="table table-sm  table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr>
+            <td>Keputusan</td>
+            <td >
+                <select [(ngModel)]="actionSelected">
+                    <option *ngFor="let action of actions" 
+                        [value]="action.id"
+                        [selected]="action.id == actionSelected"
+                        >{{action.name}}
+                    </option>
+                </select>
+                {{actionSelected}}
+            </td>
+        </tr>
+        <tr>
+            <td>Catatan Keputusan</td>
+            <td>
+                <div [ngSwitch]="actionSelected" >
+                    <div *ngSwitchCase="0">
+                        <select [(ngModel)]="reasonApprove">
+                            <option *ngFor="let appReason of lookupApproveReason" [value]="appReason">
+                                {{appReason.code}} : {{appReason.name}} 
+                            </option>
+                            
+                        </select>
+                    </div>
+                    <div *ngSwitchCase="1">
+                        <select [(ngModel)]="reasonReject">
+                            <option *ngFor="let appReason of lookupRejectReason" [value]="appReason">
+                                {{appReason.code}} : {{appReason.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div *ngSwitchCase="2">
+                        <select [(ngModel)]="reasonReturn">
+                            <option *ngFor="let appReason of lookupReturnReason" [value]="appReason">
+                                {{appReason.code}} : {{appReason.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Catatan</td>
+            <td >
+                <textarea style="width: 80%; height: 30px;" [(ngModel)]="catatanKeputusan"></textarea>
+            </td>
+            
+        </tr>
+        <tr>
+            <td>Riwayat Catatan</td>
+            <td>
+                <textarea></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>Riwayat</td>
+            <td>
+                
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="modal-footer">
+    <button type="button" (click)="save()" class="btn btn-outline-danger" >Save
+        <i class="fa fa-sace fa-lg"></i>
+    </button>
+    <button type="button" (click)="closeForm()" class="btn btn-outline-dark">close
+        <i class="fa fa-times fa-lg"></i>
+    </button>
+</div>

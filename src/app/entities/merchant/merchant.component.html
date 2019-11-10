@@ -1,0 +1,73 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title">List Merchant</h5>
+        <div>
+            <!--  SEARCH -->
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Nama</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" 
+                        aria-describedby="emailHelp" autofocus
+                         [(ngModel)]='searchTerm.name' name="searchName" placeholder="Enter Name">
+                </div>
+                <button type="submit" class="btn btn-outline-success btn-sm" (click)="onFilter()" >Search <i class="fa fa-search fa-lg"></i></button>
+            <button (click)="addNew()" type="button" class="btn btn-outline-primary btn-sm">Addnew
+                <i class="fa fa-plus-circle fa-lg"></i>
+            </button>
+            </form>
+        </div>
+
+        <!-- <br>
+        <div class="btn-group" role="group" aria-label="Basic example">
+           
+            <button type="button" class="btn btn-outline-warning btn-sm">Preview
+                <i class="fa fa-search-plus fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm">Upload
+                <i class="fa fa-upload fa-lg"></i>
+            </button>
+        </div>
+        <br> -->
+        <div style="min-height:350px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th scope="col">Store Name</th>
+                        <th scope="col">Merchant Group</th>
+                        <th scope="col">Tipe Merchant</th>
+                        <th scope="col">Jenis Usaha</th>
+                        <th scope="col">Merchant ID</th>
+                        <th scope="col">Merchant PAN</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Approval Status</th>
+                        <!-- <th scope="col"></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let merchant of merchantList ">
+                        <button type="button" (click)="openDetail(merchant.id)" class="btn btn-outline-warning btn-sm">
+                            <i class="fa fa-list-ul fa-sm"></i>
+                        </button>
+                        <td>{{merchant.id}}-{{merchant.storeName}}</td>
+                        <td>{{merchant.merchantGroup.merchantGroupName}}</td>
+                        <td>{{merchant.merchantGroup.tipeMerchantLookupName}}</td>
+                        <td>{{merchant.merchantGroup.jenisUsahaLookupName }}</td>
+                        <td>{{merchant.merchantGroup.id}}</td>
+                        <td>{{merchant.merchantPan}}</td>
+                        <td>
+                            <span *ngIf="merchant.statusSuspense == true">Suspense</span>
+                            <span *ngIf="merchant.statusSuspense != true">Non Suspense</span>
+                        </td>
+                        <td>{{merchant.approvalStatus==1 || merchant.approvalStatus == null ?'Active' : Non-Active}}</td>
+                        <!-- <td></td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <ngb-pagination size="sm" [collectionSize]="totalData" 
+            [(page)]="curPage" [maxSize]="totalRecord" (pageChange)="loadPage()"
+            [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

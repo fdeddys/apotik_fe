@@ -1,0 +1,127 @@
+<div class="card border-primary">
+    <div class="card-header">
+        <div>
+    
+            <button type="button" (click)="onBack()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-chevron-left fa-lg"></i> Back
+            </button>
+            <!-- <button type="button" (click)="onConfirm()" class="btn btn-outline-dark btn-sm">
+                <i class="fa fa-check fa-lg"></i> Confirm
+            </button> -->
+        </div>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Queue Management</h5>
+        <!-- SEARCH -->
+        <!-- <div>
+            <form>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label>Date From</label>
+                        <div class="input-group">
+                            <button (click)="d1.toggle()">
+                                <i class="fa fa-calendar fa-lg"></i>
+                            </button>
+                            <input (click)="d1.toggle()" type="text" class="form-control" ngbDatepicker #d1="ngbDatepicker" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Date To</label>
+                        <div class="input-group">
+                            <button (click)="d2.toggle()">
+                                <i class="fa fa-calendar fa-lg"></i>
+                            </button>
+                            <input (click)="d2.toggle()" type="text" class="form-control" ngbDatepicker #d2="ngbDatepicker" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Merchant Outlet ID</label>
+                        <input type="text" class="form-control" name="searchName"
+                            placeholder="Merchant Outlet ID">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label >Merchant Type</label>
+                        <select class="form-control">
+                            <option value=""></option>
+                            <option *ngFor="let tipeMerchant of lookupTipeMerchant" [value]="tipeMerchant.name">{{tipeMerchant.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label>Store Name </label>
+                        <input type="text" class="form-control" name="searchDescription" placeholder="Enter Store Name">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Priority</label>
+                        <select class="form-control">
+                            <option>VIP</option>
+                            <option>Standard</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>User</label>
+                        <input type="text" class="form-control" name="searchName" placeholder="user">
+                    </div>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" (click)="onFilter()" class="btn mr-2 btn-outline-success btn-sm">Search <i class="fa fa-search fa-lg"></i></button>
+                    <button type="button" (click)="resetFilter()" class="btn btn-outline-danger btn-sm">Reset <i class="fa fa-refresh fa-lg"></i></button>
+                </div>
+        
+            </form>
+        </div> -->
+        <div style="min-height:350px; padding: 15px 15px 15px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Merchant Outlet ID</th>
+                        <th scope="col">Merchant Type</th>
+                        <th scope="col">Store Name</th>
+                        <th scope="col">State Name</th>
+                        <th scope="col">Priority</th>
+                        <th scope="col">User</th>
+
+                        <!-- used for dev purpose, comment this if no longer on dev stage -->
+                        <th scope="col">ID</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let merchant of merchantWipQueues ">
+                        <td>
+                            <button type="button" 
+                                (click)="openDialog(1,merchant.key)" 
+                                class="btn btn-outline-warning btn-sm"
+                                [hidden]="availableSetVip(merchant.stateName,  merchant.priority) == false">
+                                Set VIP
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" 
+                                (click)="openDialog(2,merchant.key)" 
+                                class="btn btn-outline-danger btn-sm"
+                                [hidden]="availableSetVvip(merchant.stateName,  merchant.priority) == false">
+                                Set V-VIP
+                            </button>
+                        </td>
+                        <td>{{merchant.processDate| date:'dd-MMM-yyyy'}}</td>
+                        <td>{{merchant.merchantOutletId}}</td>
+                        <td>{{merchant.merchantType}}</td>
+                        <td>{{merchant.storeName }}</td>
+                        <td>{{merchant.stateName}}</td>
+                        <td>{{merchant.priority}}</td>
+                        <td>{{merchant.user}}</td>
+                        <td>{{getIdFromKeyMerchant(merchant.key)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="5" [rotate]="true"
+                [boundaryLinks]="true"></ngb-pagination> -->
+        </div>        
+    </div>
+</div>

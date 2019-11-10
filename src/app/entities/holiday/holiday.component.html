@@ -1,0 +1,22 @@
+<!-- <div></div> -->
+<div class="card border-primary">
+    <div class="card-body">
+        <!-- <div>
+            <form>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select [(ngModel)]="filter.roleId" class="form-control" [ngModelOptions]="{standalone: true}"
+                        (change)="searchByRole()">
+                        <option *ngFor="let role of roleList" [value]="role.id">
+                            {{role.name}}
+                        </option>
+                    </select>
+                </div>
+            </form>
+        </div> -->
+        <angular-calendar-year-view [themecolor]="themecolor" [events]="events" [viewDate]="viewDate"
+            [nothingToshowText]="nothingToshowText" (eventClicked)="eventClicked($event)"
+            (actionClicked)="actionClicked($event)">
+        </angular-calendar-year-view>
+    </div>
+</div>
