@@ -28,7 +28,7 @@ export class LoginService {
         username: credentials.username,
         password: sha512.sha512(credentials.username + credentials.password)
     };
-    return this.http.post(AUTH_PATH + 'authenticate', data, {observe : 'response'})
+    return this.http.post(AUTH_PATH + 'login', data, {observe : 'response'})
     .pipe(map(authenticateSuccess.bind(this)));
 
     function authenticateSuccess(resp ) {

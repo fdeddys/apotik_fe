@@ -5,13 +5,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { LookupService } from './lookup.service';
 import { LookupModalComponent } from './lookup.modal.component';
-import { LookupRiskProfilerComponent } from './lookup-risk-profiler.component';
 
 @NgModule({
   declarations: [
     LookupModalComponent,
     LookupComponent,
-    LookupRiskProfilerComponent
   ],
   imports: [
     CommonModule,
@@ -21,14 +19,12 @@ import { LookupRiskProfilerComponent } from './lookup-risk-profiler.component';
   entryComponents: [
     LookupComponent,
     LookupModalComponent,
-    LookupRiskProfilerComponent
   ],
   providers: [
     LookupService,
   ],
   exports: [
     LookupModalComponent,
-    LookupRiskProfilerComponent
   ]
 
 })

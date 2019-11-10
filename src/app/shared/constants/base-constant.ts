@@ -1,5 +1,5 @@
 // develop
-export const SERVER = 'http://localhost:8080/';
+export const SERVER = 'http://localhost:9900/';
 // export const SERVER = 'http://54.254.222.187:8080/rosebe/';
 
 // PROD
@@ -10,7 +10,7 @@ export const PATH_UPLOAD_IMAGES_MERCHANT = 'api/images/uploadFileMerchant';
 
 
 export const SERVER_PATH = SERVER + 'api/';
-export const AUTH_PATH = SERVER + 'token/';
+export const AUTH_PATH = SERVER + 'auth/';
 export const REPORT_PATH = SERVER + 'report/';
 export const TOTAL_RECORD_PER_PAGE = 10;
 

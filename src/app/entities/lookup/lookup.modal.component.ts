@@ -3,7 +3,6 @@ import { Lookup } from './lookup.model';
 import { NgbTypeahead, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { LookupService } from './lookup.service';
-import { LookupGroupService } from '../lookup-group/lookup-group.service';
 
 @Component({
   selector: 'op-lookup-modal-component',
@@ -27,15 +26,12 @@ export class LookupModalComponent implements OnInit {
   isFormDirty: Boolean = false;
 
   constructor(public lookupService: LookupService,
-              public lookupGroupService: LookupGroupService,
               public modalService: NgbModal) { }
 
   ngOnInit() {
     console.log(this.objEdit);
     console.log(this.statusRec);
-    this.lookupGroupService.dataSharing.subscribe(
-      data => this.groupName = data
-    );
+
     if (this.statusRec === 'addnew') {
       this.lookup = {};
       this.lookup.id = 0;

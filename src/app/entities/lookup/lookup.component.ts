@@ -8,7 +8,6 @@ import { Location } from '@angular/common';
 import { LookupService } from './lookup.service';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { LookupGroupService } from '../lookup-group/lookup-group.service';
 // import { Location } from '@angular/common';
 
 @Component({
@@ -33,16 +32,11 @@ export class LookupComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private modalService: NgbModal,
               private lookupService: LookupService,
-              private lookupGroupService: LookupGroupService,
               private location: Location,
               private router: Router
               ) { }
 
   ngOnInit() {
-
-    this.lookupGroupService.dataSharing.subscribe(
-      data => this.groupName = data
-    );
 
     if (!this.groupName) {
       // redirect to lookup-group where groupName is null or user do refresh page lookup

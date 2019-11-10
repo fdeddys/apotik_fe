@@ -6,10 +6,8 @@ import { HttpResponse, HttpClient } from '@angular/common/http';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { map, tap } from 'rxjs/operators';
 import { Lookup } from './lookup.model';
-import { MasterDataApproval } from '../master-data-approval/master-data-approval.model';
 
 export type EntityResponseType = HttpResponse<Lookup>;
-export type EntityResponseTypeMda = HttpResponse<MasterDataApproval>;
 // export type EntityResponseTypeDto = HttpResponse<LookupDto>;
 
 
@@ -43,23 +41,6 @@ export class LookupService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    saveRiskProfiler(lookupGroup: String, lookupList: Lookup[] ): Observable<EntityResponseTypeMda> {
-        console.log(lookupGroup);
-        console.log(lookupList);
-
-        // return null;
-        return this.http.post<MasterDataApproval>(this.serverUrl + `/risk-profiler/` + lookupGroup, lookupList, { observe: 'response'})
-            .pipe(map((res: EntityResponseTypeMda) => this.convertListResponse(res)));
-    }
-
-    repairRiskProfiler(lookupGroup: String, lookupList: Lookup[], idMda: number): Observable<EntityResponseTypeMda> {
-        console.log(lookupGroup);
-        console.log(lookupList);
-        const newResourceUrl = this.serverUrl + `/risk-profiler/` + lookupGroup + `/repair/${idMda}`;
-
-        return this.http.post<MasterDataApproval>(newResourceUrl, lookupList, { observe: 'response' })
-            .pipe(map((res: EntityResponseTypeMda) => this.convertListResponse(res)));
-    }
 
     filter(req?: any): Observable<HttpResponse<Lookup[]>> {
         let pageNumber = null;
@@ -124,11 +105,6 @@ export class LookupService {
         return this.http.post<Lookup> (newresourceUrl, { observe: 'response'});
     }
 
-    approveRiskFromMda(id): Observable<MasterDataApproval> {
-        const newresourceUrl = this.serverUrl  + `/risk-profiler/approveMda/${id}`;
-        return this.http.post<MasterDataApproval> (newresourceUrl, { observe: 'response'});
-    }
-
     private convert( lookup: Lookup): Lookup {
         const copy: Lookup = Object.assign({}, lookup);
         return copy;
@@ -139,18 +115,8 @@ export class LookupService {
         return res.clone({body});
     }
 
-    private convertListResponse(res: EntityResponseTypeMda): EntityResponseTypeMda {
-        const body: MasterDataApproval = this.convertListItemFromServer(res.body);
-        return res.clone({body});
-    }
-
     private convertItemFromServer(lookup: Lookup): Lookup {
         const copyOb: Lookup = Object.assign({}, lookup);
-        return copyOb;
-    }
-
-    private convertListItemFromServer(mda: MasterDataApproval): MasterDataApproval {
-        const copyOb: MasterDataApproval = Object.assign({}, mda);
         return copyOb;
     }
 
