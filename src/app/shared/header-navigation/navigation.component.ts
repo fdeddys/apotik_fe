@@ -11,6 +11,7 @@ import { UserChangePasswordComponent } from 'src/app/entities/user/user-change-p
 })
 export class NavigationComponent implements OnInit {
 
+    title = 'Distribution System';
     constructor(private localStorage: LocalStorageService,
                 private router: Router,
                 private userService: UserService,
@@ -31,8 +32,8 @@ export class NavigationComponent implements OnInit {
 
     logout() {
         this.userService.logout();
-        this.localStorage.clear('token');
         this.router.navigate(['']);
+        this.localStorage.clear('token');
         // this.router.navigate(['/#/']);
         // location.reload();
         // setTimeout( () => { /*Your Code*/ }, 3000 );

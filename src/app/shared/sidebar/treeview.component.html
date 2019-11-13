@@ -7,11 +7,13 @@
     [ngClass]="link.children.length > 0 ? 'collapsed' : null"
     (click)="link.collapsed = !link.collapsed">
         <a *ngIf="link.children.length > 0" [attr.aria-expanded]="!link.collapsed">
-            <i class="fa {{link.icon}} fa-lg"></i> {{link.description}}
+            <i class="fa {{link.icon}} fa-lg"></i>
+             {{link.description}}
             <span class="arrow"></span>
         </a>
         <a *ngIf="link.children.length === 0" href="#/main/{{link.link}}">
-            <i class="fa {{link.icon}} fa-lg"></i> {{link.description}}
+            <i class="fa {{link.icon}} fa-lg"></i> 
+            {{link.description}}
         </a>
     </li>
     <div *ngIf="link.children.length > 0" id="collapseExample" [ngbCollapse]="!link.collapsed"

@@ -4,7 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-webstorage';
 import { AUTH_PATH } from 'src/app/shared/constants/base-constant';
 import { map } from 'rxjs/operators';
-import * as sha512 from 'js-sha512';
+// import * as sha512 from 'js-sha512';
+import * as sha256 from 'js-sha256';
+
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -23,10 +25,10 @@ export class LoginService {
 
   login(credentials): Observable<any> {
 
-    console.log('hasil sha ', sha512.sha512(credentials.password));
+    // console.log('hasil sha ', sha512.sha512(credentials.password));
     const data = {
         username: credentials.username,
-        password: sha512.sha512(credentials.username + credentials.password)
+        password: sha256.sha256(credentials.username + credentials.password)
     };
     return this.http.post(AUTH_PATH + 'login', data, {observe : 'response'})
     .pipe(map(authenticateSuccess.bind(this)));

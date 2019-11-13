@@ -8,6 +8,8 @@ import { AppParameterModule } from './app-parameter/app-parameter.module';
 import { SystemParameterModule } from './system-parameter/system-parameter.module';
 import { AccessMatrixModule } from './access-matrix/access-matrix.module';
 import { ReportModule } from './report/report.module';
+import { LookupGroupComponent } from './lookup-group/lookup-group.component';
+import { LookupGroupModule } from './lookup-group/lookup-group.module';
 
 @NgModule({
     imports: [
@@ -19,11 +21,12 @@ import { ReportModule } from './report/report.module';
         SystemParameterModule,
         AccessMatrixModule,
         ReportModule,
+        LookupGroupModule,
     ],
     entryComponents: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [],
+    declarations: [LookupGroupComponent],
     exports: []
 
 })

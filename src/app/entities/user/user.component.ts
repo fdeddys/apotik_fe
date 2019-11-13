@@ -64,18 +64,18 @@ onFilter() {
 }
 
 private onSuccess(data, headers) {
-  if ( data.content.length < 0 ) {
+  if ( data.contents.length < 0 ) {
       return ;
   }
-  this.userlist = data.content;
+  this.userlist = data.contents;
   this.totalData = data.totalElements;
 }
 
 private onSuccessRole(data, headers) {
-  if (data.content.length < 0) {
+  if (data.contents.length < 0) {
     return;
   }
-  this.roleList = data.content;
+  this.roleList = data.contents;
 }
 
 private onError(error) {

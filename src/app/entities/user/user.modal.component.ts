@@ -66,7 +66,7 @@ export class UserModalComponent implements OnInit {
     this.submitted = true;
 
     let iter = 0;
-    if (this.user.name === '' || this.user.name === null || this.user.name === undefined) {
+    if (this.user.userName === '' || this.user.userName === null || this.user.userName === undefined) {
       iter++;
     }
     if (this.user.roleId === null || this.user.roleId === undefined) {
@@ -141,33 +141,6 @@ export class UserModalComponent implements OnInit {
         console.log('Toast err');
       }
     });
-  }
-
-  forceLogout(id): void {
-    this.userService.forceLogout(id)
-      .subscribe(
-        result => {
-          if (result.body.errCode === '00') {
-            this.user.islogged = 0;
-            Swal.fire('Success', 'Force logout success !', 'info');
-          } else {
-            Swal.fire('Failed', 'Force logout failed ', 'error');
-          }
-        }
-      );
-  }
-
-  openLocked(id): void {
-    this.userService.openLocked(id)
-      .subscribe(
-        result => {
-          if (result.body.errCode === '00') {
-            this.user.isLock = 0;
-            Swal.fire('Success', 'Open Locked user success !', 'info');
-          } else {
-            Swal.fire('Failed', 'Open Locked user failed !', 'error');
-          }        }
-      );
   }
 
 

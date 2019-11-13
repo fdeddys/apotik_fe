@@ -69,7 +69,7 @@ export class SidebarComponent implements OnInit {
 
         // for trial using userrole, 123
         this.accessMatrixService.queryMenu()
-        .subscribe(
+            .subscribe(
             (res: HttpResponse<UserMenu[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }

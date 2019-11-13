@@ -35,10 +35,7 @@ const routes: Routes = [
             { path: 'role', component: RoleComponent },
             { path: 'system-parameter', component: SystemParameterComponent },
             { path: 'access-matrix', component: AccessMatrixComponent },
-            { path: 'report-sla', component: ReportSLAComponent },
-            { path: 'report-productivity', component: ReportProductivityComponent },
-            { path: 'report-finished', component: ReportFinishedComponent },
-            { path: 'report-reject', component: ReportRejectComponent },
+            { path: 'brand', component: AccessMatrixComponent },
           ]
         }
           // {path: '404', component: Page404Component,  canActivateChild: [AuthGuard], },

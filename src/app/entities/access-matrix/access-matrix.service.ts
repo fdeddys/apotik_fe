@@ -23,7 +23,7 @@ export class AccessMatrixService {
     }
 
     queryMenu(): Observable<HttpResponse<UserMenu[]>> {
-        return this.http.get<UserMenu[]>(`${this.resourceUrl}/listusermenu`, { observe: 'response' })
+        return this.http.get<UserMenu[]>(`${this.resourceUrl}/list-user-menu`, { observe: 'response' })
             .pipe(
                 tap(result => console.log('raw ', result))
             );

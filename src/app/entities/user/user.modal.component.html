@@ -21,9 +21,9 @@
                   </th>
               </tr>
           <tr>
-            <td>Nama</td>
+            <td>User Nama</td>
             <td>
-              <input type="text" size="50%" maxlength="50" [(ngModel)]="user.name"
+              <input type="text" size="50%" maxlength="50" [(ngModel)]="user.userName"
               [ngClass]="{ 'is-invalid': submitted && (user.name == '' || user.name == null || user.name == undefined) }" />
               <br>
               <div *ngIf="submitted && (user.name == '' || user.name == null || user.name == undefined)">
@@ -33,17 +33,18 @@
           </tr>
 
           <tr>
-              <td>Full Name</td>
-              <td><input type="text" size="50%"  maxlength="100" [(ngModel)]="user.fullName" /></td>
+              <td>First Name</td>
+              <td><input type="text" size="50%"  maxlength="100" [(ngModel)]="user.firstName" /></td>
+            </tr>
+            <tr>
+              <td>Last Name</td>
+              <td><input type="text" size="50%"  maxlength="100" [(ngModel)]="user.lastName" /></td>
             </tr>
             <tr>
               <td >Email</td>
               <td><input type="text" size="50%"  maxlength="50" [(ngModel)]="user.email"/></td>
             </tr>
-            <tr>
-                <td>Mobile No</td>
-                <td><input type="text" size="50%"  maxlength="20" [(ngModel)]="user.mobileNo"/></td>
-              </tr>
+           
             <tr>
               <td>Role</td>
               <td>
@@ -56,35 +57,6 @@
                 <div *ngIf="submitted && (user.roleId == null || user.roleId == undefined)">
                   <div style="color: red"> *Field is required</div>
                 </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Force Logout</td>
-              <td>
-                <span style="color:green"  *ngIf="user.islogged==1">
-                   User Login
-                </span>
-                <span style="color:lightcoral"  *ngIf="user.islogged!=1">
-                  User Not Login
-                </span>
-                <button type="button"   class="btn btn-outline-info" (click)="forceLogout(user.id)">Process logout
-                  <i class="fa fa-sign-out fa-lg"></i>
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Open locked user</td>
-              <td>
-                <span style="color:lightcoral" *ngIf="user.isLock==1">
-                    User locked !!
-                </span>
-                <span style="color:green" *ngIf="user.isLock!=1">
-                    User not locked 
-                </span>
-                <button type="button" class="btn btn-outline-success" (click)="openLocked(user.id)">Proccess Open Locked
-                  <i class="fa fa-unlock fa-lg"></i>
-                </button>
               </td>
             </tr>
 

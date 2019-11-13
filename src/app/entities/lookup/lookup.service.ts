@@ -34,17 +34,9 @@ export class LookupService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    repair(lookup: Lookup, idMda: Number): Observable<EntityResponseType> {
-        const copy = this.convert(lookup);
-        const newResourceUrl = this.serverUrl + `/repair/${idMda}`;
-        return this.http.post<Lookup>(newResourceUrl, copy, { observe: 'response' })
-            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
-    }
-
 
     filter(req?: any): Observable<HttpResponse<Lookup[]>> {
         let pageNumber = null;
-        let groupName = null;
         let pageCount = null;
         let newresourceUrl = null;
 
@@ -55,12 +47,9 @@ export class LookupService {
             if (key === 'count') {
                 pageCount = req[key];
             }
-            if (key === 'groupName') {
-                groupName = req[key];
-            }
         });
 
-        newresourceUrl = this.serverUrl + `/name/${groupName}/filter/page/${pageNumber}/count/${pageCount}`;
+        newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
         return this.http.post<Lookup[]>(newresourceUrl, req['filter'], {  observe: 'response' });
     }

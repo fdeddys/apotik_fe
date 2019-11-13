@@ -30,7 +30,7 @@ export class UserChangePasswordComponent implements OnInit {
     ngOnInit() {
         this.userService.getCurrentUser()
             .subscribe(
-                (res: HttpResponse<User>) => this.userName = res.body.name,
+                (res: HttpResponse<User>) => this.userName = res.body.userName,
                 (res: HttpErrorResponse) => console.log('error', res.message)
             );
 

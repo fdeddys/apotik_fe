@@ -78,10 +78,10 @@ export class RoleComponent implements OnInit {
 }
 
 private onSuccess(data, headers) {
-  if ( data.content.length < 0 ) {
+  if ( data.contents.length < 0 ) {
       return ;
   }
-  this.roleList = data.content;
+  this.roleList = data.contents;
   this.totalData = data.totalElements;
   // Swal.fire('Success', 'Data save', 'info');
 }
