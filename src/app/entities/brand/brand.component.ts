@@ -1,38 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Lookup } from './lookup.model';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { LookupModalComponent } from './lookup.modal/lookup.modal.component';
-import { Location } from '@angular/common';
-import { LookupService } from './lookup.service';
+import { Brand, BrandPageDto } from './brand.model';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
+import { ActivatedRoute } from '@angular/router';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { BrandService } from './brand.service';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { BrandModalComponent } from './brand-modal/brand-modal.component';
+import { Location } from '@angular/common';
 
 @Component({
-    selector: 'op-lookup',
-    templateUrl: './lookup.component.html',
-    styleUrls: ['./lookup.component.css']
+    selector: 'op-brand',
+    templateUrl: './brand.component.html',
+    styleUrls: ['./brand.component.css']
 })
-export class LookupComponent implements OnInit {
+export class BrandComponent implements OnInit {
 
-    private sub: Subscription;
-    groupName: string;
-    lookupList: Lookup[];
+    brands: Brand[];
     curPage = 1;
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
         code: '',
         name: '',
-        description: ''
     };
     closeResult: string;
     constructor(private route: ActivatedRoute,
         private modalService: NgbModal,
-        private lookupService: LookupService,
+        private brandService: BrandService,
         private location: Location,
-        private router: Router
     ) { }
 
     ngOnInit() {
@@ -44,23 +39,23 @@ export class LookupComponent implements OnInit {
     }
 
     loadAll(page) {
-        this.lookupService.filter({
+        this.brandService.filter({
             filter: this.searchTerm,
             page: page,
             count: this.totalRecord,
         }).subscribe(
-            (res: HttpResponse<Lookup[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<BrandPageDto[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }
         );
         console.log(page);
-        console.log(this.groupName);
+        // console.log(this.brand);
     }
 
     open(status, obj) {
         console.log(status, obj);
 
-        const modalRef = this.modalService.open(LookupModalComponent, { size: 'lg' });
+        const modalRef = this.modalService.open(BrandModalComponent, { size: 'lg' });
         modalRef.componentInstance.statusRec = status;
         modalRef.componentInstance.objEdit = obj;
 
@@ -75,7 +70,6 @@ export class LookupComponent implements OnInit {
             console.log(this.closeResult);
             this.loadAll(this.curPage);
         });
-
     }
 
     private getDismissReason(reason: any): string {
@@ -92,8 +86,8 @@ export class LookupComponent implements OnInit {
         if (data.contents.length < 0) {
             return;
         }
-        this.lookupList = data.contents;
-        this.totalData = data.totalElements;
+        this.brands = data.contents;
+        this.totalData = data.totalRow;
     }
 
     private onError(error) {
@@ -104,7 +98,6 @@ export class LookupComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
-            description: ''
         };
         this.loadAll(1);
     }

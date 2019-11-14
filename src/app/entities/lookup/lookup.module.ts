@@ -4,7 +4,7 @@ import { LookupComponent } from './lookup.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { LookupService } from './lookup.service';
-import { LookupModalComponent } from './lookup.modal.component';
+import { LookupModalComponent } from './lookup.modal/lookup.modal.component';
 
 @NgModule({
   declarations: [

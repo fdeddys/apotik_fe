@@ -1,24 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Lookup } from './lookup.model';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { LookupModalComponent } from './lookup.modal/lookup.modal.component';
-import { Location } from '@angular/common';
-import { LookupService } from './lookup.service';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
+import { ProductGroup } from './product-group.model';
+import { ActivatedRoute } from '@angular/router';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ProductGroupService } from './product-group.service';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { ProductGroupModule } from './product-group.module';
+import { Location } from '@angular/common';
+import { ProductGroupModalComponent } from './product-group-modal/product-group-modal.component';
 
 @Component({
-    selector: 'op-lookup',
-    templateUrl: './lookup.component.html',
-    styleUrls: ['./lookup.component.css']
+    selector: 'op-product-group',
+    templateUrl: './product-group.component.html',
+    styleUrls: ['./product-group.component.css']
 })
-export class LookupComponent implements OnInit {
+export class ProductGroupComponent implements OnInit {
 
-    private sub: Subscription;
     groupName: string;
-    lookupList: Lookup[];
+    productGroups: ProductGroup[];
     curPage = 1;
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
@@ -30,9 +29,8 @@ export class LookupComponent implements OnInit {
     closeResult: string;
     constructor(private route: ActivatedRoute,
         private modalService: NgbModal,
-        private lookupService: LookupService,
+        private productGroupService: ProductGroupService,
         private location: Location,
-        private router: Router
     ) { }
 
     ngOnInit() {
@@ -44,12 +42,12 @@ export class LookupComponent implements OnInit {
     }
 
     loadAll(page) {
-        this.lookupService.filter({
+        this.productGroupService.filter({
             filter: this.searchTerm,
             page: page,
             count: this.totalRecord,
         }).subscribe(
-            (res: HttpResponse<Lookup[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<ProductGroupModule[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }
         );
@@ -60,7 +58,7 @@ export class LookupComponent implements OnInit {
     open(status, obj) {
         console.log(status, obj);
 
-        const modalRef = this.modalService.open(LookupModalComponent, { size: 'lg' });
+        const modalRef = this.modalService.open(ProductGroupModalComponent, { size: 'lg' });
         modalRef.componentInstance.statusRec = status;
         modalRef.componentInstance.objEdit = obj;
 
@@ -75,7 +73,6 @@ export class LookupComponent implements OnInit {
             console.log(this.closeResult);
             this.loadAll(this.curPage);
         });
-
     }
 
     private getDismissReason(reason: any): string {
@@ -92,8 +89,8 @@ export class LookupComponent implements OnInit {
         if (data.contents.length < 0) {
             return;
         }
-        this.lookupList = data.contents;
-        this.totalData = data.totalElements;
+        this.productGroups = data.contents;
+        this.totalData = data.totalRow;
     }
 
     private onError(error) {

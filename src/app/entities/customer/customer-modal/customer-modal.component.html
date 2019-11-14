@@ -21,29 +21,15 @@
         </tr>
         <tr>
             <td>Code</td>
-            <td><input type="text" disabled size="50%" [(ngModel)]=lookup.code></td>
-        </tr>
-        <tr>
-            <td>Group</td>
-            <td>
-                <select [(ngModel)]="lookupGroupSelected" class="form-control" 
-                    [ngModelOptions]="{standalone: true}">
-                    <option *ngFor="let lookupGroup of lookupGroups" [value]="lookupGroup.name">
-                        {{lookupGroup.name}}
-                    </option>
-                </select>
-                <!-- <input type="text" maxlength="500" size="50%" [(ngModel)]=lookup.description> -->
-                <!-- {{lookupGroupSelected}} -->
-            </td>
+            <td><input type="text" disabled size="50%" [(ngModel)]=customer.code></td>
         </tr>
         <tr>
             <td>Name</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=lookup.name></td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.name></td>
         </tr>
         <tr>
             <td>Status</td>
             <td>
-                <!-- <input type="text" size="50%" [(ngModel)]=lookup.status> -->
                 <select [(ngModel)]="statusSelected" class="form-control" [ngModelOptions]="{standalone: true}">
                     <option *ngFor="let status of statuses" [value]="status">
                         {{status}}

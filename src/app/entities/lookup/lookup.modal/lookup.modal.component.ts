@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 // import { Subject } from 'rxjs';
-import { Lookup } from './lookup.model';
-import { LookupService } from './lookup.service';
-import { LookupGroupService } from '../lookup-group/lookup-group.service';
-import { LookupGroup } from '../lookup-group/lookup-group.model';
+import { LookupService } from '../lookup.service';
+import { LookupGroupService } from '../../lookup-group/lookup-group.service';
+import { LookupGroup } from '../../lookup-group/lookup-group.model';
 import * as _ from 'lodash';
 import Swal from 'sweetalert2';
+import { Lookup } from '../lookup.model';
 
 
 
@@ -41,12 +41,12 @@ export class LookupModalComponent implements OnInit {
     ngOnInit() {
         console.log(this.objEdit);
         console.log(this.statusRec);
-        this.findAllGroup();
         if (this.statusRec === 'addnew') {
+            this.findAllGroup('-');
             this.setDefaultValue();
         } else {
             this.setSelectedLookup(this.objEdit);
-            // this.findAllGroup();
+            this.findAllGroup(this.objEdit.lookupGroup);
             // this.setSelectedGroup(this.objEdit.lookupGroup);
         }
     }
@@ -68,12 +68,15 @@ export class LookupModalComponent implements OnInit {
         this.lookupGroupSelected =  lookupData.lookupGroup;
     }
 
-    findAllGroup() {
+    findAllGroup(lookupGr: string) {
         this.lookupGroupService.findForMerchantGroup()
             .subscribe(
                 result => {
                     this.lookupGroups = result.body.contents;
                     this.lookupGroupSelected = this.lookupGroups[0].name;
+                    if (lookupGr !== '-') {
+                        this.lookupGroupSelected = lookupGr;
+                    }
                 }
             );
     }

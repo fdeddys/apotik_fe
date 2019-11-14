@@ -10,10 +10,9 @@ import { RoleComponent } from './entities/role/role.component';
 import { LookupComponent } from './entities/lookup/lookup.component';
 import { SystemParameterComponent } from './entities/system-parameter/system-parameter.component';
 import { AccessMatrixComponent } from './entities/access-matrix/access-matrix.component';
-import { ReportSLAComponent } from './entities/report/sla/report-sla.component';
-import { ReportProductivityComponent } from './entities/report/productivity/report-productivity.component';
-import { ReportFinishedComponent } from './entities/report/finished/report-finished.component';
-import { ReportRejectComponent } from './entities/report/reject/report-reject.component';
+import { ProductGroupComponent } from './entities/product-group/product-group.component';
+import { BrandComponent } from './entities/brand/brand.component';
+import { CustomerComponent } from './entities/customer/customer.component';
 
 
 const routes: Routes = [
@@ -30,7 +29,9 @@ const routes: Routes = [
             { path: '404', component: Page404Component },
             { path: 'user', component: UserComponent },
             // { path: 'user/change-password', component: UserChangePasswordComponent },
-            // { path: 'lookup/:name', component: LookupComponent },
+            { path: 'product-group', component: ProductGroupComponent },
+            { path: 'brand', component: BrandComponent },
+            { path: 'customer', component: CustomerComponent },
             { path: 'lookup', component: LookupComponent },
             { path: 'role', component: RoleComponent },
             { path: 'system-parameter', component: SystemParameterComponent },
