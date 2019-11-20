@@ -71,7 +71,7 @@ export class SupplierModalComponent implements OnInit {
     save(): void {
         // this.lookup.lookupGroup = this.lookupGroupSelected;
         this.supplier.status = (this.statusSelected === 'Active' ? 1 : 0);
-        this.supplier.bankId = this.bankSelected;
+        this.supplier.bankId = Number(this.bankSelected);
         this.supplierService.save(this.supplier).subscribe(result => {
             this.isFormDirty = true;
             if (result.body.errCode === '00') {

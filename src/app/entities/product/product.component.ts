@@ -69,7 +69,7 @@ export class ProductComponent implements OnInit {
             console.log(reason);
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
             console.log(this.closeResult);
-            this.loadAll(this.curPage);
+            // this.loadAll(this.curPage);
         });
     }
 

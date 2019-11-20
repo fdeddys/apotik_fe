@@ -52,15 +52,23 @@ export class ProductModalComponent implements OnInit {
         console.log(this.statusRec);
         if (this.statusRec === 'addnew') {
             this.setDefaultValue();
+            this.findAllLookup();
         } else {
-            this.product = this.objEdit;
-            if (this.product.status === 1) {
-                this.statusSelected = this.statuses[0];
-            } else {
-                this.statusSelected = this.statuses[1];
-            }
+            // this.product = this.objEdit;
+            this.productService.findById({
+                id : this.objEdit.id
+            }).subscribe(
+                result  => {
+                    this.product = result.body.contents[0];
+                    if (this.product.status === 1) {
+                        this.statusSelected = this.statuses[0];
+                    } else {
+                        this.statusSelected = this.statuses[1];
+                    }
+                    this.findAllLookup();
+                }
+            );
         }
-        this.findAllLookup();
     }
 
     findAllLookup() {
@@ -136,7 +144,15 @@ export class ProductModalComponent implements OnInit {
 
     save(): void {
         // this.lookup.lookupGroup = this.lookupGroupSelected;
+        this.product.Brand = null;
+        this.product.ProductGroup = null;
+        this.smallUoms = null;
+        this.bigUoms = null;
         this.product.status = (this.statusSelected === 'Active' ? 1 : 0);
+        this.product.brandId = Number(this.brandSelected);
+        this.product.productGroupId =  Number(this.productGroupSelected);
+        this.product.smallUomId = Number(this.smallUomSelected);
+        this.product.bigUomId = Number(this.bigUomSelected);
         // this.product.bankId = this.bankSelected;
         this.productService.save(this.product).subscribe(result => {
             this.isFormDirty = true;

@@ -41,3 +41,11 @@ export class ProductPageDto {
         public error?: string,
     ) {}
 }
+
+export class ProductDto {
+    constructor(
+        public errCode?: string,
+        public errDesc?: string,
+        public contents?: Product[],
+    ) {}
+}
