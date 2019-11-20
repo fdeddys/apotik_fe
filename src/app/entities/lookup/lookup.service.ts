@@ -3,7 +3,7 @@ import { Observable, observable } from 'rxjs';
 import { HttpResponse, HttpClient } from '@angular/common/http';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { map, tap } from 'rxjs/operators';
-import { Lookup, LookupDto } from './lookup.model';
+import { Lookup, LookupDto, LookupPageDto } from './lookup.model';
 
 export type EntityResponseType = HttpResponse<Lookup>;
 // export type EntityResponseTypeDto = HttpResponse<LookupDto>;
@@ -49,7 +49,7 @@ export class LookupService {
         return this.http.post<Lookup[]>(newresourceUrl, req['filter'], {  observe: 'response' });
     }
 
-    findByName(req?: any): Observable<HttpResponse<Lookup[]>> {
+    findByName(req?: any): Observable<HttpResponse<LookupPageDto>> {
         let groupName = null;
         let newresourceUrl = null;
 
@@ -60,7 +60,10 @@ export class LookupService {
         });
         newresourceUrl = this.serverUrl + `/name/${groupName}`;
 
-        return this.http.get<Lookup[]>(newresourceUrl, { observe: 'response' });
+        return this.http.get<LookupPageDto>(newresourceUrl, { observe: 'response' })
+            .pipe(
+                 tap(lookupList => {})
+            );
     }
 
     private convert( lookup: Lookup): Lookup {

@@ -9,8 +9,8 @@ export class Customer {
         public address2 ?: string,
         public address3 ?: string,
         public address4 ?: string,
-        public contactPerson ?: string,
-        public phoneNumber ?: string,
+        public contactPerson?: string,
+        public phoneNumber?: string,
         public errCode?: string,
         public errDesc?: string,
     ) {

@@ -13,6 +13,8 @@ import { AccessMatrixComponent } from './entities/access-matrix/access-matrix.co
 import { ProductGroupComponent } from './entities/product-group/product-group.component';
 import { BrandComponent } from './entities/brand/brand.component';
 import { CustomerComponent } from './entities/customer/customer.component';
+import { SupplierComponent } from './entities/supplier/supplier.component';
+import { ProductComponent } from './entities/product/product.component';
 
 
 const routes: Routes = [
@@ -36,7 +38,8 @@ const routes: Routes = [
             { path: 'role', component: RoleComponent },
             { path: 'system-parameter', component: SystemParameterComponent },
             { path: 'access-matrix', component: AccessMatrixComponent },
-            { path: 'brand', component: AccessMatrixComponent },
+            { path: 'supplier', component: SupplierComponent },
+            { path: 'product', component: ProductComponent },
           ]
         }
           // {path: '404', component: Page404Component,  canActivateChild: [AuthGuard], },

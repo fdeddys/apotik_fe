@@ -14,6 +14,8 @@ import { ProductGroupModule } from './product-group/product-group.module';
 import { BrandComponent } from './brand/brand.component';
 import { BrandModule } from './brand/brand.module';
 import { CustomerModule } from './customer/customer.module';
+import { SupplierModule } from './supplier/supplier.module';
+import { ProductModule } from './product/product.module';
 
 @NgModule({
     imports: [
@@ -29,6 +31,8 @@ import { CustomerModule } from './customer/customer.module';
         ProductGroupModule,
         BrandModule,
         CustomerModule,
+        SupplierModule,
+        ProductModule,
     ],
     entryComponents: [],
     providers: [],

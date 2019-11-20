@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { SupplierPageDto, Supplier } from './supplier.model';
 import { Observable } from 'rxjs';
-import { CustomerPageDto, Customer } from './customer.model';
 import { EntityResponseType } from '../user/user.service';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class CustomerService {
+export class SupplierService {
 
-    private serverUrl = SERVER_PATH + 'customer';
+    private serverUrl = SERVER_PATH + 'supplier';
     constructor(private http: HttpClient) { }
 
-    filter(req?: any): Observable<HttpResponse<CustomerPageDto[]>> {
+    filter(req?: any): Observable<HttpResponse<SupplierPageDto[]>> {
         let pageNumber = null;
         let pageCount = null;
         let newresourceUrl = null;
@@ -30,27 +30,28 @@ export class CustomerService {
 
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
-        return this.http.post<CustomerPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+        return this.http.post<SupplierPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
-    save(customer: Customer): Observable<EntityResponseType> {
-        const copy = this.convert(customer);
-        return this.http.post<Customer>(`${this.serverUrl}`, copy, { observe: 'response'})
+    save(supplier: Supplier): Observable<EntityResponseType> {
+        const copy = this.convert(supplier);
+        return this.http.post<Supplier>(`${this.serverUrl}`, copy, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    private convert( customer: Customer): Customer {
-        const copy: Customer = Object.assign({}, customer);
+    private convert( supplier: Supplier): Supplier {
+        const copy: Supplier = Object.assign({}, supplier);
         return copy;
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Customer = this.convertItemFromServer(res.body);
+        const body: Supplier = this.convertItemFromServer(res.body);
         return res.clone({body});
     }
 
-    private convertItemFromServer(customer: Customer): Customer {
-        const copyOb: Customer = Object.assign({}, customer);
+    private convertItemFromServer(supplier: Supplier): Supplier {
+        const copyOb: Supplier = Object.assign({}, supplier);
         return copyOb;
     }
+
 }

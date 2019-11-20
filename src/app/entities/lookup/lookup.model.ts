@@ -13,6 +13,17 @@ export class Lookup {
     }
 }
 
+export class LookupPageDto {
+    constructor(
+        public totalRow?: number,
+        public page?: number,
+        public count?: number,
+        public contents?: Lookup[],
+        public error?: string,
+        public errCode?: string,
+        public errDesc?: string,
+    ) {}
+}
 
 
 export class LookupDto {

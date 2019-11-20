@@ -21,39 +21,50 @@
         </tr>
         <tr>
             <td>Code</td>
-            <td><input type="text" disabled size="50%" [(ngModel)]=customer.code></td>
+            <td><input type="text" disabled size="50%" [(ngModel)]=supplier.code></td>
         </tr>
         <tr>
             <td>Name</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.name></td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.name></td>
         </tr>
         <tr>
-            <td>Address line 1</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.address1></td>
+            <td>Address</td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.address></td>
         </tr>
         <tr>
-            <td>Address line 2</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.address2></td>
+            <td>City</td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.city></td>
         </tr>
         <tr>
-            <td>Address line 3</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.address3></td>
+            <td>Tax</td>
+            <td><input type="number" maxlength="250" size="50%" [(ngModel)]=supplier.tax></td>
         </tr>
         <tr>
-            <td>Address line 4</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.address4></td>
+            <td>PIC Phone</td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.picPhone></td>
         </tr>
         <tr>
-            <td>Term Of Payment ( in days)</td>
-            <td><input type="text" maxlength="250" type="number" size="50%" [(ngModel)]=customer.top>  </td>
+            <td>PIC Name</td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.picName>  </td>
         </tr>
         <tr>
-            <td>Contact Person Name</td>
-            <td><input type="text" maxlength="250"  size="50%" [(ngModel)]=customer.contactPerson>  </td>
+            <td>Bank</td>
+            <td>
+                <select [(ngModel)]="bankSelected" class="form-control" 
+                    [ngModelOptions]="{standalone: true}">
+                    <option *ngFor="let bank of banks" [value]="bank.id">
+                        {{bank.name}}
+                    </option>
+                </select>
+            </td>
         </tr>
         <tr>
-            <td>Contact Person Phone</td>
-            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=customer.phoneNumber>  </td>
+            <td>Bank Account No</td>
+            <td><input type="text" maxlength="250"  size="50%" [(ngModel)]=supplier.bankAccountNo>  </td>
+        </tr>
+        <tr>
+            <td>Bank Account Name</td>
+            <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.bankAccountName>  </td>
         </tr>
         <tr>
             <td>Status</td>
