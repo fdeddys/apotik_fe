@@ -42,6 +42,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TreeviewModule } from 'ngx-treeview';
 
 import { ToastrModule } from 'ngx-toastr';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,

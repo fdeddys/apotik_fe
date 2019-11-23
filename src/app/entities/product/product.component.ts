@@ -45,7 +45,7 @@ export class ProductComponent implements OnInit {
             page: page,
             count: this.totalRecord,
         }).subscribe(
-            (res: HttpResponse<ProductPageDto[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<ProductPageDto>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }
         );
@@ -69,7 +69,7 @@ export class ProductComponent implements OnInit {
             console.log(reason);
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
             console.log(this.closeResult);
-            // this.loadAll(this.curPage);
+            this.loadAll(this.curPage);
         });
     }
 

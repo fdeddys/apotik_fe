@@ -16,6 +16,7 @@ import { BrandModule } from './brand/brand.module';
 import { CustomerModule } from './customer/customer.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { ProductModule } from './product/product.module';
+import { SalesOrderModule } from './sales-order/sales-order.module';
 
 @NgModule({
     imports: [
@@ -33,6 +34,7 @@ import { ProductModule } from './product/product.module';
         CustomerModule,
         SupplierModule,
         ProductModule,
+        SalesOrderModule,
     ],
     entryComponents: [],
     providers: [],

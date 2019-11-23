@@ -44,7 +44,7 @@ export class CustomerComponent implements OnInit {
             page: page,
             count: this.totalRecord,
         }).subscribe(
-            (res: HttpResponse<CustomerPageDto[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<CustomerPageDto>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }
         );
