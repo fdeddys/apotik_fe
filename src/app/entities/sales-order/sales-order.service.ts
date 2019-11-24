@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 import { EntityResponseType } from '../user/user.service';
-import { SalesOrderPageDto, SalesOrder } from './sales-order.model';
+import { SalesOrderPageDto, SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from './sales-order.model';
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +31,31 @@ export class SalesOrderService {
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
         return this.http.post<SalesOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+    }
+
+    findById(id: number): Observable<any> {
+        return this.http.get<SalesOrder>(`${this.serverUrl}/${id}`)
+            .pipe(
+                // map((salesOrder: any) => salesOrder),
+                flatMap(
+                    (salesOrder: any) => {
+                        const filter = {
+                            OrderNo : '',
+                            orderId : salesOrder.id,
+                        };
+                        return this.http.post<SalesOrderDetailPageDto>(`${this.serverUrl}/detail/page/1/count/1000`, filter, { observe: 'response' })
+                            .pipe
+                            (
+                                map( (resDetail) => {
+                                    let details = resDetail.body.contents;
+                                    salesOrder.detail = details;
+                                    return salesOrder;
+                                })
+                            );
+                    }
+                )
+            );
+        // .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
     save(salesOrder: SalesOrder): Observable<EntityResponseType> {

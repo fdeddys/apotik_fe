@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { SalesOrderService } from './sales-order.service';
 import { SalesOrderEditComponent } from './sales-order-edit/sales-order-edit.component';
+import { SalesOrderDetailService } from './sales-order-detail.service';
 
 @NgModule({
     declarations: [SalesOrderComponent, SalesOrderEditComponent],
@@ -19,6 +20,7 @@ import { SalesOrderEditComponent } from './sales-order-edit/sales-order-edit.com
     ],
     providers: [
         SalesOrderService,
+        SalesOrderDetailService,
     ]
 })
 export class SalesOrderModule { }

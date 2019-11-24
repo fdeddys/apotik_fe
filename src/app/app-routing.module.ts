@@ -44,8 +44,8 @@ const routes: Routes = [
                     { path: 'supplier', component: SupplierComponent },
                     { path: 'product', component: ProductComponent },
                     { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order' }  },
-                    { path: 'sales-order-edit/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
-                    { path: 'sales-order-edit', redirectTo: 'sales-order-edit/0', pathMatch: 'full'},
+                    { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
+                    { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
                     { path: '**', component: Page404Component },
                 ]
             }

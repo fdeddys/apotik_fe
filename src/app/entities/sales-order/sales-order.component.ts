@@ -51,9 +51,9 @@ export class SalesOrderComponent implements OnInit {
         // console.log(this.brand);
     }
 
-    open(status, obj) {
-        console.log(status, obj);
-        this.route.navigate(['/main/sales-order-edit']);
+    open(obj: SalesOrder) {
+        console.log("nav ", obj);
+        this.route.navigate(['/main/sales-order/' +  obj.id ]);
 
         // const modalRef = this.modalService.open(BrandModalComponent, { size: 'lg' });
         // modalRef.componentInstance.statusRec = status;

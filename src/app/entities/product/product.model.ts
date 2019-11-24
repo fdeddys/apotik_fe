@@ -25,6 +25,7 @@ export class Product {
         public qtyStock?: number,
         public qtyUom?: number,
         public hpp?: number,
+        public sellPrice?: number,
         public errCode?: string,
         public errDesc?: string,
     ) {
