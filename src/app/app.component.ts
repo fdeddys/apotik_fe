@@ -30,7 +30,7 @@ export class AppComponent implements OnDestroy {
     }
 
     getAnimationData(outlet: RouterOutlet) {
-        console.log('animated ');
+        // console.log('animated ');
         return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
     }
 

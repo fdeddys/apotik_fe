@@ -31,7 +31,13 @@
                         <td>Sales Order No</td>
                         <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo"> </td>
                         <td>Total</td>
-                        <td><input type="text" size="50%" [(ngModel)]="total"></td>
+                        <td>
+                            <span style="color: blue;">
+                                    {{ total | number:'0.0-0'}}
+                            </span>
+                            <!-- <input type="text" size="50%" [(ngModel)]="total"> -->
+                           
+                        </td>
 
                     </tr>
                     <tr>
@@ -44,7 +50,10 @@
                         </td>
                         <td>Tax <input type="checkbox" [(ngModel)]="isTax" (ngModelChange)="checkTax()"></td>
                         <td>
-                            <input type="text" readonly size="50%" [(ngModel)]="taxAmount">
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
+                            <span style="color: blue;">
+                                    {{ taxAmount | number:'0.0-0'}}
+                            </span>
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +66,10 @@
                         </td>
                         <td>Grand total</td>
                         <td>
-                            <input type="text" readonly size="50%" [(ngModel)]="grandTotal">
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
+                            <span style="color: blue;">
+                                    {{ grandTotal | number:'0.0-0'}}
+                            </span>
                         </td>
                     </tr>
                     <tr>
@@ -80,9 +92,10 @@
             <table class="table table-sm table-striped">
                 <tbody style="color: hotpink; background-color: ghostwhite;">
                     <tr>
-                        <td style="width: 35%;">Product</td>
+                        <td style="width: 30%;">Product</td>
                         <td style="width: 15%;">Price</td>
                         <td style="width: 5%;">Qty</td>
+                        <td style="width: 5%;">Unit</td>
                         <td style="width: 15%;">Disc</td>
                         <td style="width: 20%;">Total</td>
                         <td style="width: 10%;">#</td>
@@ -112,6 +125,9 @@
                        
                         <td>
                             <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty" >
+                        </td>
+                        <td>
+                            {{uomAddedName}}
                         </td>
                         <td>
                             <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
@@ -147,7 +163,7 @@
                     <tbody>
                         <tr *ngFor="let salesOrderDetail of salesOrderDetails">
                             <td>
-                                <button type="button" (click)="open(salesOrder)" class="btn btn-outline-danger btn-sm">
+                                <button type="button" (click)="confirmDelItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
                                 </button>
                             </td>

@@ -1,24 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { switchMap, debounceTime, distinctUntilChanged, map, tap, catchError, flatMap } from 'rxjs/operators';
-import { Observable, Subject, of, concat, forkJoin, empty } from 'rxjs';
+import { Observable, Subject, of, concat, forkJoin, empty, pipe } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { SalesOrder, SalesOrderDetail } from '../sales-order.model';
+import { SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from '../sales-order.model';
 import { Customer, CustomerPageDto } from '../../customer/customer.model';
 import { CustomerService } from '../../customer/customer.service';
-import { HttpResponse, HttpErrorResponse, HttpClient } from '@angular/common/http';
-import { ProductService } from '../../product/product.service';
-import { Product, ProductDto, ProductPageDto } from '../../product/product.model';
+import { HttpResponse, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Product, ProductPageDto } from '../../product/product.model';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { SalesOrderService } from '../sales-order.service';
-import { SalesOrderDetailService } from '../sales-order-detail.service';
+import { SalesOrderDetailService, EntityResponseType } from '../sales-order-detail.service';
 import Swal from 'sweetalert2';
+
 
 @Component({
     selector: 'op-sales-order-edit',
     templateUrl: './sales-order-edit.component.html',
     styleUrls: ['./sales-order-edit.component.css']
 })
+
 export class SalesOrderEditComponent implements OnInit {
 
     selectedDate: NgbDateStruct;
@@ -48,6 +49,8 @@ export class SalesOrderEditComponent implements OnInit {
     priceAdded = 0;
     discAdded = 0;
     qtyAdded = 0;
+    uomAdded = 0;
+    uomAddedName = '';
 
     constructor(
         private route: ActivatedRoute,
@@ -61,8 +64,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.grandTotal = 0;
         this.taxAmount = 0;
         this.isTax = false;
-
-        this.priceAdded =0;
+        this.priceAdded = 0;
     }
 
     ngOnInit() {
@@ -115,6 +117,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.productIdAdded = event.item.id;
         this.priceAdded = event.item.sellPrice;
         this.productNameAdded = event.item.name;
+        this.uomAdded = event.item.smallUomId;
+        this.uomAddedName = event.item.SmallUom.name;
     }
 
     loadDataByOrderId(orderId: number) {
@@ -155,9 +159,20 @@ export class SalesOrderEditComponent implements OnInit {
 
         this.salesOrderDetails = result.detail;
         console.log('isi sales order detauil', this.salesOrderDetails);
+        this.calculateTotal();
 
         this.salesOrder.detail = null;
+    }
 
+    calculateTotal() {
+        this.total = 0;
+
+        this.salesOrderDetails.forEach(salesOrderDetail => {
+            this.total = this.total + ( (salesOrderDetail.price * salesOrderDetail.qty) - salesOrderDetail.disc);
+        });
+
+        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.grandTotal = this.total + this.taxAmount;
     }
 
     processCustomer(result: HttpResponse<CustomerPageDto>) {
@@ -190,7 +205,8 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     checkTax() {
-        return this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        // return this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.calculateTotal();
     }
 
     // formatter = (x: {name: string}) => x.name;
@@ -268,14 +284,41 @@ export class SalesOrderEditComponent implements OnInit {
         // if (this.checkInputValid() === false) {
         //     return ;
         // }
-        if (this.checkInputProductValid() == false ) {
+        if (this.checkInputProductValid() === false ) {
             Swal.fire('Error', 'Product belum terpilih ! ', 'error');
+            return ;
         }
 
-        if (this.checkInputNumberValid() == false ) {
+        if (this.checkInputNumberValid() === false ) {
             Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0 ! ', 'error');
+            return ;
         }
 
+       let orderDetail = this.composeOrderDetail();
+
+       this.orderDetailService
+            .save(orderDetail)
+            .subscribe(
+                (res => {
+                    if (res.body.errCode === '00') {
+                        this.reloadDetail(this.salesOrder.id);
+                    } else {
+                        Swal.fire('Error', res.body.errDesc, 'error');
+                    }
+                })
+            );
+
+    }
+
+    composeOrderDetail(): SalesOrderDetail {
+        let orderDetail = new SalesOrderDetail();
+        orderDetail.salesOrderId = this.salesOrder.id;
+        orderDetail.disc = this.discAdded;
+        orderDetail.price = this.priceAdded;
+        orderDetail.productId = this.productIdAdded;
+        orderDetail.qty = this.qtyAdded;
+        orderDetail.uomId = this.uomAdded;
+        return orderDetail;
     }
 
     checkInputNumberValid(): boolean {
@@ -319,7 +362,7 @@ export class SalesOrderEditComponent implements OnInit {
             return result;
         }
 
-        // 2.  sudah diisi 
+        // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
         of(this.model).subscribe(
@@ -349,5 +392,73 @@ export class SalesOrderEditComponent implements OnInit {
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
         return result;
+    }
+
+    reloadDetail(orderId: number) {
+                        // this.salesOrderDetails.push(orderDetail);
+        this.orderDetailService
+            .findByOrderId({
+                count: 10,
+                page: 1,
+                filter : {
+                    orderId: orderId,
+                }
+            }).subscribe(
+                (res: HttpResponse<SalesOrderDetailPageDto>) => this.fillDetail(res),
+                (res: HttpErrorResponse) => console.log(res.message),
+                () => {}
+            );
+    }
+
+    fillDetail(res: HttpResponse<SalesOrderDetailPageDto>) {
+        if (res.body.contents.length > 0) {
+
+            this.salesOrderDetails = [];
+            this.salesOrderDetails = res.body.contents;
+            this.calculateTotal();
+            this.clearDataAdded();
+        }
+    }
+
+    clearDataAdded() {
+        this.productIdAdded = null;
+        this.priceAdded = 0;
+        this.productNameAdded = null;
+        this.uomAdded = 0;
+
+        this.model = null;
+        this.uomAddedName = '';
+    }
+
+    confirmDelItem (salesOrderDetail: SalesOrderDetail) {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to cancel [ ' + salesOrderDetail.product.name + ' ] ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.delItem(salesOrderDetail.id);
+                }
+            });
+    }
+
+    delItem(idDetail: number) {
+        this.orderDetailService
+            .deleteById(idDetail)
+            .subscribe(
+                (res: SalesOrderDetail) => {
+                    if (res.errCode === '00') {
+                        Swal.fire('Success', 'Data cancelled', 'info');
+                        this.reloadDetail(this.salesOrder.id);
+                    } else {
+                        Swal.fire('Failed', 'Data failed cancelled', 'info');
+                    }
+                },
+            );
     }
 }

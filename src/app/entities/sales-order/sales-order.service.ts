@@ -3,8 +3,9 @@ import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
-import { EntityResponseType } from '../user/user.service';
 import { SalesOrderPageDto, SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from './sales-order.model';
+
+export type EntityResponseType = HttpResponse<SalesOrder>;
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +35,9 @@ export class SalesOrderService {
     }
 
     findById(id: number): Observable<any> {
+
+        const pathOrderDetailUrl = SERVER_PATH + 'sales-order-detail';
+
         return this.http.get<SalesOrder>(`${this.serverUrl}/${id}`)
             .pipe(
                 // map((salesOrder: any) => salesOrder),
@@ -43,9 +47,9 @@ export class SalesOrderService {
                             OrderNo : '',
                             orderId : salesOrder.id,
                         };
-                        return this.http.post<SalesOrderDetailPageDto>(`${this.serverUrl}/detail/page/1/count/1000`, filter, { observe: 'response' })
-                            .pipe
-                            (
+                        return this.http.post<SalesOrderDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/1000`, 
+                            filter, { observe: 'response' })
+                            .pipe(
                                 map( (resDetail) => {
                                     let details = resDetail.body.contents;
                                     salesOrder.detail = details;

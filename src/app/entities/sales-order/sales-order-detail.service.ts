@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
-import { SalesOrderDetail } from './sales-order.model';
+import { SalesOrderDetail, SalesOrderDetailPageDto } from './sales-order.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
+
+export type EntityResponseType = HttpResponse<SalesOrderDetail>;
 
 @Injectable({
     providedIn: 'root'
 })
+
+
 export class SalesOrderDetailService {
 
     private serverUrl = SERVER_PATH + 'sales-order-detail';
     constructor(private http: HttpClient) { }
 
-    findByOrderId(req?: any) {
+    findByOrderId(req?: any): Observable<HttpResponse<SalesOrderDetailPageDto>> {
         let pageNumber = null;
         let pageCount = null;
         let newresourceUrl = null;
@@ -26,7 +32,36 @@ export class SalesOrderDetailService {
         });
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
-        return this.http.post<SalesOrderDetail>(`${this.serverUrl}`, req['filter'], { observe: 'response' });
+        return this.http.post<SalesOrderDetailPageDto>(`${newresourceUrl}`, req['filter'], { observe: 'response' });
         // .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
+
+    save(salesOrderDetail: SalesOrderDetail): Observable<EntityResponseType> {
+        const copy = this.convert(salesOrderDetail);
+        return this.http.post<SalesOrderDetail>(`${this.serverUrl}`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    deleteById(id: number): Observable<SalesOrderDetail> {
+
+        const newresourceUrl = this.serverUrl + `/${id}`;
+
+        return this.http.delete<SalesOrderDetail>(newresourceUrl );
+    }
+
+    private convert(salesOrderDetail: SalesOrderDetail): SalesOrderDetail {
+        const copy: SalesOrderDetail = Object.assign({}, salesOrderDetail);
+        return copy;
+    }
+
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: SalesOrderDetail = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertItemFromServer(salesOrderDetail: SalesOrderDetail): SalesOrderDetail {
+        const copyOb: SalesOrderDetail = Object.assign({}, salesOrderDetail);
+        return copyOb;
+    }
+
 }

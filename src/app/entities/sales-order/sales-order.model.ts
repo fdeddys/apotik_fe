@@ -55,8 +55,10 @@ export class SalesOrderDetail {
         public price?: number,
         public disc?: number,
 
-        public uimId?: number,
+        public uomId?: number,
         public uom?: Lookup,
+        public errCode?: string,
+        public errDesc?: string,
 
     ) {
         this.id = 0;
