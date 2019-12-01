@@ -7,7 +7,7 @@ export class SalesOrder {
     constructor(
         public id?: number,
         public salesOrderNo?: string,
-        public orderDate ?: Date,
+        public orderDate ?: string,
 
         public customerId?: number,
         public customer?: Customer,
@@ -24,6 +24,9 @@ export class SalesOrder {
         public top?: number,
         public isCash?: number,
         public detail?: SalesOrderDetail[],
+
+        public errCode?: string,
+        public errDesc?: string,
     ) {
         this.id = 0;
         this.top = 0;

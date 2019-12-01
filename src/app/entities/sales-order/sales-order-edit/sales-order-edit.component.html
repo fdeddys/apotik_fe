@@ -3,10 +3,10 @@
         <h5 class="card-title" style="color: tomato;">Edit</h5>
 
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-info btn-sm" (click)="open('addnew', null)">New Record
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
                 <i class="fa fa-plus-circle fa-lg"></i>
             </button>
-            <button type="button" class="btn btn-outline-success btn-sm" (click)="open('addnew', null)">Save
+            <button type="button" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
             <button type="button" class="btn btn-outline-primary btn-sm" (click)="open('addnew', null)">Approve
@@ -29,7 +29,10 @@
                 <tbody style="color: cornflowerblue;">
                     <tr>
                         <td>Sales Order No</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo"> </td>
+                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo">
+                            [{{salesOrder.id}}]
+                        </td>
+                        <!-- < -->
                         <td>Total</td>
                         <td>
                             <span style="color: blue;">
@@ -58,7 +61,7 @@
                     </tr>
                     <tr>
                         <td>Customer</td>
-                        <td>
+                        <td *ngIf="customers">
                             <input id="typeahead-basic" type="text" [(ngModel)]="customerSelected"
                                 [ngbTypeahead]="searchCustomer" [resultFormatter]="formatter"
                                 [inputFormatter]="formatter" />

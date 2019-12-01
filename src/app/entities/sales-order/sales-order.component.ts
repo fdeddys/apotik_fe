@@ -51,6 +51,10 @@ export class SalesOrderComponent implements OnInit {
         // console.log(this.brand);
     }
 
+    addNew() {
+        this.route.navigate(['/main/sales-order/', 0 ]);
+    }
+
     open(obj: SalesOrder) {
         console.log("nav ", obj);
         this.route.navigate(['/main/sales-order/' +  obj.id ]);

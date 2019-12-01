@@ -12,6 +12,7 @@ import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { SalesOrderService } from '../sales-order.service';
 import { SalesOrderDetailService, EntityResponseType } from '../sales-order-detail.service';
 import Swal from 'sweetalert2';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -98,9 +99,10 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     loadData(orderId: number) {
-        this.loadCustomer();
+
         console.log('id ==>?', orderId);
         if (orderId === 0) {
+            this.loadCustomer();
             this.loadNewData();
             return;
         }
@@ -108,7 +110,7 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     loadNewData() {
-        this.salesOrder = new SalesOrder();
+        this.addNew();
     }
 
     getItem(event: any) {
@@ -197,10 +199,15 @@ export class SalesOrderEditComponent implements OnInit {
             },
         }).subscribe(
             (response: HttpResponse<CustomerPageDto>) => {
-                if (response.body.contents.length < 0) {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', "failed get Customer data !", 'error');
                     return;
                 }
                 this.customers = response.body.contents;
+                if (this.salesOrder.id === 0) {
+                    this.salesOrder.customer = this.customers[0];
+                    this.setCustomerDefault();
+                }
             });
     }
 
@@ -460,5 +467,52 @@ export class SalesOrderEditComponent implements OnInit {
                     }
                 },
             );
+    }
+
+    addNew() {
+        this.total = 0;
+        this.grandTotal = 0;
+        this.taxAmount = 0;
+        this.isTax = false;
+        this.priceAdded = 0;
+        this.salesOrder = new SalesOrder();
+        this.salesOrder.id = 0;
+        this.salesOrderDetails = [];
+        this.setToday() ;
+        this.clearDataAdded();
+        if (this.customers !== undefined) {
+            console.log('this customers xxx ', this.salesOrder.customer);
+            this.salesOrder.customer = this.customers[0];
+            this.setCustomerDefault();
+        }
+    }
+
+    saveHdr() {
+        this.salesOrder.customer = null;
+        this.salesOrder.customerId = this.customerSelected.id;
+        this.salesOrder.orderDate = this.getSelectedDate();
+        this.salesOrder.salesmanId = 0;
+        this.orderService
+            .save(this.salesOrder)
+            .subscribe(
+                (res => {
+                    if (res.body.errCode === '00') {
+                        this.salesOrder.id = res.body.id;
+                        this.salesOrder.salesOrderNo = res.body.salesOrderNo;
+                        this.salesOrder.status = res.body.status;
+                    } else {
+                        Swal.fire('Error', res.body.errDesc, 'error');
+                    }
+                })
+            );
+    }
+
+    getSelectedDate(): string{
+
+        const month = ('0' + this.selectedDate.month).slice(-2);
+        const day = ('0' + this.selectedDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.selectedDate.year + '-' + month + '-' + day + tz;
     }
 }
