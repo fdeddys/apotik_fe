@@ -418,9 +418,9 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     fillDetail(res: HttpResponse<SalesOrderDetailPageDto>) {
+        this.salesOrderDetails = [];
         if (res.body.contents.length > 0) {
 
-            this.salesOrderDetails = [];
             this.salesOrderDetails = res.body.contents;
             this.calculateTotal();
             this.clearDataAdded();
@@ -477,6 +477,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.priceAdded = 0;
         this.salesOrder = new SalesOrder();
         this.salesOrder.id = 0;
+        this.salesOrder.status = 0;
         this.salesOrderDetails = [];
         this.setToday() ;
         this.clearDataAdded();
@@ -515,4 +516,81 @@ export class SalesOrderEditComponent implements OnInit {
 
         return this.selectedDate.year + '-' + month + '-' + day + tz;
     }
+
+    approve() {
+
+        if (!this.isValidDataApprove()){
+            return;
+        }
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to approve ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.approveProccess();
+                }
+            });
+    }
+
+
+    approveProccess() {
+        this.orderService.approve(this.salesOrder)
+            .subscribe(
+                (res) => { console.log('success'); }
+            )
+
+        Swal.fire('OK', 'Save success', 'success');
+    }
+
+    isValidDataApprove(): boolean {
+        if (this.salesOrder.id ===0) {
+            Swal.fire('Error', 'Data no order belum di save !', 'error');
+            return false;
+        }
+        if (this.salesOrderDetails.length <= 0) {
+            Swal.fire('Error', 'Data Barang belum ada', 'error');
+            return false;
+        }
+        return true;
+    }
+
+    rejectProccess(){
+        this.orderService.reject(this.salesOrder)
+            .subscribe(
+                (res) => { console.log('success'); }
+            )
+
+        Swal.fire('OK', 'Save success', 'success');
+    }
+
+    reject() {
+
+        if (!this.isValidDataApprove()){
+            return;
+        }
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to Reject ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.rejectProccess();
+                }
+            });
+    }
+    
+
 }

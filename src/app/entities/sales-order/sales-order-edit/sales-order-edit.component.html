@@ -2,17 +2,17 @@
     <div class="card-body">
         <h5 class="card-title" style="color: tomato;">Edit</h5>
 
-        <div class="btn-group" role="group">
+        <div class="btn-group" role="group" *ngIf="salesOrder">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
                 <i class="fa fa-plus-circle fa-lg"></i>
             </button>
-            <button type="button" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
+            <button type="button" *ngIf="salesOrder.status === 0 || salesOrder.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button" class="btn btn-outline-primary btn-sm" (click)="open('addnew', null)">Approve
+            <button type="button"  *ngIf="salesOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="open('addnew', null)">Reject
+            <button type="button" *ngIf="salesOrder.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
                 <i class="fa fa-times fa-lg"></i>
             </button>
             <button type="button" class="btn btn-outline-warning btn-sm" (click)="open('addnew', null)">Preview
@@ -83,7 +83,14 @@
                     </tr>
                     <tr>
                         <td>Salesman</td>
-                        <td><input type="text" maxlength="250" readonly size="50%"></td>
+                        <td>
+                            <span *ngIf="salesOrder">
+                                <span *ngIf="salesOrder.salesman">
+                                        {{salesOrder.salesman.firstName}}  {{salesOrder.salesman.lastName }}
+
+                                </span>
+                            </span>
+                        </td>
                         <td></td>
                         <td></td>
                     </tr>

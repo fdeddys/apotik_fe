@@ -18,7 +18,9 @@ export class SalesOrder {
         public grandTotal?: number,
 
         public salesmanId?: number,
-        public user?: User,
+        public salesman?: User,
+
+        // public user?: User,
 
         public status?: number,
         public top?: number,

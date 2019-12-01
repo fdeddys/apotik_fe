@@ -68,6 +68,18 @@ export class SalesOrderService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    approve(salesOrder: SalesOrder): Observable<EntityResponseType> {
+        const copy = this.convert(salesOrder);
+        return this.http.post<SalesOrder>(`${this.serverUrl}/approve`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    reject(salesOrder: SalesOrder): Observable<EntityResponseType> {
+        const copy = this.convert(salesOrder);
+        return this.http.post<SalesOrder>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
     private convert(salesOrder: SalesOrder): SalesOrder {
         const copy: SalesOrder = Object.assign({}, salesOrder);
         return copy;
