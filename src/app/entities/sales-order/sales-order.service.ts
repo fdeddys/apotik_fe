@@ -80,6 +80,10 @@ export class SalesOrderService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    preview(id: number):  Observable<Blob>  {
+        return this.http.post(`${this.serverUrl}/invoice/${id}`, {}, { responseType: 'blob' });
+    }
+
     private convert(salesOrder: SalesOrder): SalesOrder {
         const copy: SalesOrder = Object.assign({}, salesOrder);
         return copy;

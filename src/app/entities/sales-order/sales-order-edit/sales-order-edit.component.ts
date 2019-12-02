@@ -329,34 +329,35 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     checkInputNumberValid(): boolean {
-        let result = true;
+        // let result = true;
 
         if ( (isNaN(this.qtyAdded)) || (this.qtyAdded === null) ) {
-            result = false;
-            return result;
+            // result = false;
+            return false;
         }
 
         if ( (isNaN(this.priceAdded)) || (this.priceAdded === null) ) {
-            result = false;
-            return result;
+            // result = false;
+            return false;
         }
 
         if ((isNaN(this.discAdded)) || (this.discAdded === null) ) {
-            result = false;
-            return result;
+            // result = false;
+            return false;
         }
 
-        if (this.priceAdded <= 0 || this.qtyAdded <= 0 || this.discAdded < 0 ) {
-            result = false;
-            return result;
+        if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
+            // this.priceAdded <= 0 ||
+            // result = false;
+            return false;
         }
 
         if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
-            result = false;
-            return result;
+            // result = false;
+            return false;
         }
 
-        return result;
+        return true;
     }
 
     checkInputProductValid(): boolean {
@@ -402,7 +403,6 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     reloadDetail(orderId: number) {
-                        // this.salesOrderDetails.push(orderDetail);
         this.orderDetailService
             .findByOrderId({
                 count: 10,
@@ -432,7 +432,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.priceAdded = 0;
         this.productNameAdded = null;
         this.uomAdded = 0;
-
+        this.qtyAdded = 1;
         this.model = null;
         this.uomAddedName = '';
     }
@@ -543,10 +543,14 @@ export class SalesOrderEditComponent implements OnInit {
     approveProccess() {
         this.orderService.approve(this.salesOrder)
             .subscribe(
-                (res) => { console.log('success'); }
-            )
-
-        Swal.fire('OK', 'Save success', 'success');
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                }
+            );
     }
 
     isValidDataApprove(): boolean {
@@ -591,6 +595,19 @@ export class SalesOrderEditComponent implements OnInit {
                 }
             });
     }
-    
+
+    preview() {
+        this.orderService
+            .preview(this.salesOrder.id)
+            .subscribe(dataBlob => {
+
+                console.log('data blob ==> ', dataBlob);
+                const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+
+                window.open(objBlob);
+            });
+
+    }
 
 }
