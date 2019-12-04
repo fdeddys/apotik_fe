@@ -8,15 +8,14 @@ import { AppParameterModule } from './app-parameter/app-parameter.module';
 import { SystemParameterModule } from './system-parameter/system-parameter.module';
 import { AccessMatrixModule } from './access-matrix/access-matrix.module';
 import { ReportModule } from './report/report.module';
-import { LookupGroupComponent } from './lookup-group/lookup-group.component';
 import { LookupGroupModule } from './lookup-group/lookup-group.module';
 import { ProductGroupModule } from './product-group/product-group.module';
-import { BrandComponent } from './brand/brand.component';
 import { BrandModule } from './brand/brand.module';
 import { CustomerModule } from './customer/customer.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { ProductModule } from './product/product.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
+import { ReceivingModule } from './receiving/receiving.module';
 
 @NgModule({
     imports: [
@@ -35,6 +34,7 @@ import { SalesOrderModule } from './sales-order/sales-order.module';
         SupplierModule,
         ProductModule,
         SalesOrderModule,
+        ReceivingModule,
     ],
     entryComponents: [],
     providers: [],

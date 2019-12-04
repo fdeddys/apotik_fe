@@ -546,6 +546,7 @@ export class SalesOrderEditComponent implements OnInit {
                 (res) => {
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
+                        this.router.navigate(['/main/sales-order']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }

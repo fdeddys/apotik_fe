@@ -41,12 +41,12 @@
                     <tr>
                         <th></th>
                         <th scope="col">Order No</th>
-                        <th scope="col">Date</th>
+                        <th scope="col" class='centerText' >Date</th>
                         <th scope="col">Customer</th>
-                        <th scope="col">Total</th>
                         <th scope="col">Salesman</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Type</th>
+                        <th scope="col" class='centerText' >Status</th>
+                        <th scope="col" class='centerText' >Type</th>
+                        <th scope="col" class='rightText' >Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,12 +57,12 @@
                             </button>
                         </td>
                         <td>{{salesOrder.salesOrderNo}}</td>
-                        <td>{{salesOrder.orderDate | date:'dd-MMM-yyyy'}}</td>
+                        <td class='centerText' >{{salesOrder.orderDate | date:'dd-MMM-yyyy'}}</td>
                         <td>{{salesOrder.customer.name }}</td>
-                        <td>{{salesOrder.grandTotal | number:'0.0-0' }}</td>
                         <td>{{salesOrder.salesman.userName}}</td>
-                        <td>{{salesOrder.status}}</td>
-                        <td>{{salesOrder.isCash === true ? 'Cash' : 'Non Cash'}}</td>
+                        <td class='centerText' >{{getStatus(salesOrder.status)}} </td>
+                        <td class='centerText' >{{salesOrder.isCash === true ? 'Cash' : 'Non Cash'}}</td>
+                        <td class='rightText'>{{salesOrder.grandTotal | number:'0.0-0' }}</td>
                     </tr>
                 </tbody>
             </table>

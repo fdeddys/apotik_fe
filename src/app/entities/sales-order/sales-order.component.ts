@@ -114,4 +114,21 @@ export class SalesOrderComponent implements OnInit {
         this.location.back();
     }
 
+    getStatus(id): string {
+        let statusName = 'Unknown';
+        switch (id) {
+            case 1:
+            case 10:
+                statusName = 'Outstanding';
+                break;
+            case 20:
+                statusName = 'Approved';
+                break;
+            case 30:
+                statusName = 'Rejected';
+                break;
+        }
+        return statusName;
+    }
+
 }
