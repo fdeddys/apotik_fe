@@ -44,7 +44,7 @@ export class SupplierComponent implements OnInit {
             page: page,
             count: this.totalRecord,
         }).subscribe(
-            (res: HttpResponse<SupplierPageDto[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<SupplierPageDto>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }
         );

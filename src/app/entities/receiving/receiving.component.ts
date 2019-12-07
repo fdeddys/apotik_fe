@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReceivingService } from './receiving.service';
-import { Receiving, ReceivingPageDto } from './receiving.model';
+import { Receive, ReceivingPageDto } from './receiving.model';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
 import { Location } from '@angular/common';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 })
 export class ReceivingComponent implements OnInit {
 
-    receivings: Receiving[];
+    receivings: Receive[];
     curPage = 1;
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
@@ -55,7 +55,7 @@ export class ReceivingComponent implements OnInit {
         this.route.navigate(['/main/receive/', 0 ]);
     }
 
-    open(obj: Receiving) {
+    open(obj: Receive) {
         console.log("nav ", obj);
         this.route.navigate(['/main/receive/' +  obj.id ]);
 

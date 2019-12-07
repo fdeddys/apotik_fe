@@ -14,7 +14,7 @@ export class SupplierService {
     private serverUrl = SERVER_PATH + 'supplier';
     constructor(private http: HttpClient) { }
 
-    filter(req?: any): Observable<HttpResponse<SupplierPageDto[]>> {
+    filter(req?: any): Observable<HttpResponse<SupplierPageDto>> {
         let pageNumber = null;
         let pageCount = null;
         let newresourceUrl = null;
@@ -30,7 +30,7 @@ export class SupplierService {
 
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
-        return this.http.post<SupplierPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+        return this.http.post<SupplierPageDto>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
     save(supplier: Supplier): Observable<EntityResponseType> {

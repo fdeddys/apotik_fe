@@ -5,6 +5,7 @@ import { ReceivingEditComponent } from './receiving-edit/receiving-edit.componen
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReceivingService } from './receiving.service';
+import { ReceivingDetailService } from './receiving-detail.service';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { ReceivingService } from './receiving.service';
         ReceivingEditComponent
     ],
     providers: [
-        ReceivingService
+        ReceivingService,
+        ReceivingDetailService
     ]
 })
 export class ReceivingModule { }

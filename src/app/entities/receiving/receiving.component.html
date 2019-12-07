@@ -43,26 +43,22 @@
                       <th scope="col">Order No</th>
                       <th scope="col" class='centerText' >Date</th>
                       <th scope="col">Customer</th>
-                      <th scope="col">Salesman</th>
                       <th scope="col" class='centerText' >Status</th>
-                      <th scope="col" class='centerText' >Type</th>
                       <th scope="col" class='rightText' >Total</th>
                   </tr>
               </thead>
               <tbody>
-                  <tr *ngFor="let salesOrder of salesOrders">
+                  <tr *ngFor="let receive of receivings">
                       <td>
-                          <button type="button" (click)="open(salesOrder)" class="btn btn-outline-warning btn-sm">
+                          <button type="button" (click)="open(receive)" class="btn btn-outline-warning btn-sm">
                               <i class="fa fa-list fa-lg"></i>
                           </button>
                       </td>
-                      <td>{{salesOrder.salesOrderNo}}</td>
-                      <td class='centerText' >{{salesOrder.orderDate | date:'dd-MMM-yyyy'}}</td>
-                      <td>{{salesOrder.customer.name }}</td>
-                      <td>{{salesOrder.salesman.userName}}</td>
-                      <td class='centerText' >{{getStatus(salesOrder.status)}} </td>
-                      <td class='centerText' >{{salesOrder.isCash === true ? 'Cash' : 'Non Cash'}}</td>
-                      <td class='rightText'>{{salesOrder.grandTotal | number:'0.0-0' }}</td>
+                      <td>{{receive.receiveNo}}</td>
+                      <td class='centerText' >{{receive.receiveDate | date:'dd-MMM-yyyy'}}</td>
+                      <td>{{receive.supplier.name }}</td>
+                      <td class='centerText' >{{getStatus(receive.status)}} </td>
+                      <td class='rightText'>{{receive.grandTotal | number:'0.0-0' }}</td>
                   </tr>
               </tbody>
           </table>

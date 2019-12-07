@@ -2,36 +2,30 @@ import { Customer} from '../customer/customer.model';
 import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
+import { Supplier } from '../supplier/supplier.model';
 
-export class Receiving {
+export class Receive {
     constructor(
         public id?: number,
-        public salesOrderNo?: string,
-        public orderDate ?: string,
+        public receiveNo?: string,
+        public receiveDate ?: string,
 
-        public customerId?: number,
-        public customer?: Customer,
+        public supplierId?: number,
+        public supplier?: Supplier,
 
         public note?: string,
         public tax?: number,
         public total?: number,
         public grandTotal?: number,
 
-        public salesmanId?: number,
-        public salesman?: User,
-
-        // public user?: User,
 
         public status?: number,
-        public top?: number,
-        public isCash?: number,
         public detail?: ReceivingDetail[],
 
         public errCode?: string,
         public errDesc?: string,
     ) {
         this.id = 0;
-        this.top = 0;
         this.tax = 0;
         this.total = 0;
         this.grandTotal = 0;
@@ -43,7 +37,7 @@ export class ReceivingPageDto {
         public totalRow?: number,
         public page?: number,
         public count?: number,
-        public contents?: Receiving[],
+        public contents?: Receive[],
         public error?: string,
     ) {}
 }
@@ -51,7 +45,7 @@ export class ReceivingPageDto {
 export class ReceivingDetail {
     constructor(
         public id?: number,
-        public salesOrderId?: number,
+        public receiveId?: number,
 
         public productId?: number,
         public product?: Product,

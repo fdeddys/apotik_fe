@@ -18,6 +18,7 @@ import { ProductComponent } from './entities/product/product.component';
 import { SalesOrderComponent } from './entities/sales-order/sales-order.component';
 import { SalesOrderEditComponent } from './entities/sales-order/sales-order-edit/sales-order-edit.component';
 import { ReceivingComponent } from './entities/receiving/receiving.component';
+import { ReceivingEditComponent } from './entities/receiving/receiving-edit/receiving-edit.component';
 
 
 const routes: Routes = [
@@ -48,6 +49,7 @@ const routes: Routes = [
                     { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
                     { path: 'receive', component: ReceivingComponent },
+                    { path: 'receive/:id', component: ReceivingEditComponent },
                     { path: '**', component: Page404Component },
                 ]
             }
