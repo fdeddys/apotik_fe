@@ -438,4 +438,115 @@ export class ReceivingEditComponent implements OnInit {
             this.clearDataAdded();
         }
     }
+
+    confirmDelItem (receiveDtl: ReceivingDetail) {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to cancel [ ' + receiveDtl.product.name + ' ] ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.delItem(receiveDtl.id);
+                }
+            });
+    }
+
+    delItem(idDetail: number) {
+        this.receiveDetailService
+            .deleteById(idDetail)
+            .subscribe(
+                (res: ReceivingDetail) => {
+                    if (res.errCode === '00') {
+                        Swal.fire('Success', 'Data cancelled', 'info');
+                        this.reloadDetail(this.receive.id);
+                    } else {
+                        Swal.fire('Failed', 'Data failed cancelled', 'info');
+                    }
+                },
+            );
+    }
+
+    saveHdr() {
+        this.receive.supplier = null;
+        this.receive.supplierId = this.supplierSelected.id;
+        this.receive.receiveDate = this.getSelectedDate();
+        this.receive.supplierId = 0;
+        this.receiveService
+            .save(this.receive)
+            .subscribe(
+                (res => {
+                    if (res.body.errCode === '00') {
+                        this.receive.id = res.body.id;
+                        this.receive.receiveNo = res.body.receiveNo;
+                        this.receive.status = res.body.status;
+                    } else {
+                        Swal.fire('Error', res.body.errDesc, 'error');
+                    }
+                })
+            );
+    }
+
+    getSelectedDate(): string{
+
+        const month = ('0' + this.selectedDate.month).slice(-2);
+        const day = ('0' + this.selectedDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.selectedDate.year + '-' + month + '-' + day + tz;
+    }
+
+    approve() {
+
+        if (!this.isValidDataApprove()) {
+            return;
+        }
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to approve ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.approveProccess();
+                }
+            });
+    }
+
+
+    approveProccess() {
+        this.receiveService.approve(this.receive)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                        this.router.navigate(['/main/receive']);
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                }
+            );
+    }
+
+    isValidDataApprove(): boolean {
+        if (this.receive.id ===0) {
+            Swal.fire('Error', 'Data no order belum di save !', 'error');
+            return false;
+        }
+        if (this.receiveDetails.length <= 0) {
+            Swal.fire('Error', 'Data Barang belum ada', 'error');
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -52,4 +52,11 @@ export class ReceivingDetailService {
         return copyOb;
     }
 
+    deleteById(id: number): Observable<ReceivingDetail> {
+
+        const newresourceUrl = this.serverUrl + `/${id}`;
+
+        return this.http.delete<ReceivingDetail>(newresourceUrl );
+    }
+
 }

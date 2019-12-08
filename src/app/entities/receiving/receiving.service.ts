@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { ReceivingPageDto, Receive, ReceivingDetailPageDto } from './receiving.model';
 import { flatMap, map } from 'rxjs/operators';
 
+type EntityResponseType = HttpResponse<Receive>;
+
 @Injectable({
     providedIn: 'root'
 })
@@ -59,4 +61,37 @@ export class ReceivingService {
             );
     }
 
+
+    save(receive: Receive): Observable<EntityResponseType> {
+        const copy = this.convert(receive);
+        return this.http.post<Receive>(`${this.serverUrl}`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    approve(receive: Receive): Observable<EntityResponseType> {
+        const copy = this.convert(receive);
+        return this.http.post<Receive>(`${this.serverUrl}/approve`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    reject(receive: Receive): Observable<EntityResponseType> {
+        const copy = this.convert(receive);
+        return this.http.post<Receive>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    private convert(receive: Receive): Receive {
+        const copy: Receive = Object.assign({}, receive);
+        return copy;
+    }
+
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: Receive = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertItemFromServer(receive: Receive): Receive {
+        const copyOb: Receive = Object.assign({}, receive);
+        return copyOb;
+    }
 }
