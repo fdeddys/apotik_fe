@@ -1,3 +1,162 @@
-<p>
-  adjustment-edit works!
-</p>
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title" style="color: tomato;">Edit</h5>
+
+        <div class="btn-group" role="group" *ngIf="adjustment">
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
+                <i class="fa fa-plus-circle fa-lg"></i>
+            </button>
+            <button type="button" *ngIf="adjustment.status === 0 "
+                class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
+                <i class="fa fa-save fa-lg"></i>
+            </button>
+            <button type="button" *ngIf="adjustment.status === 0" class="btn btn-outline-primary btn-sm"
+                (click)="approve()">Approve
+                <i class="fa fa-thumbs-o-up fa-lg"></i>
+            </button>
+            <button type="button" *ngIf="adjustment.status === 0  " class="btn btn-outline-danger btn-sm"
+                (click)="reject()">Reject
+                <i class="fa fa-times fa-lg"></i>
+            </button>
+            <button type="button" *ngIf="adjustment.status === 10 " class="btn btn-outline-warning btn-sm"
+                (click)="preview()">Preview
+                <i class="fa fa-print fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="backToLIst()">Back
+                <i class="fa fa-list fa-lg"></i>
+            </button>
+        </div>
+        <br>
+        <br>
+        <div *ngIf="adjustment">
+            <table class="table table-sm table-striped">
+                <tbody style="color: cornflowerblue;">
+                    <tr>
+                        <td>Sales Order No</td>
+                        <td><input type="text" readonly size="50%" [(ngModel)]="adjustment.adjustmentNo">
+                            [{{adjustment.id}}]
+                        </td>
+                        <!-- < -->
+                        <td>Total</td>
+                        <td>
+                            <span style="color: blue;">
+                                {{ total | number:'0.0-0'}}
+                            </span>
+                            <!-- <input type="text" size="50%" [(ngModel)]="total"> -->
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>
+                            <input type="text" ngbDatepicker #d="ngbDatepicker" readonly [(ngModel)]="selectedDate" />
+                            <button (click)="d.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </td>
+                        <td>Tax <input type="checkbox" [(ngModel)]="isTax" (ngModelChange)="checkTax()"></td>
+                        <td>
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
+                            <span style="color: blue;">
+                                {{ taxAmount | number:'0.0-0'}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td><input type="text" readonly size="50%" [(ngModel)]="adjustment.status"> </td>
+
+                        <td>Grand total</td>
+                        <td>
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
+                            <span style="color: blue;">
+                                {{ grandTotal | number:'0.0-0'}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Note</td>
+                        <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <div>
+            <table class="table table-sm table-striped">
+                <tbody style="color: hotpink; background-color: ghostwhite;">
+                    <tr>
+                        <td style="width: 30%;">Product</td>
+                        <td style="width: 15%;">Hpp</td>
+                        <td style="width: 5%;">Qty</td>
+                        <td style="width: 5%;">Unit</td>
+                        <td style="width: 10%;">#</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="typeahead-http" type="text" [(ngModel)]="model" [ngbTypeahead]="search"
+                                [resultFormatter]="formatterProdList" [inputFormatter]="formatterProdInput" size="50%"
+                                placeholder="search product name" (selectItem)="getItem($event)" />
+                        </td>
+                        <td>
+                            {{hppAdded}}
+                        </td>
+                        <td>
+                            <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty">
+                        </td>
+                        <td>
+                            {{uomAddedName}}
+                        </td>
+                        <td *ngIf="adjustment">
+                            <button type="button" *ngIf="adjustment.status === 0" class="btn btn-outline-info btn-sm"
+                                (click)="addNewItem()">
+                                <i class="fa fa-check fa-lg"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="adjustment">
+            <!-- {{adjustmentDetails | json}} -->
+            <div style="height:350px; padding: 5px 15px 5px 15px; ">
+                <table class="table table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th *ngIf="adjustment"></th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Hpp</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let adjustmentDetail of adjustmentDetails">
+                            <td *ngIf="adjustment">
+                                <button type="button" *ngIf="adjustment.status === 10"
+                                    (click)="confirmDelItem(adjustmentDetail)" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-trash fa-lg"></i>
+                                </button>
+                            </td>
+                            <td>{{adjustmentDetail.product.name}}</td>
+                            <td>{{adjustmentDetail.hpp | number:'0.0-0' }}</td>
+                            <td>{{adjustmentDetail.qty | number:'0.0-0' }}</td>
+                            <td>{{ (adjustmentDetail.hpp * adjustmentDetail.qty )  | number:'0.0-0'  }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
+                (pageChange)="loadPage()" [boundaryLinks]="true">
+            </ngb-pagination>
+
+        </div>
+
+
+    </div>
+
+</div>
