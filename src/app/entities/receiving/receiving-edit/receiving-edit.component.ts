@@ -475,7 +475,7 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.supplier = null;
         this.receive.supplierId = this.supplierSelected.id;
         this.receive.receiveDate = this.getSelectedDate();
-        this.receive.supplierId = 0;
+        // this.receive.supplierId = 0;
         this.receiveService
             .save(this.receive)
             .subscribe(
@@ -547,6 +547,20 @@ export class ReceivingEditComponent implements OnInit {
             return false;
         }
         return true;
+    }
+
+    preview() {
+        this.receiveService
+            .preview(this.receive.id)
+            .subscribe(dataBlob => {
+
+                console.log('data blob ==> ', dataBlob);
+                const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+
+                window.open(objBlob);
+            });
+
     }
 
 }

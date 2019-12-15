@@ -80,6 +80,10 @@ export class ReceivingService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    preview(id: number):  Observable<Blob>  {
+        return this.http.post(`${this.serverUrl}/print/${id}`, {}, { responseType: 'blob' });
+    }
+
     private convert(receive: Receive): Receive {
         const copy: Receive = Object.assign({}, receive);
         return copy;
