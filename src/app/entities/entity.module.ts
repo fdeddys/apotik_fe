@@ -36,7 +36,7 @@ import { AdjustmentModule } from './adjustment/adjustment.module';
         ProductModule,
         SalesOrderModule,
         ReceivingModule,
-        AdjustmentModule
+        AdjustmentModule,
     ],
     entryComponents: [],
     providers: [],
