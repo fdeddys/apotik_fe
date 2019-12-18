@@ -16,6 +16,7 @@ import { SupplierModule } from './supplier/supplier.module';
 import { ProductModule } from './product/product.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
 import { ReceivingModule } from './receiving/receiving.module';
+import { AdjustmentModule } from './adjustment/adjustment.module';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { ReceivingModule } from './receiving/receiving.module';
         ProductModule,
         SalesOrderModule,
         ReceivingModule,
+        AdjustmentModule
     ],
     entryComponents: [],
     providers: [],
