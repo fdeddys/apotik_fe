@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
           resolve(data);
           if (data !== '') {
             // grecaptcha.reset();
-            this.router.navigate(['main']);
+            this.router.navigate(['main/supplier']);
             return null;
           } else {
             console.log('isi data --> ', data);
