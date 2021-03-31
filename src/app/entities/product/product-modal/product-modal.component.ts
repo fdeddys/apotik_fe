@@ -82,7 +82,7 @@ export class ProductModalComponent implements OnInit {
             filter: searchTerm
         });
         let lookupReq = this.lookupService.findByName({
-            groupName:  'SATUAN'
+            groupName:  'UOM'
         });
         let productGroupReq = this.productGroupService.filter({
             page: 1,
