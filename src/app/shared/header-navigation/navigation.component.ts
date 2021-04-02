@@ -4,6 +4,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserChangePasswordComponent } from 'src/app/entities/user/user-change-password.component';
+import { LoginService } from 'src/app/entities/login/login.service';
 
 @Component({
     selector: 'op-navigation',
@@ -15,7 +16,8 @@ export class NavigationComponent implements OnInit {
     constructor(private localStorage: LocalStorageService,
                 private router: Router,
                 private userService: UserService,
-                private modalService: NgbModal) { }
+                private modalService: NgbModal,
+                private loginService: LoginService) { }
 
     ngOnInit() {
     }
@@ -31,7 +33,8 @@ export class NavigationComponent implements OnInit {
     }
 
     logout() {
-        this.userService.logout();
+        this.loginService.logout();
+        // this.userService.logout();
         this.router.navigate(['']);
         this.localStorage.clear('token');
         // this.router.navigate(['/#/']);
