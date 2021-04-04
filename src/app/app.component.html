@@ -38,6 +38,21 @@
 <ng2-slim-loading-bar></ng2-slim-loading-bar>
 <div [@routeAnimation]="getAnimationData(routerOutlet)">
     <router-outlet>
+      <ngx-spinner
+        bdColor="rgba(51,51,51,0.8)"
+        size="large"
+        color="rgb(138, 157, 255)"
+        type="ball-scale-multiple"    
+      >
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <p style="font-size: 20px; color: rgb(185, 185, 252)">Loading...</p>
+    </ngx-spinner>
+
         <ngx-ui-loader></ngx-ui-loader>
         <op-spinner></op-spinner>
     </router-outlet>

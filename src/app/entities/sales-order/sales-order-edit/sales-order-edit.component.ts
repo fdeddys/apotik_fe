@@ -13,6 +13,7 @@ import { SalesOrderService } from '../sales-order.service';
 import { SalesOrderDetailService, EntityResponseType } from '../sales-order-detail.service';
 import Swal from 'sweetalert2';
 import { ThrowStmt } from '@angular/compiler';
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 @Component({
@@ -60,6 +61,7 @@ export class SalesOrderEditComponent implements OnInit {
         private http: HttpClient,
         private orderService: SalesOrderService,
         private orderDetailService: SalesOrderDetailService,
+        private spinner: NgxSpinnerService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -125,6 +127,7 @@ export class SalesOrderEditComponent implements OnInit {
 
     loadDataByOrderId(orderId: number) {
 
+        this.spinner.show();
         let orderReq = this.orderService.findById(orderId);
 
         let customerReq = this.customerService.filter({
@@ -144,6 +147,7 @@ export class SalesOrderEditComponent implements OnInit {
             this.processOrder(results[0]);
             this.processCustomer(results[1]);
             this.setCustomerDefault();
+            this.spinner.hide();
         });
 
         // this.orderService.findById(orderId)
