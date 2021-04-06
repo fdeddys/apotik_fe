@@ -17,6 +17,8 @@ import { ProductModule } from './product/product.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
 import { ReceivingModule } from './receiving/receiving.module';
 import { AdjustmentModule } from './adjustment/adjustment.module';
+import { WarehouseComponent } from './warehouse/warehouse.component';
+import { SalesmanComponent } from './salesman/salesman.component';
 
 @NgModule({
     imports: [
@@ -41,7 +43,7 @@ import { AdjustmentModule } from './adjustment/adjustment.module';
     entryComponents: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [],
+    declarations: [WarehouseComponent, SalesmanComponent],
     exports: []
 
 })

@@ -26,6 +26,12 @@
         <br>
         <div *ngIf="salesOrder">
             <table class="table table-sm table-striped">
+                <thead>
+                    <td style="width: 15%;"> </td>
+                    <td style="width: 35%;"> </td>
+                    <td style="width: 15%;"> </td>
+                    <td style="width: 35%;"> </td>
+                </thead>
                 <tbody style="color: cornflowerblue;">
                     <tr>
                         <td>Sales Order No</td>
@@ -38,10 +44,7 @@
                             <span style="color: blue;">
                                     {{ total | number:'0.0-0'}}
                             </span>
-                            <!-- <input type="text" size="50%" [(ngModel)]="total"> -->
-                           
                         </td>
-
                     </tr>
                     <tr>
                         <td>Date</td>
@@ -84,41 +87,64 @@
                     <tr>
                         <td>Salesman</td>
                         <td>
-                            <span *ngIf="salesOrder">
-                                <span *ngIf="salesOrder.salesman">
-                                        {{salesOrder.salesman.firstName}}  {{salesOrder.salesman.lastName }}
-
-                                </span>
+                            <span *ngIf="salesmans">
+                                <select id="select-type-basic" [(ngModel)]="salesmanSelected" style="width: 80%;">
+                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id">
+                                    {{salesman.name}}
+                                    </option>
+                                </select>
+                                [ {{salesmanSelected}} ] 
                             </span>
                         </td>
                         <td></td>
                         <td></td>
                     </tr>
+                    
+                    <tr>
+                        <td>Warehouse</td>
+                        <td >
+                            <span *ngIf="warehouses" >
+                                <select id="select-type-basic" [(ngModel)]="warehouseSelected" style="width: 80%;"  >
+                                    <option *ngFor="let warehouse of warehouses" [value]="warehouse.id" >
+                                    {{warehouse.name}}
+                                    </option>
+                                </select>
+                            </span>
+                            [ {{warehouseSelected}} ]
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>
         <hr>
         <div>
             <table class="table table-sm table-striped">
-                <tbody style="color: hotpink; background-color: ghostwhite;">
+                <thead>
                     <tr>
-                        <td style="width: 30%;">Product</td>
+                        <td style="width: 20%;">Product</td>
                         <td style="width: 15%;">Price</td>
-                        <td style="width: 5%;">Qty</td>
-                        <td style="width: 5%;">Unit</td>
-                        <td style="width: 15%;">Disc</td>
+                        <td style="width:  5%;">Qty</td>
+                        <td style="width:  5%;">Unit</td>
+                        <td style="width: 15%;">Disc 1 [%]</td>
+                        <td style="width: 15%;">Disc 2 [%]</td>
                         <td style="width: 20%;">Total</td>
                         <td style="width: 10%;">#</td>
                     </tr>
+
+                </thead>
+                <tbody style="color: hotpink; background-color: ghostwhite;">
                     <tr>
                         <td>
                             <input id="typeahead-http" type="text" [(ngModel)]="model" 
                                 [ngbTypeahead]="search"
                                 [resultFormatter]="formatterProdList" 
                                 [inputFormatter]="formatterProdInput" 
-                                size="50%"
                                 placeholder="search product name" 
                                 (selectItem)="getItem($event)"
+                                size="50%"
                                 /> 
                                 <!-- [ {{productNameAdded}} ] -->
                                 <!-- {{model | json}} -->
@@ -143,6 +169,9 @@
                             <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
                         </td>
                         <td>
+                            <input type="number" [(ngModel)]="disc2Added " placeholder="input disc" >
+                        </td>
+                        <td>
                             <!-- <input type="number" readonly> -->
                             {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
                         </td>
@@ -161,13 +190,14 @@
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
-                            <th *ngIf ="salesOrder"></th>
-                            <th scope="col">Product</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Qty</th>
-                            <th scope="col">Unit</th>
-                            <th scope="col">Disc</th>
-                            <th scope="col">Total</th>
+                            <th *ngIf ="salesOrder" style="width: 5%;"></th>
+                            <th scope="col" style="width: 20%;">Product</th>
+                            <th scope="col" style="width: 10%;">Price</th>
+                            <th scope="col" style="width: 10%;">Qty</th>
+                            <th scope="col" style="width: 10%;">Unit</th>
+                            <th scope="col" style="width: 10%;">Disc 1[%]</th>
+                            <th scope="col" style="width: 10%;">Disc 2[%]</th>
+                            <th scope="col" style="width: 10%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -179,10 +209,12 @@
                             </td>
                             <td>{{salesOrderDetail.product.name}}</td>
                             <td>{{salesOrderDetail.price | number:'0.0-0' }}</td>
-                            <td>{{salesOrderDetail.qty | number:'0.0-0' }}</td>
+                            <td>{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
                             <td>{{salesOrderDetail.uom.name}}</td>
-                            <td>{{salesOrderDetail.disc  }}</td>
-                            <td>{{ (salesOrderDetail.price * salesOrderDetail.qty ) - salesOrderDetail.disc | number:'0.0-0'  }}</td>
+                            <td>{{salesOrderDetail.disc1  }}</td>
+                            <td>{{salesOrderDetail.disc2  }}</td>
+                            <td>{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
+                            <!-- <td>{{ (salesOrderDetail.price * salesOrderDetail.qtyOrder ) - salesOrderDetail.disc1 | number:'0.0-0'  }}</td> -->
                         </tr>
                     </tbody>
                 </table>

@@ -2,6 +2,8 @@ import { Customer} from '../customer/customer.model';
 import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
+import { Warehouse } from '../warehouse/warehouse.model';
+import { Salesman } from '../salesman/salesman.model';
 
 export class SalesOrder {
     constructor(
@@ -11,6 +13,9 @@ export class SalesOrder {
 
         public customerId?: number,
         public customer?: Customer,
+
+        public warehouseId?: number,
+        public warehouse?: Warehouse,
 
         public note?: string,
         public tax?: number,
@@ -56,9 +61,12 @@ export class SalesOrderDetail {
         public productId?: number,
         public product?: Product,
 
-        public qty?: number,
+        public qtyOrder?: number,
+        public qtyPicking?: number,
+        public qtyReceive?: number,
         public price?: number,
-        public disc?: number,
+        public disc1?: number,
+        public disc2?: number,
 
         public uomId?: number,
         public uom?: Lookup,

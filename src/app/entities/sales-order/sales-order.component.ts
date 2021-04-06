@@ -6,6 +6,7 @@ import { SalesOrderService } from './sales-order.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SalesOrder, SalesOrderPageDto } from './sales-order.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
     selector: 'op-sales-order',
@@ -27,6 +28,7 @@ export class SalesOrderComponent implements OnInit {
         private route: Router,
         private salesOrderService: SalesOrderService,
         private location: Location,
+        private spinner: NgxSpinnerService,
     ) { }
 
     ngOnInit() {
@@ -38,6 +40,7 @@ export class SalesOrderComponent implements OnInit {
     }
 
     loadAll(page) {
+        this.spinner.show();
         this.salesOrderService.filter({
             filter: this.searchTerm,
             page: page,
@@ -45,7 +48,9 @@ export class SalesOrderComponent implements OnInit {
         }).subscribe(
             (res: HttpResponse<SalesOrderPageDto[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
-            () => { }
+            () => {
+                this.spinner.hide();
+             }
         );
         console.log(page);
         // console.log(this.brand);
