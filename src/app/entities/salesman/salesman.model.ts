@@ -1,4 +1,14 @@
 
+
+export class SupplierDto {
+    constructor(
+        public errCode?: string,
+        public errDesc?: string,
+        public contents?: Salesman[],
+    ) {}
+}
+
+
 export class Salesman {
     constructor(
         public id?: number,
@@ -7,8 +17,6 @@ export class Salesman {
         public description?: string,
         public status ?: number,
 
-        public errCode?: string,
-        public errDesc?: string,
     ) {
     }
 }

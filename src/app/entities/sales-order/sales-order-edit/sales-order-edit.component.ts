@@ -14,6 +14,10 @@ import { SalesOrderDetailService, EntityResponseType } from '../sales-order-deta
 import Swal from 'sweetalert2';
 import { ThrowStmt } from '@angular/compiler';
 import { NgxSpinnerService } from "ngx-spinner";
+import { Salesman, SupplierDto } from '../../salesman/salesman.model';
+import { SalesmanService } from '../../salesman/salesman.service';
+import { WarehouseService } from '../../warehouse/warehouse.service';
+import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 
 
 @Component({
@@ -33,6 +37,10 @@ export class SalesOrderEditComponent implements OnInit {
      */
     customers: Customer[];
     customerSelected: Customer;
+    salesmans: Salesman[];
+    salesmanSelected: number;
+    warehouses: Warehouse[];
+    warehouseSelected: number;
 
     total: number;
     grandTotal: number;
@@ -50,6 +58,7 @@ export class SalesOrderEditComponent implements OnInit {
     productNameAdded = '';
     priceAdded = 0;
     discAdded = 0;
+    disc2Added = 0;
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
@@ -62,6 +71,8 @@ export class SalesOrderEditComponent implements OnInit {
         private orderService: SalesOrderService,
         private orderDetailService: SalesOrderDetailService,
         private spinner: NgxSpinnerService,
+        private salesmanService: SalesmanService,
+        private warehouseService: WarehouseService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -103,8 +114,11 @@ export class SalesOrderEditComponent implements OnInit {
     loadData(orderId: number) {
 
         console.log('id ==>?', orderId);
+
+        this.loadCustomer();
+        this.loadSalesman();
+        this.loadWarehouse();
         if (orderId === 0) {
-            this.loadCustomer();
             this.loadNewData();
             return;
         }
@@ -147,6 +161,7 @@ export class SalesOrderEditComponent implements OnInit {
             this.processOrder(results[0]);
             this.processCustomer(results[1]);
             this.setCustomerDefault();
+            this.setWarehouseSalesmanSelected();
             this.spinner.hide();
         });
 
@@ -174,7 +189,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.total = 0;
 
         this.salesOrderDetails.forEach(salesOrderDetail => {
-            this.total = this.total + ( (salesOrderDetail.price * salesOrderDetail.qty) - salesOrderDetail.disc);
+            // this.total = this.total + ( (salesOrderDetail.price * salesOrderDetail.qtyOrder) - salesOrderDetail.disc1);
+            this.total += this.getTotal(salesOrderDetail)
         });
 
         this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
@@ -193,6 +209,11 @@ export class SalesOrderEditComponent implements OnInit {
         console.log('set selected customer =>', this.customerSelected );
     }
 
+    setWarehouseSalesmanSelected() {
+        this.salesmanSelected = this.salesOrder.salesmanId;
+        this.warehouseSelected = this.salesOrder.warehouseId;
+    }
+
     loadCustomer() {
         this.customerService.filter({
             page: 1,
@@ -208,11 +229,39 @@ export class SalesOrderEditComponent implements OnInit {
                     return;
                 }
                 this.customers = response.body.contents;
-                if (this.salesOrder.id === 0) {
-                    this.salesOrder.customer = this.customers[0];
-                    this.setCustomerDefault();
-                }
+                
             });
+    }
+
+    loadSalesman() {
+        this.salesmanService
+            .getSalesman()
+            .subscribe(
+                (response: HttpResponse<SupplierDto>) => {
+                    if (response.body.errCode != "00") {
+                        Swal.fire('error',"Failed get data salesman", "error");
+                        return ;
+                    }
+                    this.salesmans = response.body.contents;
+                    
+                }
+            );
+    }
+
+    loadWarehouse() {
+        this.warehouseService
+            .getWarehouse()
+            .subscribe(
+                (response: HttpResponse<WarehouseDto>) => {
+                    if (response.body.errCode != "00") {
+                        Swal.fire('error',"Failed get data salesman", "error");
+                        return ;
+                    }
+                    this.warehouses = response.body.contents;
+                    // .filter(items => items.whOut ==1 );
+                   
+                }
+            );
     }
 
     checkTax() {
@@ -236,15 +285,26 @@ export class SalesOrderEditComponent implements OnInit {
                             .indexOf(term.toLowerCase()) > -1
                     )
                     .slice(0, 10))
-        )
+    )
 
-
-
+    // searchSalesman = (text$: Observable<string>) =>
+    //     text$.pipe(
+    //         debounceTime(200),
+    //         distinctUntilChanged(),
+    //         map(term => term === '' ? []
+    //             : this.salesmans.filter
+    //                 (v =>
+    //                     v.name
+    //                         .toLowerCase()
+    //                         .indexOf(term.toLowerCase()) > -1
+    //                 )
+    //                 .slice(0, 10))
+    // )
     // formatterProd = (result: { name: string }) => result.name.toUpperCase();
 
     search = (text$: Observable<string>) => {
         return text$.pipe(
-            debounceTime(200),
+            debounceTime(500),
             distinctUntilChanged(),
             // tap(() => this.searching = true),
             switchMap((term) => this.searchProd(term)
@@ -266,7 +326,7 @@ export class SalesOrderEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/1000`;
+        const newresourceUrl = serverUrl + `/page/1/count/10`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(
@@ -301,33 +361,39 @@ export class SalesOrderEditComponent implements OnInit {
         }
 
         if (this.checkInputNumberValid() === false ) {
-            Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0 ! ', 'error');
+            Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0, disc max 100% ! ', 'error');
             return ;
         }
 
        let orderDetail = this.composeOrderDetail();
 
+       this.spinner.show();
        this.orderDetailService
             .save(orderDetail)
             .subscribe(
                 (res => {
+                    this.spinner.hide();
                     if (res.body.errCode === '00') {
                         this.reloadDetail(this.salesOrder.id);
+                       
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
-                })
+                }),
+                () => {
+                    this.spinner.hide();
+                },
             );
-
     }
 
     composeOrderDetail(): SalesOrderDetail {
         let orderDetail = new SalesOrderDetail();
         orderDetail.salesOrderId = this.salesOrder.id;
-        orderDetail.disc = this.discAdded;
+        orderDetail.disc1 = this.discAdded;
+        orderDetail.disc2 = this.disc2Added;
         orderDetail.price = this.priceAdded;
         orderDetail.productId = this.productIdAdded;
-        orderDetail.qty = this.qtyAdded;
+        orderDetail.qtyOrder = this.qtyAdded;
         orderDetail.uomId = this.uomAdded;
         return orderDetail;
     }
@@ -350,16 +416,31 @@ export class SalesOrderEditComponent implements OnInit {
             return false;
         }
 
+        if ( this.discAdded >100 ) {
+            // result = false;
+            return false;
+        }
+
+        if ((isNaN(this.disc2Added)) || (this.disc2Added === null) ) {
+            // result = false;
+            return false;
+        }
+
+        if ( this.disc2Added >100 ) {
+            // result = false;
+            return false;
+        }
+
         if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
             return false;
         }
 
-        if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
-            // result = false;
-            return false;
-        }
+        // if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
+        //     // result = false;
+        //     return false;
+        // }
 
         return true;
     }
@@ -407,6 +488,7 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     reloadDetail(orderId: number) {
+        this.spinner.show();
         this.orderDetailService
             .findByOrderId({
                 count: 10,
@@ -415,9 +497,16 @@ export class SalesOrderEditComponent implements OnInit {
                     orderId: orderId,
                 }
             }).subscribe(
-                (res: HttpResponse<SalesOrderDetailPageDto>) => this.fillDetail(res),
-                (res: HttpErrorResponse) => console.log(res.message),
-                () => {}
+                (res: HttpResponse<SalesOrderDetailPageDto>) => 
+                    {
+                        this.fillDetail(res),
+                        this.spinner.hide();
+                    },
+                (res: HttpErrorResponse) =>{
+                    console.log(res.message),
+                    this.spinner.hide();
+                    },
+                
             );
     }
 
@@ -437,6 +526,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.productNameAdded = null;
         this.uomAdded = 0;
         this.qtyAdded = 1;
+        this.discAdded =0;
+        this.disc2Added =0;
         this.model = null;
         this.uomAddedName = '';
     }
@@ -459,6 +550,7 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     delItem(idDetail: number) {
+        this.spinner.show();
         this.orderDetailService
             .deleteById(idDetail)
             .subscribe(
@@ -470,6 +562,10 @@ export class SalesOrderEditComponent implements OnInit {
                         Swal.fire('Failed', 'Data failed cancelled', 'info');
                     }
                 },
+                () => {},
+                () => {
+                    this.spinner.hide();
+                }
             );
     }
 
@@ -483,20 +579,32 @@ export class SalesOrderEditComponent implements OnInit {
         this.salesOrder.id = 0;
         this.salesOrder.status = 0;
         this.salesOrderDetails = [];
-        this.setToday() ;
-        this.clearDataAdded();
-        if (this.customers !== undefined) {
-            console.log('this customers xxx ', this.salesOrder.customer);
+        if (this.warehouses.length>0) {
+            this.warehouseSelected = this.warehouses[0].id;
+        }
+        if (this.salesmans.length >0 ) {
+            this.salesmanSelected = this.salesmans[0].id;
+        }
+        if (this.customers.length > 0) {
             this.salesOrder.customer = this.customers[0];
             this.setCustomerDefault();
         }
+        this.setToday() ;
+        this.clearDataAdded();
+        // if (this.customers !== undefined) {
+        //     console.log('this customers xxx ', this.salesOrder.customer);
+        //     this.salesOrder.customer = this.customers[0];
+        //     this.setCustomerDefault();
+        // }
     }
 
     saveHdr() {
+        this.spinner.show();
         this.salesOrder.customer = null;
         this.salesOrder.customerId = this.customerSelected.id;
+        this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
-        this.salesOrder.salesmanId = 0;
+        this.salesOrder.salesmanId = +this.salesmanSelected;
         this.orderService
             .save(this.salesOrder)
             .subscribe(
@@ -508,7 +616,11 @@ export class SalesOrderEditComponent implements OnInit {
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
-                })
+                }),
+                () => {},
+                () => {
+                    this.spinner.hide();
+                }
             );
     }
 
@@ -542,7 +654,6 @@ export class SalesOrderEditComponent implements OnInit {
                 }
             });
     }
-
 
     approveProccess() {
         this.orderService.approve(this.salesOrder)
@@ -612,6 +723,18 @@ export class SalesOrderEditComponent implements OnInit {
 
                 window.open(objBlob);
             });
+
+    }
+
+    getTotal(salesOrderDetail : SalesOrderDetail){
+
+        var total : number;
+
+        total = salesOrderDetail.price * salesOrderDetail.qtyOrder;
+        total = total - ( total * salesOrderDetail.disc1 /100)
+        total = total - ( total * salesOrderDetail.disc2 /100)
+
+        return total;
 
     }
 
