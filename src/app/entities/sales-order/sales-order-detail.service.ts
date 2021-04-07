@@ -42,6 +42,16 @@ export class SalesOrderDetailService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    updateQtyRecvItem(idDetail: number, qtyReceive: number): Observable<HttpResponse<SalesOrderDetail>> {
+
+        let newresourceUrl = this.serverUrl + `/updateItemRecv`;
+        let copy = {
+            "orderDetailId":idDetail,
+            "qtyReceive":qtyReceive,
+        }
+        return this.http.post<SalesOrderDetail>(newresourceUrl, copy, { observe: 'response'});
+    }
+
     deleteById(id: number): Observable<SalesOrderDetail> {
 
         const newresourceUrl = this.serverUrl + `/${id}`;

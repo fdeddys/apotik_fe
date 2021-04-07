@@ -229,7 +229,6 @@ export class SalesOrderEditComponent implements OnInit {
                     return;
                 }
                 this.customers = response.body.contents;
-                
             });
     }
 
@@ -242,8 +241,7 @@ export class SalesOrderEditComponent implements OnInit {
                         Swal.fire('error',"Failed get data salesman", "error");
                         return ;
                     }
-                    this.salesmans = response.body.contents;
-                    
+                    this.salesmans = response.body.contents;   
                 }
             );
     }
@@ -259,7 +257,6 @@ export class SalesOrderEditComponent implements OnInit {
                     }
                     this.warehouses = response.body.contents;
                     // .filter(items => items.whOut ==1 );
-                   
                 }
             );
     }
@@ -569,6 +566,59 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
+    confirmUpdateItem(salesOrderDetail: SalesOrderDetail) {
+
+        if (salesOrderDetail.qtyReceive > salesOrderDetail.qtyOrder ) {
+            Swal.fire({
+                title : 'Confirm',
+                text : 'Qty Receive [' + salesOrderDetail.qtyReceive + '] bigger than qty Receive [ ' + salesOrderDetail.qtyOrder + ' ] not allowed !',
+                type : 'error',
+                confirmButtonText : 'Ok'
+            })
+            return
+        } 
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to Update from [' + salesOrderDetail.qtyOrder + '] to [ ' + salesOrderDetail.qtyReceive + ' ] ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.updateQtyRecvItem(salesOrderDetail.id, salesOrderDetail.qtyReceive );
+                }
+            });
+    }
+
+    updateQtyRecvItem(idDetail: number, qtyReceive: number) {
+        this.spinner.show();
+        this.orderDetailService
+            .updateQtyRecvItem(idDetail, qtyReceive)
+            .subscribe(
+                (res: HttpResponse<SalesOrderDetail>) => {
+                    this.spinner.hide();
+                    if (res.body.errCode === '00') {
+                        Swal.fire('Success', 'Data cancelled', 'info');
+                        this.reloadDetail(this.salesOrder.id);
+                    } else {
+                        Swal.fire('Failed', 'Data failed cancelled', 'info');
+                    }
+                },
+                () => {
+                    this.spinner.hide();
+                },
+                () => {
+                    this.spinner.hide();
+                }
+            );
+    }
+
+    
+
     addNew() {
         this.total = 0;
         this.grandTotal = 0;
@@ -656,16 +706,25 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     approveProccess() {
+        this.spinner.show();
+        this.salesOrder.customer = null;
+        this.salesOrder.customerId = this.customerSelected.id;
+        this.salesOrder.warehouseId = +this.warehouseSelected;
+        this.salesOrder.orderDate = this.getSelectedDate();
+        this.salesOrder.salesmanId = +this.salesmanSelected;
         this.orderService.approve(this.salesOrder)
             .subscribe(
                 (res) => {
+                    this.spinner.hide();
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
                         this.router.navigate(['/main/sales-order']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
-                }
+                },
+                () => { this.spinner.hide()},
+                () => {  }
             );
     }
 
@@ -713,13 +772,14 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     preview() {
+        this.spinner.show();
         this.orderService
             .preview(this.salesOrder.id)
             .subscribe(dataBlob => {
-
                 console.log('data blob ==> ', dataBlob);
                 const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
                 const objBlob = window.URL.createObjectURL(newBlob);
+                this.spinner.hide();
 
                 window.open(objBlob);
             });

@@ -12,10 +12,10 @@
             <button type="button"  *ngIf="salesOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+            <button type="button" *ngIf="salesOrder.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
                 <i class="fa fa-times fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview
+            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview SO
                 <i class="fa fa-print fa-lg"></i>
             </button>
             <button type="button" class="btn btn-outline-info btn-sm" (click)="backToLIst()">Back
@@ -146,13 +146,6 @@
                                 (selectItem)="getItem($event)"
                                 size="50%"
                                 /> 
-                                <!-- [ {{productNameAdded}} ] -->
-                                <!-- {{model | json}} -->
-                                <!--  -->
-                            <!-- <ng-template #rt let-r="result" let-t="term">
-                                            <ngb-highlight [result]="r.name" [term]="model"></ngb-highlight>
-                                            <span>({{r.name}})</span>
-                                            </ng-template> -->
                         </td>
                         <td>
                             <input type="number" [(ngModel)]="priceAdded"  >
@@ -194,6 +187,7 @@
                             <th scope="col" style="width: 20%;">Product</th>
                             <th scope="col" style="width: 10%;">Price</th>
                             <th scope="col" style="width: 10%;">Qty</th>
+                            <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th>
                             <th scope="col" style="width: 10%;">Unit</th>
                             <th scope="col" style="width: 10%;">Disc 1[%]</th>
                             <th scope="col" style="width: 10%;">Disc 2[%]</th>
@@ -206,10 +200,17 @@
                                 <button type="button" *ngIf="salesOrder.status === 10"  (click)="confirmDelItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
                                 </button>
+                                <button type="button" *ngIf="salesOrder.status === 20"  (click)="confirmUpdateItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-check fa-lg"></i>
+                                </button>
                             </td>
                             <td>{{salesOrderDetail.product.name}}</td>
                             <td>{{salesOrderDetail.price | number:'0.0-0' }}</td>
                             <td>{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
+                            <td *ngIf="salesOrder.status === 20" >
+                                <input type="number" [(ngModel)]="salesOrderDetail.qtyReceive " placeholder="input disc" >
+                                <!-- {{salesOrderDetail.qtyReceive | number:'0.0-0' }} -->
+                            </td>
                             <td>{{salesOrderDetail.uom.name}}</td>
                             <td>{{salesOrderDetail.disc1  }}</td>
                             <td>{{salesOrderDetail.disc2  }}</td>

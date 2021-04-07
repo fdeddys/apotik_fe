@@ -81,7 +81,7 @@ export class SalesOrderService {
     }
 
     preview(id: number):  Observable<Blob>  {
-        return this.http.post(`${this.serverUrl}/invoice/${id}`, {}, { responseType: 'blob' });
+        return this.http.post(`${this.serverUrl}/print/so/${id}`, {}, { responseType: 'blob' });
     }
 
     private convert(salesOrder: SalesOrder): SalesOrder {
