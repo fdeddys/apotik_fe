@@ -3,13 +3,16 @@ import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BrandPageDto, Brand } from './brand.model';
-import { EntityResponseType } from '../user/user.service';
 import { map } from 'rxjs/operators';
+
+export type EntityResponseType = HttpResponse<Brand>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrandService {
+
+
 
     private serverUrl = SERVER_PATH + 'brand';
     constructor(private http: HttpClient) { }

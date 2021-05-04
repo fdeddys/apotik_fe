@@ -20,3 +20,13 @@ export class Warehouse {
     ) {
     }
 }
+
+export class WarehousePageDto {
+    constructor(
+        public totalRow?: number,
+        public page?: number,
+        public count?: number,
+        public contents?: Warehouse[],
+        public error?: string,
+    ) {}
+}

@@ -14,7 +14,7 @@ import { SalesOrderDetailService, EntityResponseType } from '../sales-order-deta
 import Swal from 'sweetalert2';
 import { ThrowStmt } from '@angular/compiler';
 import { NgxSpinnerService } from "ngx-spinner";
-import { Salesman, SupplierDto } from '../../salesman/salesman.model';
+import { Salesman, SalesmanDto } from '../../salesman/salesman.model';
 import { SalesmanService } from '../../salesman/salesman.service';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
@@ -236,7 +236,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.salesmanService
             .getSalesman()
             .subscribe(
-                (response: HttpResponse<SupplierDto>) => {
+                (response: HttpResponse<SalesmanDto>) => {
                     if (response.body.errCode != "00") {
                         Swal.fire('error',"Failed get data salesman", "error");
                         return ;

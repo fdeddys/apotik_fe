@@ -25,6 +25,8 @@ import { SalesOrderPaymentComponent } from './entities/sales-order-payment/sales
 import { SalesOrderReturnComponent } from './entities/sales-order-return/sales-order-return.component';
 import { SalesOrderReturnDetail } from './entities/sales-order-return/sales-order-return.model';
 import { SalesOrderReturnEditComponent } from './entities/sales-order-return/sales-order-return-edit/sales-order-return-edit.component';
+import { SalesmanComponent } from './entities/salesman/salesman.component';
+import { WarehouseComponent } from './entities/warehouse/warehouse.component';
 
 
 const routes: Routes = [
@@ -51,6 +53,8 @@ const routes: Routes = [
                     { path: 'access-matrix', component: AccessMatrixComponent },
                     { path: 'supplier', component: SupplierComponent },
                     { path: 'product', component: ProductComponent },
+                    { path: 'salesman', component: SalesmanComponent },
+                    { path: 'warehouse', component: WarehouseComponent },
                     { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order' }  },
                     { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},

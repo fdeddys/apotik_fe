@@ -17,10 +17,12 @@ import { ProductModule } from './product/product.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
 import { ReceivingModule } from './receiving/receiving.module';
 import { AdjustmentModule } from './adjustment/adjustment.module';
-import { WarehouseComponent } from './warehouse/warehouse.component';
-import { SalesmanComponent } from './salesman/salesman.component';
+
 import { SalesOrderPaymentModule } from './sales-order-payment/sales-order-payment.module';
 import { SalesOrderReturnModule } from './sales-order-return/sales-order-return.module';
+
+import { SalesmanModule } from './salesman/salesman.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
 
 @NgModule({
     imports: [
@@ -43,11 +45,13 @@ import { SalesOrderReturnModule } from './sales-order-return/sales-order-return.
         AdjustmentModule,
         SalesOrderPaymentModule,
         SalesOrderReturnModule,
+        SalesmanModule,
+        WarehouseModule
     ],
     entryComponents: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [WarehouseComponent, SalesmanComponent],
+    declarations: [],
     exports: []
 
 })

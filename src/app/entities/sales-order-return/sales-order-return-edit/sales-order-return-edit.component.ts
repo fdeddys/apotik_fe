@@ -12,7 +12,7 @@ import { Customer, CustomerPageDto } from '../../customer/customer.model';
 import { CustomerService } from '../../customer/customer.service';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { SalesOrderDetailPageDto } from '../../sales-order/sales-order.model';
-import { Salesman, SupplierDto } from '../../salesman/salesman.model';
+import { Salesman, SalesmanDto } from '../../salesman/salesman.model';
 import { SalesmanService } from '../../salesman/salesman.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import { WarehouseService } from '../../warehouse/warehouse.service';
@@ -246,7 +246,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
         this.salesmanService
             .getSalesman()
             .subscribe(
-                (response: HttpResponse<SupplierDto>) => {
+                (response: HttpResponse<SalesmanDto>) => {
                     if (response.body.errCode != "00") {
                         Swal.fire('error',"Failed get data salesman", "error");
                         return ;
