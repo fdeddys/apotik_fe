@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
-import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-import { SalesOrderPageDto, SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from './sales-order.model';
+import { flatMap, map } from 'rxjs/operators';
+import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
+import { SalesOrderReturn, SalesOrderReturnDetail, SalesOrderReturnDetailPageDto, SalesOrderReturnPageDto } from './sales-order-return.model';
 
-export type EntityResponseType = HttpResponse<SalesOrder>;
+export type EntityResponseType = HttpResponse<SalesOrderReturn>;
+
 
 @Injectable({
     providedIn: 'root'
 })
-export class SalesOrderService {
+export class SalesOrderReturnService {
 
-    private serverUrl = SERVER_PATH + 'sales-order';
+    private serverUrl = SERVER_PATH + 'return-sales-order';
     constructor(private http: HttpClient) { }
 
-    filter(req?: any): Observable<HttpResponse<SalesOrderPageDto[]>> {
+    filter(req?: any): Observable<HttpResponse<SalesOrderReturnPageDto[]>> {
         let pageNumber = null;
         let pageCount = null;
         let newresourceUrl = null;
@@ -31,14 +32,14 @@ export class SalesOrderService {
 
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
-        return this.http.post<SalesOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+        return this.http.post<SalesOrderReturnPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
     findById(id: number): Observable<any> {
 
-        const pathOrderDetailUrl = SERVER_PATH + 'sales-order-detail';
+        const pathOrderDetailUrl = SERVER_PATH + 'return-sales-order-detail';
 
-        return this.http.get<SalesOrder>(`${this.serverUrl}/${id}`)
+        return this.http.get<SalesOrderReturnDetail>(`${this.serverUrl}/${id}`)
             .pipe(
                 // map((salesOrder: any) => salesOrder),
                 flatMap(
@@ -47,7 +48,7 @@ export class SalesOrderService {
                             OrderNo : '',
                             orderId : salesOrder.id,
                         };
-                        return this.http.post<SalesOrderDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/1000`, 
+                        return this.http.post<SalesOrderReturnDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/1000`, 
                             filter, { observe: 'response' })
                             .pipe(
                                 map( (resDetail) => {
@@ -62,15 +63,15 @@ export class SalesOrderService {
         // .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    save(salesOrder: SalesOrder): Observable<EntityResponseType> {
-        const copy = this.convert(salesOrder);
-        return this.http.post<SalesOrder>(`${this.serverUrl}`, copy, { observe: 'response'})
+    save(salesOrderReturn: SalesOrderReturn): Observable<EntityResponseType> {
+        const copy = this.convert(salesOrderReturn);
+        return this.http.post<SalesOrderReturn>(`${this.serverUrl}`, copy, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    approve(salesOrder: SalesOrder): Observable<EntityResponseType> {
-        const copy = this.convert(salesOrder);
-        return this.http.post<SalesOrder>(`${this.serverUrl}/approve`, copy, { observe: 'response'})
+    approve(salesOrderReturn: SalesOrderReturn): Observable<EntityResponseType> {
+        const copy = this.convert(salesOrderReturn);
+        return this.http.post<SalesOrderReturn>(`${this.serverUrl}/approve`, copy, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
@@ -79,39 +80,32 @@ export class SalesOrderService {
         var bodyReq = {
             'orderId' : orderId
         }
-        return this.http.post<SalesOrder>(`${this.serverUrl}/create-invoice`, bodyReq, { observe: 'response'})
+        return this.http.post<SalesOrderReturn>(`${this.serverUrl}/create-invoice`, bodyReq, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    reject(salesOrder: SalesOrder): Observable<EntityResponseType> {
+    reject(salesOrder: SalesOrderReturn): Observable<EntityResponseType> {
         const copy = this.convert(salesOrder);
-        return this.http.post<SalesOrder>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
+        return this.http.post<SalesOrderReturn>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
     preview(id: number, tipeReport: string):  Observable<Blob>  {
-
-        if (tipeReport == 'so') {
-            return this.http.post(`${this.serverUrl}/print/so/${id}`, {}, { responseType: 'blob' });
-        }
-
-        if (tipeReport == 'invoice') {
-            return this.http.post(`${this.serverUrl}/print/invoice/${id}`, {}, { responseType: 'blob' });
-        }
+        return this.http.post(`${this.serverUrl}/print/${id}`, {}, { responseType: 'blob' });
     }
 
-    private convert(salesOrder: SalesOrder): SalesOrder {
-        const copy: SalesOrder = Object.assign({}, salesOrder);
+    private convert(salesOrderReturn: SalesOrderReturn): SalesOrderReturn {
+        const copy: SalesOrderReturn = Object.assign({}, salesOrderReturn);
         return copy;
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: SalesOrder = this.convertItemFromServer(res.body);
+        const body: SalesOrderReturn = this.convertItemFromServer(res.body);
         return res.clone({body});
     }
 
-    private convertItemFromServer(salesOrder: SalesOrder): SalesOrder {
-        const copyOb: SalesOrder = Object.assign({}, salesOrder);
+    private convertItemFromServer(salesOrderReturn: SalesOrderReturn): SalesOrderReturn {
+        const copyOb: SalesOrderReturn = Object.assign({}, salesOrderReturn);
         return copyOb;
     }
 }

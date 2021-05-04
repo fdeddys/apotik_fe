@@ -21,6 +21,10 @@ import { ReceivingComponent } from './entities/receiving/receiving.component';
 import { ReceivingEditComponent } from './entities/receiving/receiving-edit/receiving-edit.component';
 import { AdjustmentComponent } from './entities/adjustment/adjustment.component';
 import { AdjustmentEditComponent } from './entities/adjustment/adjustment-edit/adjustment-edit.component';
+import { SalesOrderPaymentComponent } from './entities/sales-order-payment/sales-order-payment.component';
+import { SalesOrderReturnComponent } from './entities/sales-order-return/sales-order-return.component';
+import { SalesOrderReturnDetail } from './entities/sales-order-return/sales-order-return.model';
+import { SalesOrderReturnEditComponent } from './entities/sales-order-return/sales-order-return-edit/sales-order-return-edit.component';
 
 
 const routes: Routes = [
@@ -50,8 +54,11 @@ const routes: Routes = [
                     { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order' }  },
                     { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
-                    { path: 'purchase', component: ReceivingComponent },
-                    { path: 'purchase/:id', component: ReceivingEditComponent },
+                    { path: 'sales-order-payment', component: SalesOrderPaymentComponent },
+                    { path: 'sales-order-return', component: SalesOrderReturnComponent },
+                    { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent },
+                    { path: 'receive', component: ReceivingComponent },
+                    { path: 'receive/:id', component: ReceivingEditComponent },
                     { path: 'adjustment', component: AdjustmentComponent },
                     { path: 'adjustment/:id', component: AdjustmentEditComponent },
                     { path: '**', component: Page404Component },

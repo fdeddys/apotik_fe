@@ -79,7 +79,10 @@
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td><input type="text" readonly size="50%" [(ngModel)]="receive.status"> </td>
+                            <td>
+                                {{getStatus(receive.status)}}
+                                <!-- <input type="text" readonly size="50%" [(ngModel)]="receive.status">  -->
+                            </td>
                             <td>Note</td>
                             <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
                         </tr>
@@ -156,7 +159,7 @@
                                 <th scope="col">Price</th>
                                 <th scope="col">Qty</th>
                                 <th scope="col">Unit</th>
-                                <th scope="col">Disc</th>
+                                <th scope="col">Disc [%]</th>
                                 <th scope="col">Total</th>
                             </tr>
                         </thead>
@@ -171,8 +174,8 @@
                                 <td>{{receiveDetail.price | number:'0.0-0' }}</td>
                                 <td>{{receiveDetail.qty | number:'0.0-0' }}</td>
                                 <td>{{receiveDetail.uom.name}}</td>
-                                <td>{{receiveDetail.disc  }}</td>
-                                <td>{{ (receiveDetail.price * receiveDetail.qty ) - receiveDetail.disc | number:'0.0-0'  }}</td>
+                                <td>{{receiveDetail.disc1  }}</td>
+                                <td>{{ receiveDetail.price * receiveDetail.qty * ((100 - receiveDetail.disc1 ) /100)   | number:'0.0-0'  }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -1,26 +1,35 @@
-import { Customer} from '../customer/customer.model';
-import { User } from '../user/user.model';
-import { Product } from '../product/product.model';
-import { Lookup } from '../lookup/lookup.model';
-import { Supplier } from '../supplier/supplier.model';
+import { Customer } from "../customer/customer.model";
+import { Lookup } from "../lookup/lookup.model";
+import { Product } from "../product/product.model";
+import { User } from "../user/user.model";
+import { Warehouse } from "../warehouse/warehouse.model";
 
-export class Receive {
+export class SalesOrderReturn {
     constructor(
         public id?: number,
-        public receiveNo?: string,
-        public receiveDate ?: string,
+        public returnNo?: string,
+        public returnDate ?: string,
 
-        public supplierId?: number,
-        public supplier?: Supplier,
+        public customerId?: number,
+        public customer?: Customer,
 
+        public reasonId?: number,
+        public reason?: Lookup,
+
+        public warehouseId?: number,
+        public warehouse?: Warehouse,
+
+        public invoiceNo?: string,
         public note?: string,
         public tax?: number,
         public total?: number,
         public grandTotal?: number,
-
-
         public status?: number,
-        public detail?: ReceivingDetail[],
+
+        public salesmanId?: number,
+        public salesman?: User,
+
+        public detail?: SalesOrderReturnDetail[],
 
         public errCode?: string,
         public errDesc?: string,
@@ -32,20 +41,20 @@ export class Receive {
     }
 }
 
-export class ReceivingPageDto {
+export class SalesOrderReturnPageDto {
     constructor(
         public totalRow?: number,
         public page?: number,
         public count?: number,
-        public contents?: Receive[],
+        public contents?: SalesOrderReturn[],
         public error?: string,
     ) {}
 }
 
-export class ReceivingDetail {
+export class SalesOrderReturnDetail {
     constructor(
         public id?: number,
-        public receiveId?: number,
+        public returnSalesOrderId?: number,
 
         public productId?: number,
         public product?: Product,
@@ -66,12 +75,12 @@ export class ReceivingDetail {
 }
 
 
-export class ReceivingDetailPageDto {
+export class SalesOrderReturnDetailPageDto {
     constructor(
         public totalRow?: number,
         public page?: number,
         public count?: number,
-        public contents?: ReceivingDetail[],
+        public contents?: SalesOrderReturnDetail[],
         public error?: string,
     ) {}
 }

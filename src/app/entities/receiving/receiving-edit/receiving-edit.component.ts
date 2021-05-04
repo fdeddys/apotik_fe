@@ -139,7 +139,7 @@ export class ReceivingEditComponent implements OnInit {
         this.priceAdded = 0;
         this.receive = new Receive();
         this.receive.id = 0;
-        this.receive.status = 0;
+        this.receive.status = 10;
         this.receiveDetails = [];
         this.setToday() ;
         this.clearDataAdded();
@@ -172,16 +172,31 @@ export class ReceivingEditComponent implements OnInit {
             }
         });
 
+        let receiveDetailReq = this.receiveDetailService
+            .findByReceiveId({
+                count: 10,
+                page: 1,
+                filter : {
+                    receiveId: orderId,
+                }
+            });
+
         const requestArray = [];
         requestArray.push(receiveReq);
         requestArray.push(supplierReq);
+        requestArray.push(receiveDetailReq);
 
         forkJoin(requestArray).subscribe(results => {
             this.processReceive(results[0]);
             this.processSupplier(results[1]);
+            this.processReceiveDtil(results[2]);
             this.setSupplierDefault();
         });
 
+    }
+
+    processReceiveDtil(result: HttpResponse<ReceivingDetailPageDto>) {
+        this.fillDetail(result);
     }
 
     processReceive(result: Receive) {
@@ -198,13 +213,25 @@ export class ReceivingEditComponent implements OnInit {
     calculateTotal() {
         this.total = 0;
 
+        var subtotal = 0 ;
+        var disc = 0;
         this.receiveDetails.forEach(receiveDetail => {
-            this.total = this.total + ( (receiveDetail.price * receiveDetail.qty) - receiveDetail.disc);
+            subtotal = (receiveDetail.price * receiveDetail.qty);
+            disc = (receiveDetail.disc1  * subtotal) /100
+            subtotal -=disc;
+            this.total += subtotal ;
         });
 
         this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
         this.grandTotal = this.total + this.taxAmount;
     }
+
+
+    checkTax() {
+        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.grandTotal = this.total + this.taxAmount;
+    }
+
 
     processSupplier(result: HttpResponse<SupplierPageDto>) {
         if (result.body.contents.length < 0) {
@@ -217,7 +244,7 @@ export class ReceivingEditComponent implements OnInit {
         // event.preventDefault();
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = 0;
+        this.priceAdded = event.item.sellPrice;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.SmallUom.name;
@@ -406,7 +433,7 @@ export class ReceivingEditComponent implements OnInit {
     composeReceiveDetail(): ReceivingDetail {
         let receiveDetail = new ReceivingDetail();
         receiveDetail.receiveId = this.receive.id;
-        receiveDetail.disc = this.discAdded;
+        receiveDetail.disc1 = this.discAdded;
         receiveDetail.price = this.priceAdded;
         receiveDetail.productId = this.productIdAdded;
         receiveDetail.qty = this.qtyAdded;
@@ -561,6 +588,23 @@ export class ReceivingEditComponent implements OnInit {
                 window.open(objBlob);
             });
 
+    }
+
+    getStatus(id): string {
+        let statusName = 'Unknown';
+        switch (id) {
+            case 1:
+            case 10:
+                statusName = 'Outstanding';
+                break;
+            case 20:
+                statusName = 'Approved';
+                break;
+            case 30:
+                statusName = 'Rejected';
+                break;
+        }
+        return statusName;
     }
 
 }

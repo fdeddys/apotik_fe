@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SalesOrderService } from './sales-order.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SalesOrder, SalesOrderPageDto } from './sales-order.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -131,6 +130,9 @@ export class SalesOrderComponent implements OnInit {
                 break;
             case 30:
                 statusName = 'Rejected';
+                break;
+            case 40:
+                statusName = 'Invoice';
                 break;
         }
         return statusName;

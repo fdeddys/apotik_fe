@@ -19,6 +19,8 @@ import { ReceivingModule } from './receiving/receiving.module';
 import { AdjustmentModule } from './adjustment/adjustment.module';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { SalesmanComponent } from './salesman/salesman.component';
+import { SalesOrderPaymentModule } from './sales-order-payment/sales-order-payment.module';
+import { SalesOrderReturnModule } from './sales-order-return/sales-order-return.module';
 
 @NgModule({
     imports: [
@@ -39,6 +41,8 @@ import { SalesmanComponent } from './salesman/salesman.component';
         SalesOrderModule,
         ReceivingModule,
         AdjustmentModule,
+        SalesOrderPaymentModule,
+        SalesOrderReturnModule,
     ],
     entryComponents: [],
     providers: [],
