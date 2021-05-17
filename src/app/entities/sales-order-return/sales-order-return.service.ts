@@ -63,6 +63,25 @@ export class SalesOrderReturnService {
         // .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    filterForSalesOrderReturn(req?: any): Observable<HttpResponse<SalesOrderReturnPageDto[]>> {
+        let pageNumber = null;
+        let pageCount = null;
+        let newresourceUrl = null;
+
+        Object.keys(req).forEach((key) => {
+            if (key === 'page') {
+                pageNumber = req[key];
+            }
+            if (key === 'count') {
+                pageCount = req[key];
+            }
+        });
+        
+        newresourceUrl = this.serverUrl + `/payment/page/${pageNumber}/count/${pageCount}`;
+        return this.http.post<SalesOrderReturnPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+    }
+
+
     save(salesOrderReturn: SalesOrderReturn): Observable<EntityResponseType> {
         const copy = this.convert(salesOrderReturn);
         return this.http.post<SalesOrderReturn>(`${this.serverUrl}`, copy, { observe: 'response'})

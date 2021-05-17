@@ -2,35 +2,30 @@
     <div class="card-body">
         <h5 class="card-title" style="color: tomato;">Edit</h5>
 
-        <div class="btn-group" role="group" *ngIf="salesOrder">
+        <div class="btn-group" role="group" *ngIf="returnReceive">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
                 <i class="fa fa-plus-circle fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 0 || salesOrder.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
+            <button type="button" *ngIf="returnReceive.status === 0 || returnReceive.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="salesOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+            <button type="button"  *ngIf="returnReceive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+            <button type="button" *ngIf="returnReceive.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
                 <i class="fa fa-times fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview('so')">Preview SO
+            <button type="button" *ngIf="returnReceive.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview('return-so')">Preview
                 <i class="fa fa-print fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-danger btn-sm" (click)="createInvoice()">Create Invoice
-                <i class="fa fa-thumbs-o-up fa-lg"></i>
-            </button>
-            <button type="button" *ngIf="salesOrder.status === 40 " class="btn btn-outline-warning btn-sm" (click)="preview('invoice')">Print Invoice
-                <i class="fa fa-print fa-lg"></i>
-            </button>
+           
             <button type="button" class="btn btn-outline-info btn-sm" (click)="backToLIst()">Back
                 <i class="fa fa-list fa-lg"></i>
             </button>
         </div>
         <br>
         <br>
-        <div *ngIf="salesOrder">
+        <div *ngIf="returnReceive">
             <table class="table table-sm table-striped">
                 <thead>
                     <td style="width: 15%;"> </td>
@@ -40,9 +35,9 @@
                 </thead>
                 <tbody style="color: cornflowerblue;">
                     <tr>
-                        <td>Sales Order No</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo">
-                            [{{salesOrder.id}}]
+                        <td>Return No</td>
+                        <td><input type="text" readonly size="50%" [(ngModel)]="returnReceive.returnNo">
+                            [{{returnReceive.id}}]
                         </td>
                         <!-- < -->
                         <td>Total</td>
@@ -64,21 +59,20 @@
                         <td>
                             <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
                             <span style="color: blue;">
-                                    {{ taxAmount | number:'0.0-0'}}
+                                {{ taxAmount | number:'0.0-0'}}
                             </span>
                         </td>
                     </tr>
                     <tr>
                         <td>Customer</td>
-                        <td *ngIf="customers">
-                            <input id="typeahead-basic" type="text" [(ngModel)]="customerSelected"
-                                [ngbTypeahead]="searchCustomer" [resultFormatter]="formatter"
+                        <td *ngIf="suppliers">
+                            <input id="typeahead-basic" type="text" [(ngModel)]="supplierSelected"
+                                [ngbTypeahead]="searchSupplier" [resultFormatter]="formatter"
                                 [inputFormatter]="formatter" />
-                                <!-- [ {{customerSelected.id}} ]  -->
+                                [ {{supplierSelected.id}} ] 
                         </td>
                         <td>Grand total</td>
                         <td>
-                            <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
                             <span style="color: blue;">
                                     {{ grandTotal | number:'0.0-0'}}
                             </span>
@@ -86,24 +80,9 @@
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.status"> </td>
+                        <td><input type="text" readonly size="50%" [(ngModel)]="returnReceive.status"> </td>
                         <td>Note</td>
                         <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
-                    </tr>
-                    <tr>
-                        <td>Salesman</td>
-                        <td>
-                            <span *ngIf="salesmans">
-                                <select id="select-type-basic" [(ngModel)]="salesmanSelected" style="width: 80%;">
-                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id">
-                                    {{salesman.name}}
-                                    </option>
-                                </select>
-                                [ {{salesmanSelected}} ] 
-                            </span>
-                        </td>
-                        <td></td>
-                        <td></td>
                     </tr>
                     
                     <tr>
@@ -155,7 +134,6 @@
                         </td>
                         <td>
                             <input type="number" [(ngModel)]="priceAdded"  >
-                            <!-- {{priceAdded}} -->
                         </td>
                        
                         <td>
@@ -171,11 +149,10 @@
                             <input type="number" [(ngModel)]="disc2Added " placeholder="input disc" >
                         </td>
                         <td>
-                            <!-- <input type="number" readonly> -->
                             {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
                         </td>
-                        <td *ngIf ="salesOrder">
-                            <button type="button"  *ngIf="salesOrder.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
+                        <td *ngIf ="returnReceive">
+                            <button type="button"  *ngIf="returnReceive.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
                                 <i class="fa fa-check fa-lg"></i>
                             </button>
                         </td>
@@ -183,17 +160,15 @@
                 </tbody>
             </table>
         </div>
-        <div *ngIf="salesOrder">
-            <!-- {{salesOrderDetails | json}} -->
+        <div *ngIf="returnReceive">
             <div style="height:350px; padding: 5px 15px 5px 15px; ">
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
-                            <th *ngIf ="salesOrder" style="width: 5%;"></th>
+                            <th *ngIf ="returnReceive" style="width: 5%;"></th>
                             <th scope="col" style="width: 20%;">Product</th>
                             <th scope="col" style="width: 10%;">Price</th>
                             <th scope="col" style="width: 10%;">Qty</th>
-                            <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th>
                             <th scope="col" style="width: 10%;">Unit</th>
                             <th scope="col" style="width: 10%;">Disc 1[%]</th>
                             <th scope="col" style="width: 10%;">Disc 2[%]</th>
@@ -201,27 +176,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let salesOrderDetail of salesOrderDetails">
-                            <td *ngIf ="salesOrder">
-                                <button type="button" *ngIf="salesOrder.status === 10"  (click)="confirmDelItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
+                        <tr *ngFor="let receiveReturnDetail of returnReceiveDetails">
+                            <td *ngIf ="returnReceive">
+                                <button type="button" *ngIf="returnReceive.status === 10"  (click)="confirmDelItem(receiveReturnDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
                                 </button>
-                                <button type="button" *ngIf="salesOrder.status === 20"  (click)="confirmUpdateItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
+                                <button type="button" *ngIf="returnReceive.status === 20"  (click)="confirmUpdateItem(receiveReturnDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-check fa-lg"></i>
                                 </button>
                             </td>
-                            <td>{{salesOrderDetail.product.name}}</td>
-                            <td>{{salesOrderDetail.price | number:'0.0-0' }}</td>
-                            <td>{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
-                            <td *ngIf="salesOrder.status === 20" >
-                                <input type="number" [(ngModel)]="salesOrderDetail.qtyReceive " placeholder="input disc" >
-                                <!-- {{salesOrderDetail.qtyReceive | number:'0.0-0' }} -->
-                            </td>
-                            <td>{{salesOrderDetail.uom.name}}</td>
-                            <td>{{salesOrderDetail.disc1  }}</td>
-                            <td>{{salesOrderDetail.disc2  }}</td>
-                            <td>{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
-                            <!-- <td>{{ (salesOrderDetail.price * salesOrderDetail.qtyOrder ) - salesOrderDetail.disc1 | number:'0.0-0'  }}</td> -->
+                            <td>{{receiveReturnDetail.product.name}}</td>
+                            <td>{{receiveReturnDetail.price | number:'0.0-0' }}</td>
+                            <td>{{receiveReturnDetail.qty | number:'0.0-0' }}</td>
+                            <td>{{receiveReturnDetail.uom.name}}</td>
+                            <td>{{receiveReturnDetail.disc1  }}</td>
+                            <td>{{receiveReturnDetail.disc2  }}</td>
+                            <td>{{ getTotal(receiveReturnDetail) | number:'0.0-0' }}  </td>
+                            <!-- <td>{{ (receiveReturnDetail.price * receiveReturnDetail.qtyOrder ) - receiveReturnDetail.disc1 | number:'0.0-0'  }}</td> -->
                         </tr>
                     </tbody>
                 </table>
@@ -229,10 +200,7 @@
             <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
                 (pageChange)="loadPage()" [boundaryLinks]="true">
             </ngb-pagination>
-
         </div>
-
-
     </div>
 
 </div>

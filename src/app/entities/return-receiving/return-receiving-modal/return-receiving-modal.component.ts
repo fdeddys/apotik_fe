@@ -1,43 +1,37 @@
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { switchMap, debounceTime, distinctUntilChanged, map, tap, catchError, flatMap } from 'rxjs/operators';
-import { Observable, Subject, of, concat, forkJoin, empty, pipe } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from '../sales-order.model';
-import { Customer, CustomerPageDto } from '../../customer/customer.model';
-import { CustomerService } from '../../customer/customer.service';
-import { HttpResponse, HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Product, ProductPageDto } from '../../product/product.model';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
-import { SalesOrderService } from '../sales-order.service';
-import { SalesOrderDetailService } from '../sales-order-detail.service';
 import Swal from 'sweetalert2';
-import { NgxSpinnerService } from "ngx-spinner";
-import { Salesman, SalesmanDto } from '../../salesman/salesman.model';
-import { SalesmanService } from '../../salesman/salesman.service';
-import { WarehouseService } from '../../warehouse/warehouse.service';
+import { Product, ProductPageDto } from '../../product/product.model';
+import { Supplier, SupplierPageDto } from '../../supplier/supplier.model';
+import { SupplierService } from '../../supplier/supplier.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
-
+import { WarehouseService } from '../../warehouse/warehouse.service';
+import { ReturnReceivingDetailService } from '../return-receiving-detail.service';
+import { ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto } from '../return-receiving.model';
+import { ReturnReceivingService } from '../return-receiving.service';
 
 @Component({
-    selector: 'op-sales-order-edit',
-    templateUrl: './sales-order-edit.component.html',
-    styleUrls: ['./sales-order-edit.component.css']
+  selector: 'op-return-receiving-modal',
+  templateUrl: './return-receiving-modal.component.html',
+  styleUrls: ['./return-receiving-modal.component.css']
 })
-
-export class SalesOrderEditComponent implements OnInit {
+export class ReturnReceivingModalComponent implements OnInit {
 
     selectedDate: NgbDateStruct;
-    salesOrder: SalesOrder;
-    salesOrderDetails: SalesOrderDetail[];
+    returnReceive: ReturnReceive;
+    returnReceiveDetails: ReturnReceiveDetail[];
 
-    /* Untuk search customer
+    /* Untuk search supplier
      * local search
      */
-    customers: Customer[];
-    customerSelected: Customer;
-    salesmans: Salesman[];
-    salesmanSelected: number;
+    suppliers: Supplier[];
+    supplierSelected: Supplier;
     warehouses: Warehouse[];
     warehouseSelected: number;
 
@@ -61,16 +55,18 @@ export class SalesOrderEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
+    loadedWarehouse =false;
+    loadedSalesman =false;
+    loadedSupplier =false;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private customerService: CustomerService,
+        private supplierService: SupplierService,
         private http: HttpClient,
-        private orderService: SalesOrderService,
-        private orderDetailService: SalesOrderDetailService,
+        private returnReceiveService: ReturnReceivingService,
+        private returnReceiveDetailService: ReturnReceivingDetailService,
         private spinner: NgxSpinnerService,
-        private salesmanService: SalesmanService,
         private warehouseService: WarehouseService,
     ) {
         this.total = 0;
@@ -93,12 +89,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.setToday();
     }
 
-    // checkIsNumber(numb): any {
-    //     return isNaN(numb);
-    // }
-
     backToLIst() {
-        this.router.navigate(['/main/sales-order']);
+        this.router.navigate(['/main/return-receive']);
     }
 
     setToday() {
@@ -114,14 +106,13 @@ export class SalesOrderEditComponent implements OnInit {
 
         console.log('id ==>?', orderId);
 
-        this.loadCustomer();
-        this.loadSalesman();
+        this.loadSupplier();
         this.loadWarehouse();
         if (orderId === 0) {
             this.loadNewData();
             return;
         }
-        this.loadDataByOrderId(orderId);
+        this.loadDataByReturnId(orderId);
     }
 
     loadNewData() {
@@ -138,12 +129,11 @@ export class SalesOrderEditComponent implements OnInit {
         this.uomAddedName = event.item.SmallUom.name;
     }
 
-    loadDataByOrderId(orderId: number) {
+    loadDataByReturnId(returnId: number) {
 
         this.spinner.show();
-        let orderReq = this.orderService.findById(orderId);
-
-        let customerReq = this.customerService.filter({
+        let returnReq = this.returnReceiveService.findById(returnId);
+        let supplierReq = this.supplierService.filter({
             page: 1,
             count: 10000,
             filter: {
@@ -151,70 +141,76 @@ export class SalesOrderEditComponent implements OnInit {
                 name: '',
             }
         });
+        let returnReceiveDetailReq = this.returnReceiveDetailService
+            .findByReturnReceiveId({
+                count: 10,
+                page: 1,
+                filter : {
+                    returnId: returnId,
+                }
+            });
 
         const requestArray = [];
-        requestArray.push(orderReq);
-        requestArray.push(customerReq);
+        requestArray.push(returnReq);
+        requestArray.push(supplierReq);
+        requestArray.push(returnReceiveDetailReq)
 
         forkJoin(requestArray).subscribe(results => {
-            this.processOrder(results[0]);
-            this.processCustomer(results[1]);
-            this.setCustomerDefault();
-            this.setWarehouseSalesmanSelected();
+            this.processReturnReceive(results[0]);
+            this.processSupplier(results[1]);
+            this.processDetail(results[2]);
+            this.setSupplierDefault();
+            this.setWarehouseSelected();
             this.spinner.hide();
         });
 
-        // this.orderService.findById(orderId)
-        //     .subscribe(
-        //         (res) => {
-        //             console.log("isisisisisi ", res);
-        //             this.salesOrder = res;
-        //         }
-        //     );
     }
 
-    processOrder(result: SalesOrder) {
-        console.log('isi sales order result', result);
-        this.salesOrder = result;
+    processReturnReceive(result: ReturnReceive) {
+        console.log('isi Return Data result', result);
+        this.returnReceive = result;
 
-        this.salesOrderDetails = result.detail;
-        console.log('isi sales order detauil', this.salesOrderDetails);
+        this.returnReceiveDetails = result.detail;
+        console.log('isi return detail', this.returnReceiveDetails);
         this.calculateTotal();
 
-        this.salesOrder.detail = null;
+        this.returnReceive.detail = null;
+    }
+
+    processDetail(result: HttpResponse<ReturnReceiveDetailPageDto>) {
+        this.fillDetail(result),
+        this.spinner.hide();
     }
 
     calculateTotal() {
         this.total = 0;
 
-        this.salesOrderDetails.forEach(salesOrderDetail => {
-            // this.total = this.total + ( (salesOrderDetail.price * salesOrderDetail.qtyOrder) - salesOrderDetail.disc1);
-            this.total += this.getTotal(salesOrderDetail)
+        this.returnReceiveDetails.forEach(returnReceiveDetail => {
+            this.total += this.getTotal(returnReceiveDetail)
         });
 
         this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
         this.grandTotal = this.total + this.taxAmount;
     }
 
-    processCustomer(result: HttpResponse<CustomerPageDto>) {
+    processSupplier(result: HttpResponse<SupplierPageDto>) {
         if (result.body.contents.length < 0) {
             return;
         }
-        this.customers = result.body.contents;
+        this.suppliers = result.body.contents;
     }
 
-    setCustomerDefault() {
-        this.customerSelected = this.salesOrder.customer;
-        console.log('set selected customer =>', this.customerSelected );
+    setSupplierDefault() {
+        this.supplierSelected = this.returnReceive.supplier;
+        console.log('set selected supplier =>', this.supplierSelected );
     }
 
-    setWarehouseSalesmanSelected() {
-        this.salesmanSelected = this.salesOrder.salesmanId;
-        this.warehouseSelected = this.salesOrder.warehouseId;
+    setWarehouseSelected() {
+        this.warehouseSelected = this.returnReceive.warehouseId;
     }
 
-    loadCustomer() {
-        this.customerService.filter({
+    loadSupplier() {
+        this.supplierService.filter({
             page: 1,
             count: 10000,
             filter: {
@@ -222,27 +218,15 @@ export class SalesOrderEditComponent implements OnInit {
                 name: '',
             },
         }).subscribe(
-            (response: HttpResponse<CustomerPageDto>) => {
+            (response: HttpResponse<SupplierPageDto>) => {
                 if (response.body.contents.length <= 0) {
-                    Swal.fire('error', "failed get Customer data !", 'error');
+                    Swal.fire('error', "failed get Supplier data !", 'error');
                     return;
                 }
-                this.customers = response.body.contents;
+                this.suppliers = response.body.contents;
+                this.loadedSupplier = true ;
+                this.loadNewData();
             });
-    }
-
-    loadSalesman() {
-        this.salesmanService
-            .getSalesman()
-            .subscribe(
-                (response: HttpResponse<SalesmanDto>) => {
-                    if (response.body.errCode != "00") {
-                        Swal.fire('error',"Failed get data salesman", "error");
-                        return ;
-                    }
-                    this.salesmans = response.body.contents;   
-                }
-            );
     }
 
     loadWarehouse() {
@@ -251,30 +235,28 @@ export class SalesOrderEditComponent implements OnInit {
             .subscribe(
                 (response: HttpResponse<WarehouseDto>) => {
                     if (response.body.errCode != "00") {
-                        Swal.fire('error',"Failed get data salesman", "error");
+                        Swal.fire('error',"Failed get data warehouse", "error");
                         return ;
                     }
                     this.warehouses = response.body.contents;
-                    // .filter(items => items.whOut ==1 );
+                    this.loadedWarehouse = true;
+                    this.loadNewData();
                 }
             );
     }
 
     checkTax() {
-        // return this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
         this.calculateTotal();
     }
 
-    // formatter = (x: {name: string}) => x.name;
+    formatter = (result: Supplier) => result.name.toUpperCase();
 
-    formatter = (result: Customer) => result.name.toUpperCase();
-
-    searchCustomer = (text$: Observable<string>) =>
+    searchSupplier = (text$: Observable<string>) =>
         text$.pipe(
             debounceTime(200),
             distinctUntilChanged(),
             map(term => term === '' ? []
-                : this.customers.filter
+                : this.suppliers.filter
                     (v =>
                         v.name
                             .toLowerCase()
@@ -282,21 +264,6 @@ export class SalesOrderEditComponent implements OnInit {
                     )
                     .slice(0, 10))
     )
-
-    // searchSalesman = (text$: Observable<string>) =>
-    //     text$.pipe(
-    //         debounceTime(200),
-    //         distinctUntilChanged(),
-    //         map(term => term === '' ? []
-    //             : this.salesmans.filter
-    //                 (v =>
-    //                     v.name
-    //                         .toLowerCase()
-    //                         .indexOf(term.toLowerCase()) > -1
-    //                 )
-    //                 .slice(0, 10))
-    // )
-    // formatterProd = (result: { name: string }) => result.name.toUpperCase();
 
     search = (text$: Observable<string>) => {
         return text$.pipe(
@@ -348,9 +315,6 @@ export class SalesOrderEditComponent implements OnInit {
     addNewItem() {
         console.log('isisisiisis ', this.productIdAdded );
 
-        // if (this.checkInputValid() === false) {
-        //     return ;
-        // }
         if (this.checkInputProductValid() === false ) {
             Swal.fire('Error', 'Product belum terpilih ! ', 'error');
             return ;
@@ -361,16 +325,16 @@ export class SalesOrderEditComponent implements OnInit {
             return ;
         }
 
-       let orderDetail = this.composeOrderDetail();
+       let returnOrderDetail = this.composeReturnDetail();
 
        this.spinner.show();
-       this.orderDetailService
-            .save(orderDetail)
+       this.returnReceiveDetailService
+            .save(returnOrderDetail)
             .subscribe(
                 (res => {
                     this.spinner.hide();
                     if (res.body.errCode === '00') {
-                        this.reloadDetail(this.salesOrder.id);
+                        this.reloadDetail(this.returnReceive.id);
                        
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
@@ -382,14 +346,14 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
-    composeOrderDetail(): SalesOrderDetail {
-        let orderDetail = new SalesOrderDetail();
-        orderDetail.salesOrderId = this.salesOrder.id;
+    composeReturnDetail(): ReturnReceiveDetail {
+        let orderDetail = new ReturnReceiveDetail();
+        orderDetail.returnReceiveId = this.returnReceive.id;
         orderDetail.disc1 = this.discAdded;
         orderDetail.disc2 = this.disc2Added;
         orderDetail.price = this.priceAdded;
         orderDetail.productId = this.productIdAdded;
-        orderDetail.qtyOrder = this.qtyAdded;
+        orderDetail.qty = this.qtyAdded;
         orderDetail.uomId = this.uomAdded;
         return orderDetail;
     }
@@ -428,15 +392,8 @@ export class SalesOrderEditComponent implements OnInit {
         }
 
         if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
-            // this.priceAdded <= 0 ||
-            // result = false;
             return false;
         }
-
-        // if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
-        //     // result = false;
-        //     return false;
-        // }
 
         return true;
     }
@@ -483,17 +440,17 @@ export class SalesOrderEditComponent implements OnInit {
         return result;
     }
 
-    reloadDetail(orderId: number) {
+    reloadDetail(orderReturnId: number) {
         this.spinner.show();
-        this.orderDetailService
-            .findByOrderId({
+        this.returnReceiveDetailService
+            .findByReturnReceiveId({
                 count: 10,
                 page: 1,
                 filter : {
-                    orderId: orderId,
+                    returnId: orderReturnId,
                 }
             }).subscribe(
-                (res: HttpResponse<SalesOrderDetailPageDto>) => 
+                (res: HttpResponse<ReturnReceiveDetailPageDto>) => 
                     {
                         this.fillDetail(res),
                         this.spinner.hide();
@@ -501,16 +458,14 @@ export class SalesOrderEditComponent implements OnInit {
                 (res: HttpErrorResponse) =>{
                     console.log(res.message),
                     this.spinner.hide();
-                    },
-                
+                    },               
             );
     }
 
-    fillDetail(res: HttpResponse<SalesOrderDetailPageDto>) {
-        this.salesOrderDetails = [];
+    fillDetail(res: HttpResponse<ReturnReceiveDetailPageDto>) {
+        this.returnReceiveDetails = [];
         if (res.body.contents.length > 0) {
-
-            this.salesOrderDetails = res.body.contents;
+            this.returnReceiveDetails = res.body.contents;
             this.calculateTotal();
             this.clearDataAdded();
         }
@@ -528,10 +483,10 @@ export class SalesOrderEditComponent implements OnInit {
         this.uomAddedName = '';
     }
 
-    confirmDelItem (salesOrderDetail: SalesOrderDetail) {
+    confirmDelItem (returnReceiveDetail: ReturnReceiveDetail) {
         Swal.fire({
             title : 'Confirm',
-            text : 'Are you sure to cancel [ ' + salesOrderDetail.product.name + ' ] ?',
+            text : 'Are you sure to cancel [ ' + returnReceiveDetail.product.name + ' ] ?',
             type : 'info',
             showCancelButton: true,
             confirmButtonText : 'Ok',
@@ -540,20 +495,20 @@ export class SalesOrderEditComponent implements OnInit {
         .then(
             (result) => {
             if (result.value) {
-                    this.delItem(salesOrderDetail.id);
+                    this.delItem(returnReceiveDetail.id);
                 }
             });
     }
 
     delItem(idDetail: number) {
         this.spinner.show();
-        this.orderDetailService
+        this.returnReceiveDetailService
             .deleteById(idDetail)
             .subscribe(
-                (res: SalesOrderDetail) => {
+                (res: ReturnReceiveDetail) => {
                     if (res.errCode === '00') {
                         Swal.fire('Success', 'Data cancelled', 'info');
-                        this.reloadDetail(this.salesOrder.id);
+                        this.reloadDetail(this.returnReceive.id);
                     } else {
                         Swal.fire('Failed', 'Data failed cancelled', 'info');
                     }
@@ -565,21 +520,11 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
-    confirmUpdateItem(salesOrderDetail: SalesOrderDetail) {
-
-        if (salesOrderDetail.qtyReceive > salesOrderDetail.qtyOrder ) {
-            Swal.fire({
-                title : 'Confirm',
-                text : 'Qty Receive [' + salesOrderDetail.qtyReceive + '] bigger than qty Receive [ ' + salesOrderDetail.qtyOrder + ' ] not allowed !',
-                type : 'error',
-                confirmButtonText : 'Ok'
-            })
-            return
-        } 
+    confirmUpdateItem(returnReceiveDetail: ReturnReceiveDetail) {
 
         Swal.fire({
             title : 'Confirm',
-            text : 'Are you sure to Update from [' + salesOrderDetail.qtyOrder + '] to [ ' + salesOrderDetail.qtyReceive + ' ] ?',
+            text : 'Are you sure to Update  [' + returnReceiveDetail.qty + ']  ?',
             type : 'info',
             showCancelButton: true,
             confirmButtonText : 'Ok',
@@ -588,21 +533,21 @@ export class SalesOrderEditComponent implements OnInit {
         .then(
             (result) => {
             if (result.value) {
-                    this.updateQtyRecvItem(salesOrderDetail.id, salesOrderDetail.qtyReceive );
+                    this.updateQty(returnReceiveDetail.id, returnReceiveDetail.qty );
                 }
             });
     }
 
-    updateQtyRecvItem(idDetail: number, qtyReceive: number) {
+    updateQty(idDetail: number, qtyReceive: number) {
         this.spinner.show();
-        this.orderDetailService
-            .updateQtyRecvItem(idDetail, qtyReceive)
+        this.returnReceiveDetailService
+            .updateQty(idDetail, qtyReceive)
             .subscribe(
-                (res: HttpResponse<SalesOrderDetail>) => {
+                (res: HttpResponse<ReturnReceiveDetail>) => {
                     this.spinner.hide();
                     if (res.body.errCode === '00') {
                         Swal.fire('Success', 'Data Update Success', 'info');
-                        this.reloadDetail(this.salesOrder.id);
+                        this.reloadDetail(this.returnReceive.id);
                     } else {
                         Swal.fire('Failed', 'Data failed cancelled', 'info');
                     }
@@ -614,9 +559,7 @@ export class SalesOrderEditComponent implements OnInit {
                     this.spinner.hide();
                 }
             );
-    }
-
-    
+    } 
 
     addNew() {
         this.total = 0;
@@ -624,44 +567,42 @@ export class SalesOrderEditComponent implements OnInit {
         this.taxAmount = 0;
         this.isTax = false;
         this.priceAdded = 0;
-        this.salesOrder = new SalesOrder();
-        this.salesOrder.id = 0;
-        this.salesOrder.status = 0;
-        this.salesOrderDetails = [];
-        if (this.warehouses) {
-            this.warehouseSelected = this.warehouses[0].id;
-        }
-        if (this.salesmans ) {
-            this.salesmanSelected = this.salesmans[0].id;
-        }
-        if (this.customers) {
-            this.salesOrder.customer = this.customers[0];
-            this.setCustomerDefault();
-        }
+        this.returnReceive = new ReturnReceive();
+        this.returnReceive.id = 0;
+        this.returnReceive.status = 0;
+        this.returnReceiveDetails = [];
         this.setToday() ;
         this.clearDataAdded();
-        // if (this.customers !== undefined) {
-        //     console.log('this customers xxx ', this.salesOrder.customer);
-        //     this.salesOrder.customer = this.customers[0];
-        //     this.setCustomerDefault();
-        // }
+
+        if ( this.loadedWarehouse) {
+            if ( this.warehouses.length>0) {
+                this.warehouseSelected = this.warehouses[0].id;
+            }
+        }
+
+        if (this.loadedSupplier) {
+            if (this.suppliers.length > 0) {
+                this.returnReceive.supplier = this.suppliers[0];
+                this.setSupplierDefault();
+            }
+        }
+      
     }
 
     saveHdr() {
         this.spinner.show();
-        this.salesOrder.customer = null;
-        this.salesOrder.customerId = this.customerSelected.id;
-        this.salesOrder.warehouseId = +this.warehouseSelected;
-        this.salesOrder.orderDate = this.getSelectedDate();
-        this.salesOrder.salesmanId = +this.salesmanSelected;
-        this.orderService
-            .save(this.salesOrder)
+        this.returnReceive.supplier = null;
+        this.returnReceive.supplierId = this.supplierSelected.id;
+        this.returnReceive.warehouseId = +this.warehouseSelected;
+        this.returnReceive.returnDate = this.getSelectedDate();
+        this.returnReceiveService
+            .save(this.returnReceive)
             .subscribe(
                 (res => {
                     if (res.body.errCode === '00') {
-                        this.salesOrder.id = res.body.id;
-                        this.salesOrder.salesOrderNo = res.body.salesOrderNo;
-                        this.salesOrder.status = res.body.status;
+                        this.returnReceive.id = res.body.id;
+                        this.returnReceive.returnNo = res.body.returnNo;
+                        this.returnReceive.status = res.body.status;
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -706,18 +647,17 @@ export class SalesOrderEditComponent implements OnInit {
 
     approveProccess() {
         this.spinner.show();
-        this.salesOrder.customer = null;
-        this.salesOrder.customerId = this.customerSelected.id;
-        this.salesOrder.warehouseId = +this.warehouseSelected;
-        this.salesOrder.orderDate = this.getSelectedDate();
-        this.salesOrder.salesmanId = +this.salesmanSelected;
-        this.orderService.approve(this.salesOrder)
+        this.returnReceive.supplier = null;
+        this.returnReceive.supplierId = this.supplierSelected.id;
+        this.returnReceive.warehouseId = +this.warehouseSelected;
+        this.returnReceive.returnDate = this.getSelectedDate();
+        this.returnReceiveService.approve(this.returnReceive)
             .subscribe(
                 (res) => {
                     this.spinner.hide();
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
-                        this.router.navigate(['/main/sales-order']);
+                        this.router.navigate(['/main/sales-order-return']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
@@ -728,11 +668,11 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     isValidDataApprove(): boolean {
-        if (this.salesOrder.id ===0) {
+        if (this.returnReceive.id ===0) {
             Swal.fire('Error', 'Data no order belum di save !', 'error');
             return false;
         }
-        if (this.salesOrderDetails.length <= 0) {
+        if (this.returnReceiveDetails.length <= 0) {
             Swal.fire('Error', 'Data Barang belum ada', 'error');
             return false;
         }
@@ -740,11 +680,10 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     rejectProccess(){
-        this.orderService.reject(this.salesOrder)
+        this.returnReceiveService.reject(this.returnReceive)
             .subscribe(
                 (res) => { console.log('success'); }
             )
-
         Swal.fire('OK', 'Save success', 'success');
     }
 
@@ -772,41 +711,34 @@ export class SalesOrderEditComponent implements OnInit {
 
     preview(tipeReport) {
         this.spinner.show();
-        this.orderService
-            .preview(this.salesOrder.id, tipeReport)
+        this.returnReceiveService
+            .preview(this.returnReceive.id, tipeReport)
             .subscribe(dataBlob => {
                 console.log('data blob ==> ', dataBlob);
                 const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
                 const objBlob = window.URL.createObjectURL(newBlob);
                 this.spinner.hide();
-
                 window.open(objBlob);
             });
-
     }
 
-    getTotal(salesOrderDetail : SalesOrderDetail){
-
+    getTotal(returnReceiveDetail : ReturnReceiveDetail){
         var total : number;
-
-        total = salesOrderDetail.price * salesOrderDetail.qtyOrder;
-        total = total - ( total * salesOrderDetail.disc1 /100)
-        total = total - ( total * salesOrderDetail.disc2 /100)
-
+        total = returnReceiveDetail.price * returnReceiveDetail.qty;
+        total = total - ( total * returnReceiveDetail.disc1 /100)
+        total = total - ( total * returnReceiveDetail.disc2 /100)
         return total;
-
     }
 
     createInvoice() {
-
         this.spinner.show();
-        this.orderService.createInvoice(this.salesOrder.id)
+        this.returnReceiveService.createInvoice(this.returnReceive.id)
             .subscribe(
                 (res) => {
                     this.spinner.hide();
                     if (res.body.errCode === '00'){
-                        Swal.fire('OK', 'Invoice created  success', 'success');
-                        this.router.navigate(['/main/sales-order']);
+                        Swal.fire('OK', 'created  success', 'success');
+                        this.router.navigate(['/main/return-receive']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
@@ -815,4 +747,5 @@ export class SalesOrderEditComponent implements OnInit {
                 () => {  }
             );
     }
+
 }

@@ -16,7 +16,8 @@ export class Warehouse {
         public whIn?: number,
         public whOut ?: number,
         public status ?: number,
-
+        public errCode?: string,
+        public errDesc?: string,
     ) {
     }
 }

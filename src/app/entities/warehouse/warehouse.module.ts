@@ -18,7 +18,8 @@ import { WarehouseModalComponent } from './warehouse-modal/warehouse-modal.compo
         NgbModule,
     ],
     entryComponents: [
-        WarehouseComponent
+        WarehouseComponent,
+        WarehouseModalComponent
     ],
     providers: [
         WarehouseService,

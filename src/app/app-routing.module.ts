@@ -27,6 +27,10 @@ import { SalesOrderReturnDetail } from './entities/sales-order-return/sales-orde
 import { SalesOrderReturnEditComponent } from './entities/sales-order-return/sales-order-return-edit/sales-order-return-edit.component';
 import { SalesmanComponent } from './entities/salesman/salesman.component';
 import { WarehouseComponent } from './entities/warehouse/warehouse.component';
+import { ReturnReceivingComponent } from './entities/return-receiving/return-receiving.component';
+import { ReturnReceivingModalComponent } from './entities/return-receiving/return-receiving-modal/return-receiving-modal.component';
+import { PaymentComponent } from './entities/payment/payment.component';
+import { PaymentModalComponent } from './entities/payment/payment-modal/payment-modal.component';
 
 
 const routes: Routes = [
@@ -58,11 +62,14 @@ const routes: Routes = [
                     { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order' }  },
                     { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
-                    { path: 'sales-order-payment', component: SalesOrderPaymentComponent },
+                    { path: 'payment', component: PaymentComponent },
+                    { path: 'payment/:id', component: PaymentModalComponent },
                     { path: 'sales-order-return', component: SalesOrderReturnComponent },
                     { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent },
                     { path: 'receive', component: ReceivingComponent },
                     { path: 'receive/:id', component: ReceivingEditComponent },
+                    { path: 'return-receive', component: ReturnReceivingComponent },
+                    { path: 'return-receive/:id', component: ReturnReceivingModalComponent },
                     { path: 'adjustment', component: AdjustmentComponent },
                     { path: 'adjustment/:id', component: AdjustmentEditComponent },
                     { path: '**', component: Page404Component },

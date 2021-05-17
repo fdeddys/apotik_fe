@@ -23,6 +23,8 @@ import { SalesOrderReturnModule } from './sales-order-return/sales-order-return.
 
 import { SalesmanModule } from './salesman/salesman.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
+import { ReturnReceivingModule } from './return-receiving/return-receiving.module';
+import { PaymentModule } from './payment/payment.module';
 
 @NgModule({
     imports: [
@@ -46,7 +48,9 @@ import { WarehouseModule } from './warehouse/warehouse.module';
         SalesOrderPaymentModule,
         SalesOrderReturnModule,
         SalesmanModule,
-        WarehouseModule
+        WarehouseModule, 
+        ReturnReceivingModule,
+        PaymentModule,
     ],
     entryComponents: [],
     providers: [],

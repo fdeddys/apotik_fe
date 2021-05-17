@@ -14,6 +14,8 @@ export class Customer {
         public errCode?: string,
         public errDesc?: string,
     ) {
+        this.id = 0,
+        this.status = 10
     }
 }
 

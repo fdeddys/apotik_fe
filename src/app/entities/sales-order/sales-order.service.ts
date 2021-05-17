@@ -30,9 +30,27 @@ export class SalesOrderService {
         });
 
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
-
         return this.http.post<SalesOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
+
+    filterForSalesOrder(req?: any): Observable<HttpResponse<SalesOrderPageDto[]>> {
+        let pageNumber = null;
+        let pageCount = null;
+        let newresourceUrl = null;
+
+        Object.keys(req).forEach((key) => {
+            if (key === 'page') {
+                pageNumber = req[key];
+            }
+            if (key === 'count') {
+                pageCount = req[key];
+            }
+        });
+        
+        newresourceUrl = this.serverUrl + `/payment/page/${pageNumber}/count/${pageCount}`;
+        return this.http.post<SalesOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
+    }
+
 
     findById(id: number): Observable<any> {
 
