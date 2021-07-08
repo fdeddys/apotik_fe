@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SalesOrderService } from './sales-order.service';
 import { SalesOrder, SalesOrderPageDto } from './sales-order.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
@@ -21,17 +21,35 @@ export class SalesOrderComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
+        isCash: false
     };
+    moduleTitle: string = "";
+    isCash: boolean = false;
     closeResult: string;
+
     constructor(
         private route: Router,
+        private router: ActivatedRoute,
         private salesOrderService: SalesOrderService,
         private location: Location,
         private spinner: NgxSpinnerService,
     ) { }
 
     ngOnInit() {
-        this.loadAll(this.curPage);
+
+        this.router.data.subscribe(
+            data => {
+                console.log("data===>",data.cash);
+
+                this.moduleTitle ="Sales Order";
+                this.isCash = data.cash;
+                if (this.isCash) {
+                    this.moduleTitle ="Direct Sales";
+                }
+                this.loadAll(this.curPage);
+            }
+        );
     }
 
     onFilter() {
@@ -40,6 +58,7 @@ export class SalesOrderComponent implements OnInit {
 
     loadAll(page) {
         this.spinner.show();
+        this.searchTerm.isCash = this.isCash;
         this.salesOrderService.filter({
             filter: this.searchTerm,
             page: page,
@@ -52,32 +71,25 @@ export class SalesOrderComponent implements OnInit {
              }
         );
         console.log(page);
-        // console.log(this.brand);
     }
 
     addNew() {
+        
+        if (this.isCash) {
+            this.route.navigate(['/main/direct-sales/', 0 ]);
+            return
+        } 
         this.route.navigate(['/main/sales-order/', 0 ]);
+        
     }
 
     open(obj: SalesOrder) {
         console.log("nav ", obj);
+        if (this.isCash) {
+            this.route.navigate(['/main/direct-sales/' +  obj.id ]);
+            return
+        }
         this.route.navigate(['/main/sales-order/' +  obj.id ]);
-
-        // const modalRef = this.modalService.open(BrandModalComponent, { size: 'lg' });
-        // modalRef.componentInstance.statusRec = status;
-        // modalRef.componentInstance.objEdit = obj;
-
-        // modalRef.result.then((result) => {
-        //     this.closeResult = `Closed with: ${result}`;
-        //     console.log(this.closeResult);
-        //     this.curPage = 1;
-        //     this.loadAll(this.curPage);
-        // }, (reason) => {
-        //     console.log(reason);
-        //     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        //     console.log(this.closeResult);
-        //     this.loadAll(this.curPage);
-        // });
     }
 
     // private getDismissReason(reason: any): string {
@@ -106,6 +118,8 @@ export class SalesOrderComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
+            isCash: false,
         };
         this.loadAll(1);
     }

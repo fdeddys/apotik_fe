@@ -12,8 +12,6 @@ export type EntityResponseType = HttpResponse<Brand>;
 })
 export class BrandService {
 
-
-
     private serverUrl = SERVER_PATH + 'brand';
     constructor(private http: HttpClient) { }
 

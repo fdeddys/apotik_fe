@@ -21,6 +21,8 @@ export class ReceivingComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
+
     };
     closeResult: string;
     constructor(
@@ -58,7 +60,6 @@ export class ReceivingComponent implements OnInit {
     open(obj: Receive) {
         console.log("nav ", obj);
         this.route.navigate(['/main/receive/' +  obj.id ]);
-
     }
 
     private onSuccess(data, headers) {
@@ -77,6 +78,7 @@ export class ReceivingComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
         };
         this.loadAll(1);
     }

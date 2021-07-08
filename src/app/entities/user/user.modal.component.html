@@ -24,9 +24,9 @@
             <td>User Nama</td>
             <td>
               <input type="text" size="50%" maxlength="50" [(ngModel)]="user.userName"
-              [ngClass]="{ 'is-invalid': submitted && (user.name == '' || user.name == null || user.name == undefined) }" />
+              [ngClass]="{ 'is-invalid': submitted && (user.userName == '' || user.userName == null || user.userName == undefined) }" />
               <br>
-              <div *ngIf="submitted && (user.name == '' || user.name == null || user.name == undefined)">
+              <div *ngIf="submitted && (user.userName == '' || user.userName == null || user.userName == undefined)">
                 <div style="color: red"> *Field is required</div>
               </div>
             </td>

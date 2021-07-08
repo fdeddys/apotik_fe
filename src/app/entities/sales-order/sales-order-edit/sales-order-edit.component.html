@@ -15,13 +15,13 @@
             <button type="button" *ngIf="salesOrder.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
                 <i class="fa fa-times fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview('so')">Preview SO
+            <button type="button" *ngIf="salesOrder.status === 20 && isCash === false " class="btn btn-outline-warning btn-sm" (click)="preview('so')">Preview SO
                 <i class="fa fa-print fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 20 " class="btn btn-outline-danger btn-sm" (click)="createInvoice()">Create Invoice
+            <button type="button" *ngIf="salesOrder.status === 20 && isCash === false " class="btn btn-outline-danger btn-sm" (click)="createInvoice()">Create Invoice
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 40 " class="btn btn-outline-warning btn-sm" (click)="preview('invoice')">Print Invoice
+            <button type="button" *ngIf="salesOrder.status === 40 && isCash === false " class="btn btn-outline-warning btn-sm" (click)="preview('invoice')">Print Invoice
                 <i class="fa fa-print fa-lg"></i>
             </button>
             <button type="button" class="btn btn-outline-info btn-sm" (click)="backToLIst()">Back
@@ -70,11 +70,16 @@
                     </tr>
                     <tr>
                         <td>Customer</td>
-                        <td *ngIf="customers">
-                            <input id="typeahead-basic" type="text" [(ngModel)]="customerSelected"
+
+                        <td *ngIf="!isCash">
+                            <input *ngIf="customers" 
+                                id="typeahead-basic" type="text" [(ngModel)]="customerSelected"
                                 [ngbTypeahead]="searchCustomer" [resultFormatter]="formatter"
                                 [inputFormatter]="formatter" />
                                 <!-- [ {{customerSelected.id}} ]  -->
+                        </td>
+                        <td *ngIf ="isCash">
+                            CASH
                         </td>
                         <td>Grand total</td>
                         <td>

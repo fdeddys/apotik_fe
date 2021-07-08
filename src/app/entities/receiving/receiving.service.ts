@@ -68,6 +68,20 @@ export class ReceivingService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    saveByPO(receive: Receive): Observable<EntityResponseType> {
+        const copy = this.convert(receive);
+        let newresourceUrl = this.serverUrl + `/byPO`;
+        return this.http.post<Receive>(newresourceUrl, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
+    removeByPO(receive: Receive): Observable<EntityResponseType> {
+        const copy = this.convert(receive);
+        let newresourceUrl = this.serverUrl + `/remove-PO`;
+        return this.http.post<Receive>(newresourceUrl, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
     approve(receive: Receive): Observable<EntityResponseType> {
         const copy = this.convert(receive);
         return this.http.post<Receive>(`${this.serverUrl}/approve`, copy, { observe: 'response'})

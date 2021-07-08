@@ -8,7 +8,7 @@ export class Receive {
     constructor(
         public id?: number,
         public receiveNo?: string,
-        public receiveDate ?: string,
+        public receiveDate?: string,
 
         public supplierId?: number,
         public supplier?: Supplier,
@@ -17,7 +17,7 @@ export class Receive {
         public tax?: number,
         public total?: number,
         public grandTotal?: number,
-
+        public poNo?: string,
 
         public status?: number,
         public detail?: ReceivingDetail[],
@@ -29,6 +29,7 @@ export class Receive {
         this.tax = 0;
         this.total = 0;
         this.grandTotal = 0;
+        this.poNo = '';
     }
 }
 

@@ -48,7 +48,7 @@
                         <th scope="col">Group</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Stock</th>
+                        <!-- <th scope="col">Stock</th> -->
                         <th scope="col">UOM</th>
                         <th scope="col">Status</th>
                     </tr>
@@ -64,8 +64,8 @@
                         <td>{{product.ProductGroup.name}}</td>
                         <td>{{product.Brand.name}}</td>
                         <td>{{product.name}}</td>
-                        <td>{{product.qtyStock}}</td>
-                        <td>{{product.SmallUom.name}}</td>
+                        <!-- <td>{{product.qtyStock}}</td> -->
+                        <td>{{product.smallUom.name}}</td>
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
                     </tr>
                 </tbody>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Receive, ReceivingDetail, ReceivingDetailPageDto } from '../receiving.model';
 import { Supplier, SupplierPageDto } from '../../supplier/supplier.model';
 import { Observable, forkJoin, of } from 'rxjs';
@@ -12,6 +12,7 @@ import { HttpResponse, HttpClient, HttpErrorResponse } from '@angular/common/htt
 import Swal from 'sweetalert2';
 import { debounceTime, distinctUntilChanged, switchMap, map, catchError } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
+import { ReceivingSearchPoModalComponent } from '../receiving-search-po-modal/receiving-search-po-modal.component';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -46,7 +47,7 @@ export class ReceivingEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
-
+    closeResult: string;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -54,6 +55,7 @@ export class ReceivingEditComponent implements OnInit {
         private http: HttpClient,
         private receiveService: ReceivingService,
         private receiveDetailService: ReceivingDetailService,
+        private modalService: NgbModal,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -502,6 +504,7 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.supplier = null;
         this.receive.supplierId = this.supplierSelected.id;
         this.receive.receiveDate = this.getSelectedDate();
+
         // this.receive.supplierId = 0;
         this.receiveService
             .save(this.receive)
@@ -605,6 +608,102 @@ export class ReceivingEditComponent implements OnInit {
                 break;
         }
         return statusName;
+    }
+
+    loadPO(obj) {
+
+        if (this.receive.status != 10  ) {
+            if (this.receive.status != 1  ) {
+                Swal.fire('Error', 'Status not allowed to add/change PO ! ', 'error');
+                return
+            }
+        }
+
+        if (this.receive.poNo != '' ) {
+            Swal.fire('Error', 'PO already found ! ', 'error');
+            return
+        }
+
+        console.log('receive -->', this.receive);
+        console.log('Receive date ', this.getSelectedDate());
+        const modalRef = this.modalService.open(ReceivingSearchPoModalComponent, { size: 'lg' });
+        modalRef.componentInstance.receive = this.receive;
+        modalRef.componentInstance.supplier = this.supplierSelected;
+        modalRef.componentInstance.receiveDate = this.getSelectedDate();
+        modalRef.result.then((result) => {
+            this.closeResult = `Closed with: ${result}`;
+            console.log('result',result);
+            console.log(result.substring(0,2));
+            if (result.substring(0,2) == 'ok') {
+                var recvID = result.replace('ok:','');
+                this.loadDataByOrderId(+recvID);
+            }
+            // this.curPage = 1;
+            // this.loadAll(this.curPage);
+        }, (reason) => {
+            console.log('reason',reason);
+            console.log(reason.substring(0,2));
+            if (reason.substring(0,2) == 'ok') {
+                var recvID = reason.replace('ok:','');
+                this.loadDataByOrderId(+recvID);
+            }
+            // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+            // console.log(this.closeResult);
+            // this.loadAll(this.curPage);
+        });
+    }
+
+    removePO() {
+
+        if (this.receive.id ==0 ) {
+            Swal.fire('Error', 'Receiving not found ! ', 'error');
+            return
+        }
+
+        if (this.receive.status != 10 ) {
+            Swal.fire('Error', 'Status not allowed to remove ! ', 'error');
+            return
+        }
+
+        if (this.receive.poNo == '' ) {
+            Swal.fire('Error', 'PO not found ! ', 'error');
+            return
+        }
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to Remove PO ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.removePoProcess();
+                }
+        });        
+        
+    }
+    
+    removePoProcess() {
+        let receive = new Receive();
+        receive.id = this.receive.id
+        receive.poNo = this.receive.poNo
+        this.receiveService.removeByPO(receive)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                        this.receive.poNo = ""
+                        // this.router.navigate(['/main/receive']);
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                }
+            );
+
     }
 
 }

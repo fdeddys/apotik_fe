@@ -23,6 +23,8 @@ export class ProductComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
+
     };
     closeResult: string;
     constructor(private route: ActivatedRoute,
@@ -99,6 +101,8 @@ export class ProductComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
+
         };
         this.loadAll(1);
     }

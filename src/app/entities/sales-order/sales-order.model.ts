@@ -3,7 +3,6 @@ import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
 import { Warehouse } from '../warehouse/warehouse.model';
-import { Salesman } from '../salesman/salesman.model';
 
 export class SalesOrder {
     constructor(
@@ -11,6 +10,7 @@ export class SalesOrder {
         public salesOrderNo?: string,
         public orderDate ?: string,
 
+        public deliveryDate?: string,
         public customerId?: number,
         public customer?: Customer,
 
@@ -29,7 +29,7 @@ export class SalesOrder {
 
         public status?: number,
         public top?: number,
-        public isCash?: number,
+        public isCash?: boolean,
         public detail?: SalesOrderDetail[],
 
         public errCode?: string,

@@ -22,6 +22,7 @@ export class SalesmanComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
     };
     closeResult: string;
     constructor(private route: ActivatedRoute,
@@ -98,6 +99,7 @@ export class SalesmanComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
         };
         this.loadAll(1);
     }

@@ -25,6 +25,12 @@ import { SalesmanModule } from './salesman/salesman.module';
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { ReturnReceivingModule } from './return-receiving/return-receiving.module';
 import { PaymentModule } from './payment/payment.module';
+import { StockMutationModule } from './stock-mutation/stock-mutation.module';
+import { OnlyNumberModule } from './app-directive/only-number.module';
+import { HistoryStockModule } from './history-stock/history-stock.module';
+import { StockModule } from './stock/stock.module';
+import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
+import { DirectSalesPaymentModule } from './direct-sales-payment/direct-sales-payment.module';
 
 @NgModule({
     imports: [
@@ -51,6 +57,12 @@ import { PaymentModule } from './payment/payment.module';
         WarehouseModule, 
         ReturnReceivingModule,
         PaymentModule,
+        StockMutationModule,
+        OnlyNumberModule,
+        HistoryStockModule,
+        StockModule,
+        PurchaseOrderModule,
+        DirectSalesPaymentModule,
     ],
     entryComponents: [],
     providers: [],

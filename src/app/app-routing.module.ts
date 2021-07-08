@@ -21,9 +21,7 @@ import { ReceivingComponent } from './entities/receiving/receiving.component';
 import { ReceivingEditComponent } from './entities/receiving/receiving-edit/receiving-edit.component';
 import { AdjustmentComponent } from './entities/adjustment/adjustment.component';
 import { AdjustmentEditComponent } from './entities/adjustment/adjustment-edit/adjustment-edit.component';
-import { SalesOrderPaymentComponent } from './entities/sales-order-payment/sales-order-payment.component';
 import { SalesOrderReturnComponent } from './entities/sales-order-return/sales-order-return.component';
-import { SalesOrderReturnDetail } from './entities/sales-order-return/sales-order-return.model';
 import { SalesOrderReturnEditComponent } from './entities/sales-order-return/sales-order-return-edit/sales-order-return-edit.component';
 import { SalesmanComponent } from './entities/salesman/salesman.component';
 import { WarehouseComponent } from './entities/warehouse/warehouse.component';
@@ -31,6 +29,13 @@ import { ReturnReceivingComponent } from './entities/return-receiving/return-rec
 import { ReturnReceivingModalComponent } from './entities/return-receiving/return-receiving-modal/return-receiving-modal.component';
 import { PaymentComponent } from './entities/payment/payment.component';
 import { PaymentModalComponent } from './entities/payment/payment-modal/payment-modal.component';
+import { StockMutationComponent } from './entities/stock-mutation/stock-mutation.component';
+import { StockMutationEditComponent } from './entities/stock-mutation/stock-mutation-edit/stock-mutation-edit.component';
+import { HistoryStockComponent } from './entities/history-stock/history-stock.component';
+import { StockComponent } from './entities/stock/stock.component';
+import { PurchaseOrderComponent } from './entities/purchase-order/purchase-order.component';
+import { PurchaseOrderEditComponent } from './entities/purchase-order/purchase-order-edit/purchase-order-edit.component';
+import { DirectSalesPaymentComponent } from './entities/direct-sales-payment/direct-sales-payment.component';
 
 
 const routes: Routes = [
@@ -59,8 +64,10 @@ const routes: Routes = [
                     { path: 'product', component: ProductComponent },
                     { path: 'salesman', component: SalesmanComponent },
                     { path: 'warehouse', component: WarehouseComponent },
-                    { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order' }  },
-                    { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit' }},
+                    { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order', cash: false }  },
+                    { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit', cash: false  }},
+                    { path: 'direct-sales', component: SalesOrderComponent,  data: { cash: true }  },
+                    { path: 'direct-sales/:id', component: SalesOrderEditComponent , data: { cash: true  }},
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
                     { path: 'payment', component: PaymentComponent },
                     { path: 'payment/:id', component: PaymentModalComponent },
@@ -72,6 +79,13 @@ const routes: Routes = [
                     { path: 'return-receive/:id', component: ReturnReceivingModalComponent },
                     { path: 'adjustment', component: AdjustmentComponent },
                     { path: 'adjustment/:id', component: AdjustmentEditComponent },
+                    { path: 'stock-mutation', component: StockMutationComponent },
+                    { path: 'stock-mutation/:id', component: StockMutationEditComponent },
+                    { path: 'history-stock', component: HistoryStockComponent },
+                    { path: 'stock', component: StockComponent },
+                    { path: 'purchase-order', component: PurchaseOrderComponent },
+                    { path: 'purchase-order/:id', component: PurchaseOrderEditComponent },
+                    { path: 'direct-sales-payment', component: DirectSalesPaymentComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

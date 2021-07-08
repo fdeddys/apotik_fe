@@ -22,6 +22,8 @@ export class BrandComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
+
     };
     closeResult: string;
     constructor(private route: ActivatedRoute,
@@ -98,6 +100,8 @@ export class BrandComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
+
         };
         this.loadAll(1);
     }

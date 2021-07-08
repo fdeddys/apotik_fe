@@ -62,12 +62,14 @@
                         <tr>
                             <td>Supplier</td>
                             <td *ngIf="suppliers">
-                                <input id="typeahead-basic" type="text" 
+                                <input id="typeahead-basic" type="text"
+                                    [attr.disabled]="receive.poNo!='' ? true : null " 
                                     [(ngModel)]="supplierSelected"
                                     [ngbTypeahead]="searchSupplier" 
                                     [resultFormatter]="formatter"
                                     [inputFormatter]="formatter" />
                                     [ {{supplierSelected.id}} ] 
+                                    {{receive.poNo}}
                             </td>
                             <td>Grand total</td>
                             <td>
@@ -82,6 +84,19 @@
                             <td>
                                 {{getStatus(receive.status)}}
                                 <!-- <input type="text" readonly size="50%" [(ngModel)]="receive.status">  -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Receive By PO
+                            </td>
+                            <td>
+                                <button (click)="loadPO()">
+                                    Search PO
+                                </button>
+                                <button (click)="removePO()">
+                                    Remove PO
+                                </button>
                             </td>
                             <td>Note</td>
                             <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>

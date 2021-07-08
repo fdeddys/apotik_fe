@@ -20,6 +20,7 @@ export class AdjustmentComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
+        description : '',
     };
     closeResult: string;
     constructor(
@@ -76,6 +77,7 @@ export class AdjustmentComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
+            description : '',
         };
         this.loadAll(1);
     }

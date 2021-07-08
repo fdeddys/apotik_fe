@@ -6,11 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReceivingService } from './receiving.service';
 import { ReceivingDetailService } from './receiving-detail.service';
+import { ReceivingSearchPoModalComponent } from './receiving-search-po-modal/receiving-search-po-modal.component';
 
 @NgModule({
     declarations: [
         ReceivingComponent,
-        ReceivingEditComponent
+        ReceivingEditComponent,
+        ReceivingSearchPoModalComponent
     ],
     imports: [
         CommonModule,
@@ -19,7 +21,8 @@ import { ReceivingDetailService } from './receiving-detail.service';
     ],
     entryComponents: [
         ReceivingComponent,
-        ReceivingEditComponent
+        ReceivingEditComponent,
+        ReceivingSearchPoModalComponent
     ],
     providers: [
         ReceivingService,

@@ -61,6 +61,7 @@ export class SalesOrderEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
+    isCash: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -81,16 +82,26 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("======? data")
+        
         const id = this.route.snapshot.paramMap.get('id');
         const isValidParam = isNaN(+id);
+        
         console.log('Param ==>', id, ' nan=>', isValidParam);
         if (isValidParam) {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
         }
-        this.loadData(+id);
-        this.setToday();
+        
+        this.route.data.subscribe(
+            data => {
+                console.log("data===>",data.cash);
+                this.isCash = data.cash;
+                this.loadData(+id);
+                this.setToday();
+            }
+        );
     }
 
     // checkIsNumber(numb): any {
@@ -98,6 +109,11 @@ export class SalesOrderEditComponent implements OnInit {
     // }
 
     backToLIst() {
+
+        if (this.isCash) {
+            this.router.navigate(['/main/direct-sales']);
+            return
+        }
         this.router.navigate(['/main/sales-order']);
     }
 
@@ -135,7 +151,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.priceAdded = event.item.sellPrice;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.SmallUom.name;
+        this.uomAddedName = event.item.smallUom.name;
     }
 
     loadDataByOrderId(orderId: number) {
@@ -204,6 +220,19 @@ export class SalesOrderEditComponent implements OnInit {
     }
 
     setCustomerDefault() {
+
+        if (this.isCash) {
+            // this.customerSelected = 99999999;
+            
+            console.log(" set cust default")
+            var cur = this.customers.find(function(cust) {
+                return cust.id === 99999999
+                }  
+            )
+            console.log(" set cust default ==>", cur)
+            this.customerSelected = cur;
+            return
+        }
         this.customerSelected = this.salesOrder.customer;
         console.log('set selected customer =>', this.customerSelected );
     }
@@ -616,8 +645,6 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
-    
-
     addNew() {
         this.total = 0;
         this.grandTotal = 0;
@@ -650,10 +677,14 @@ export class SalesOrderEditComponent implements OnInit {
     saveHdr() {
         this.spinner.show();
         this.salesOrder.customer = null;
-        this.salesOrder.customerId = this.customerSelected.id;
+        this.salesOrder.customerId = 99999999;
+        // this.customerSelected.id;
         this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
+        this.salesOrder.deliveryDate = this.formatDate().toString();
         this.salesOrder.salesmanId = +this.salesmanSelected;
+        this.salesOrder.isCash = this.isCash ;
+        // ==true ? 1 : 0;
         this.orderService
             .save(this.salesOrder)
             .subscribe(
@@ -673,6 +704,21 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
+    formatDate() {
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+    
+        return [year, month, day].join('-')+"T00:00:00+07:00";
+    }
+ 
+    
     getSelectedDate(): string{
 
         const month = ('0' + this.selectedDate.month).slice(-2);
@@ -707,7 +753,11 @@ export class SalesOrderEditComponent implements OnInit {
     approveProccess() {
         this.spinner.show();
         this.salesOrder.customer = null;
-        this.salesOrder.customerId = this.customerSelected.id;
+        if (this.isCash) {
+            this.salesOrder.customerId = 99999999;
+        } else {
+            this.salesOrder.customerId = this.customerSelected.id;
+        }
         this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
         this.salesOrder.salesmanId = +this.salesmanSelected;
@@ -717,7 +767,13 @@ export class SalesOrderEditComponent implements OnInit {
                     this.spinner.hide();
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
-                        this.router.navigate(['/main/sales-order']);
+
+                        if (this.isCash) {
+                            this.router.navigate(['/main/direct-sales']);
+                        } else {
+                            this.router.navigate(['/main/sales-order']);
+                        }
+                        
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
