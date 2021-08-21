@@ -31,6 +31,7 @@ export class SupplierComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        console.log('masuk sini');
         this.loadAll(this.curPage);
     }
 
