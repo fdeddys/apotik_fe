@@ -5,7 +5,7 @@
 </style>
 <div class="modal-header" *ngIf="statusRec!=='View'">
     <h4 class="modal-title">
-        <span class="badge badge-light" style="color:cornflowerblue">{{statusRec | uppercase}}</span>
+        <span class="badge badge-light" style="color:cornflowerblue">Product</span>
     </h4>
 </div>
 <div class="modal-body">
@@ -42,8 +42,8 @@
                 </td>
             </tr>
 
-            <tr>
-                <td>Brand</td>
+            <tr *ngIf="showBrand">
+                <td>Brand {{showBrand}}</td>
                 <td>
                     <select [(ngModel)]="brandSelected" class="form-control" [ngModelOptions]="{standalone: true}">
                         <option *ngFor="let brand of brands" [value]="brand.id">
@@ -52,6 +52,25 @@
                     </select>
                 </td>
             </tr>
+
+            <tr>
+                <td>PLU</td>
+                <td><input type="text" maxlength="100" size="50%" [(ngModel)]=product.plu></td>
+            </tr>
+
+            <tr>
+                <td>Composition</td>
+                <td><input type="text" maxlength="100" size="50%" [(ngModel)]=product.composition></td>
+            </tr>
+
+            <tr>
+                <td>HPP</td>
+                <td>
+                    {{product.hpp | currency :'':'':'0.0-0'}}
+                </td>
+            </tr>
+
+           
             <!-- <tr>
             <td>Small Unit</td>
             <td>
@@ -98,6 +117,29 @@
                         </table>
                     </div>
 
+                </td>
+            </tr>
+            <tr>
+                <td>Sell Price [small unit]</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <select [(ngModel)]="sellPriceTypeSelected" class="form-control" [ngModelOptions]="{standalone: true}">
+                                    <option *ngFor="let sellPriceType of sellPriceTypes" [value]="sellPriceType">
+                                        {{sellPriceType}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" maxlength="250" size="50%" [(ngModel)]=product.sellPrice>
+                            </td>
+                            <td>
+                                {{product.sellPrice | currency:'':'':'0.0'}}
+                                <!-- {{getSellPrice(product)}} -->
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
 

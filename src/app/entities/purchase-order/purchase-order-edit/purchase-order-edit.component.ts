@@ -139,7 +139,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.priceAdded = 0;
         this.purchaseOrder = new PurchaseOrder();
         this.purchaseOrder.id = 0;
-        this.purchaseOrder.status = 10;
+        this.purchaseOrder.status = 0;
         this.purchaseOrderDetails = [];
         this.setToday() ;
         this.clearDataAdded();
@@ -244,10 +244,20 @@ export class PurchaseOrderEditComponent implements OnInit {
         // event.preventDefault();
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = event.item.sellPrice;
+        this.priceAdded = 0;
+        this.discAdded =0;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
+        this.purchaseOrderService.findLastPrice(event.item.id).toPromise().then(
+            res => {
+                console.log("hasil cek harga ",res)
+                if (res.errCode == "00") {
+                    this.priceAdded = res.price;
+                    this.discAdded = res.disc1;
+                } 
+            }
+        )
     }
 
 
@@ -367,7 +377,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {

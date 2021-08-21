@@ -40,6 +40,11 @@ export class PaymentComponent implements OnInit {
 
     loadAll(page) {
         this.spinner.show();
+        
+        setTimeout(() => {
+            this.spinner.hide();
+        }, 3000);
+
         this.paymentService.filter({
             filter: this.searchTerm,
             page: page,

@@ -5,23 +5,24 @@
         <div>
             <form>
                 <div class="row">
-                    <div class="col-md-3 mb-3">
+                    <!-- <div class="col-md-3 mb-3">
                         <label for="productCodeInput">Code</label>
                         <input type="text" class="form-control" id="productCodeInput" [(ngModel)]='searchTerm.code'
                             name="searchCode" placeholder="Enter Code">
-                    </div>
-                    <div class="col-md-3 mb-3">
+                    </div> -->
+                    <div class="col-md-6 mb-6">
                         <label for="productNameInput">Name</label>
                         <input type="text" class="form-control" id="productNameInput" [(ngModel)]='searchTerm.name'
                             name="searchName" placeholder="Enter Name">
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <!-- <div class="col-md-3 mb-3">
                         <label for="loookupDesctiptionInput">Description</label>
                         <input type="text" class="form-control" id="loookupDesctiptionInput"
                             [(ngModel)]='searchTerm.description' name="searchDescription"
                             placeholder="Enter Description">
-                    </div>
+                    </div> -->
                 </div>
+                <br>
                 <div class="btn-group" role="group">
                     <button type="button" (click)="onFilter()" class="btn mr-2 btn-outline-success btn-sm">Search <i
                         class="fa fa-search fa-lg"></i>
@@ -37,7 +38,6 @@
 
             </form>
         </div>
-        <br>
         
         <div style="height:400px; padding: 15px 15px 15px 15px; " *ngIf ="products">
             <table class="table table-sm table-hover table-striped">
@@ -48,6 +48,7 @@
                         <th scope="col">Group</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Name</th>
+                        <th scope="col">PLU</th>
                         <!-- <th scope="col">Stock</th> -->
                         <th scope="col">UOM</th>
                         <th scope="col">Status</th>
@@ -64,7 +65,7 @@
                         <td>{{product.ProductGroup.name}}</td>
                         <td>{{product.Brand.name}}</td>
                         <td>{{product.name}}</td>
-                        <!-- <td>{{product.qtyStock}}</td> -->
+                        <td>{{product.plu}}</td>
                         <td>{{product.smallUom.name}}</td>
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
                     </tr>

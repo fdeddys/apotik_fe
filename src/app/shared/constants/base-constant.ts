@@ -1,7 +1,6 @@
 // develop
-export const SERVER = 'http://localhost:9900/';
-// export const SERVER = 'http://54.254.222.187:8080/rosebe/';
-
+// export const SERVER = 'http://localhost:8800/';
+export const SERVER = 'http://103.82.242.11:8800/';
 // PROD
 // export const SERVER = '/rosebe/';
 
@@ -102,5 +101,7 @@ export const WILAYAH_KECAMATAN  = 'kecamatan';
 export const WILAYAH_KELURAHAN  = 'kelurahan';
 
 
-
+// 
+export const CUSTOMER_CASH_ID = 99999999;
+export const APPNAME = 'APOTEK KURNIA SEHAT';
 

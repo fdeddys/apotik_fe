@@ -5,7 +5,7 @@
 </style>
 <div class="modal-header" *ngIf="statusRec!=='View'">
     <h4 class="modal-title">
-        <span class="badge badge-light" style="color:cornflowerblue">{{statusRec | uppercase}}</span>
+        <span class="badge badge-light" style="color:cornflowerblue">Supplier</span>
     </h4>
 </div>
 <div class="modal-body">
@@ -36,7 +36,7 @@
             <td><input type="text" maxlength="250" size="50%" [(ngModel)]=supplier.city></td>
         </tr>
         <tr>
-            <td>Tax</td>
+            <td>Tax </td>
             <td><input type="number" maxlength="250" size="50%" [(ngModel)]=supplier.tax></td>
         </tr>
         <tr>

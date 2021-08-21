@@ -23,9 +23,14 @@ export class ProductModalComponent implements OnInit {
     @Input() objEdit: Product;
     @Input() viewMsg;
 
+    showBrand = false;
     statuses = ['Active', 'Inactive'];
-    product: Product;
     statusSelected: string;
+
+    sellPriceTypes = ['byPrice', 'byPercent'];
+    sellPriceTypeSelected: string;
+
+    product: Product;
     bankSelected: number;
     products: Product[];
     isFormDirty: Boolean = false;
@@ -50,25 +55,33 @@ export class ProductModalComponent implements OnInit {
     ngOnInit() {
         console.log('obj to edit -> ', this.objEdit);
         console.log(this.statusRec);
+        
+        // ADDNEW
         if (this.statusRec === 'addnew') {
             this.setDefaultValue();
             this.findAllLookup();
-        } else {
-            // this.product = this.objEdit;
-            this.productService.findById({
-                id : this.objEdit.id
-            }).subscribe(
-                result  => {
-                    this.product = result.body.contents[0];
-                    if (this.product.status === 1) {
-                        this.statusSelected = this.statuses[0];
-                    } else {
-                        this.statusSelected = this.statuses[1];
-                    }
-                    this.findAllLookup();
+            this.product = new Product();
+            return ;
+        } 
+        
+        // EDIT DATA
+        // this.product = this.objEdit;
+        this.productService.findById({
+            id : this.objEdit.id
+        }).subscribe(
+            result  => {
+                this.product = result.body.contents[0];
+                if (this.product.status === 1) {
+                    this.statusSelected = this.statuses[0];
+                } else {
+                    this.statusSelected = this.statuses[1];
                 }
-            );
-        }
+
+                this.sellPriceTypeSelected = this.sellPriceTypes[this.product.sellPriceType];
+                this.findAllLookup();
+            }
+        );
+    
     }
 
     findAllLookup() {
@@ -140,9 +153,16 @@ export class ProductModalComponent implements OnInit {
         this.product = {};
         this.product.qtyUom = 1;
         this.statusSelected = this.statuses[0];
+        this.sellPriceTypeSelected = this.sellPriceTypes[0];
     }
 
-    save(): void {
+    async save() {
+
+        if (! await this.validateProduct()) {
+            return ;
+        }
+
+        // return ;
         // this.lookup.lookupGroup = this.lookupGroupSelected;
         this.product.Brand = null;
         this.product.ProductGroup = null;
@@ -153,6 +173,7 @@ export class ProductModalComponent implements OnInit {
         this.product.productGroupId =  Number(this.productGroupSelected);
         this.product.smallUomId = Number(this.smallUomSelected);
         this.product.bigUomId = Number(this.bigUomSelected);
+        this.product.sellPriceType = this.sellPriceTypes.findIndex(sellPrice=> sellPrice ===  this.sellPriceTypeSelected ) ;
         // this.product.bankId = this.bankSelected;
         this.productService.save(this.product).subscribe(result => {
             this.isFormDirty = true;
@@ -166,6 +187,41 @@ export class ProductModalComponent implements OnInit {
         });
     }
 
+    async validateProduct() {
+
+        var isValid = true;
+        
+        console.log('name ===>', this.product.name)
+        if (this.product.name === '') {
+            isValid = false;
+            await Swal.fire("Error", "Name kosong !", "error");
+            return isValid;
+        }
+
+        if (this.sellPriceTypeSelected === 'byPercent' && this.product.sellPrice>100){
+            console.log("exec swal  ", isValid);
+            await Swal.fire({
+                title : 'Confirm',
+                text : 'Persentase Harga Jual melebihi 100%, Anda yakin untuk menyimpan  ?',
+                type : 'info',
+                showCancelButton: true,
+                confirmButtonText : 'Ok',
+                cancelButtonText : 'Cancel'
+            })
+            .then(
+                (result) => {
+                    console.log('result confirm ===>', result)
+                    if (!result.value) {
+                        isValid = false;   
+                        return isValid;
+                    }
+            });
+            
+        }
+        console.log("valid? ", isValid);
+        return isValid;
+    }
+
     closeForm(): void {
         if (this.isFormDirty === true) {
             this.modalService.dismissAll('refresh');
@@ -174,4 +230,11 @@ export class ProductModalComponent implements OnInit {
         }
     }
 
+    getSellPrice(product: Product) {
+
+        if (this.sellPriceTypeSelected === 'byPrice') {
+            return product.sellPrice;
+        }
+        return product.hpp;
+    }
 }

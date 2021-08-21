@@ -425,9 +425,7 @@ export class PaymentModalComponent implements OnInit {
 
     saveHdr() {
         this.spinner.show();
-        this.payment.Customer = null;
-        this.payment.customerId = this.customerSelected.id;
-        this.payment.paymentDate = this.getSelectedDate();
+        this.composePayment();
         this.paymentService
             .save(this.payment)
             .subscribe(
@@ -446,6 +444,14 @@ export class PaymentModalComponent implements OnInit {
                 }
             );
     }
+
+    composePayment() {
+        this.payment.Customer = null;
+        this.payment.customerId = this.customerSelected.id;
+        // this.payment.paymentDate = this.getSelectedDate();
+        this.payment.isCash = false;
+    }
+
 
     getSelectedDate(): string{
 
@@ -479,9 +485,7 @@ export class PaymentModalComponent implements OnInit {
 
     approveProccess() {
         this.spinner.show();
-        this.payment.Customer = null;
-        this.payment.customerId = this.customerSelected.id;
-        this.payment.paymentDate = this.getSelectedDate();
+        this.composePayment();
         this.payment.totalOrder = this.totalOrder;
         this.payment.totalReturn = this.totalReturn;
         this.payment.totalPayment = this.totalPayment;

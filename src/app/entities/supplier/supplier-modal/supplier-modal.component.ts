@@ -52,10 +52,17 @@ export class SupplierModalComponent implements OnInit {
             groupName: 'bank'
             }).subscribe(
                 result => {
+                    
                     this.banks = result.body.contents;
+                    
                     console.log('get find by group-name :', result);
                     if (this.statusRec === 'addnew') {
-                        this.bankSelected = this.banks[0].id;
+                        let lookup = new Lookup()
+                        lookup.name = "Please Select"
+                        lookup.id = 0
+                        this.banks.unshift(lookup);
+                        this.bankSelected = 0;
+                        //  this.banks[0].id;
                     } else {
                         this.bankSelected = this.supplier.bankId;
                     }

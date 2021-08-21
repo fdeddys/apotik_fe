@@ -6,6 +6,7 @@ import { RoleService } from './role.service';
 import { RoleModalComponent } from './role.modal.component';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { RoleMenuService } from './role-menu.service';
 
 @Component({
   selector: 'op-role',
@@ -26,7 +27,8 @@ export class RoleComponent implements OnInit {
 
   closeResult: string;
   constructor(private modalService: NgbModal,
-              private roleService: RoleService) { }
+              private roleService: RoleService,
+              ) { }
 
   ngOnInit() {
     this.loadAll(this.curPage);

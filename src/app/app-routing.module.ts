@@ -36,6 +36,13 @@ import { StockComponent } from './entities/stock/stock.component';
 import { PurchaseOrderComponent } from './entities/purchase-order/purchase-order.component';
 import { PurchaseOrderEditComponent } from './entities/purchase-order/purchase-order-edit/purchase-order-edit.component';
 import { DirectSalesPaymentComponent } from './entities/direct-sales-payment/direct-sales-payment.component';
+import { DirectSalesPaymentModule } from './entities/direct-sales-payment/direct-sales-payment.module';
+import { DashboardModule } from './entities/dashboard/dashboard.module';
+import { StockOpnameComponent } from './entities/stock-opname/stock-opname.component';
+import { StockOpnameEditComponent } from './entities/stock-opname/stock-opname-edit/stock-opname-edit.component';
+import { ReportPaymentComponent } from './entities/report/report-payment/report-payment.component';
+import { DashboardComponent } from './entities/dashboard/dashboard.component';
+import { ReportSalesComponent } from './entities/report/report-sales/report-sales.component';
 
 
 const routes: Routes = [
@@ -49,7 +56,8 @@ const routes: Routes = [
                 path: '',
                 canActivateChild: [AuthGuard],
                 children: [
-                    { path: '', component: Page404Component },
+                    // { path: '', loadChildren: ()=> DashboardModule  },
+                    { path: '', component: DashboardComponent  },
                     { path: '404', component: Page404Component },
                     { path: 'user', component: UserComponent },
                     // { path: 'user/change-password', component: UserChangePasswordComponent },
@@ -71,8 +79,8 @@ const routes: Routes = [
                     { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
                     { path: 'payment', component: PaymentComponent },
                     { path: 'payment/:id', component: PaymentModalComponent },
-                    { path: 'sales-order-return', component: SalesOrderReturnComponent },
-                    { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent },
+                    { path: 'sales-order-return', component: SalesOrderReturnComponent , data: { cash: true }  },
+                    { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent,  data: { cash: true }  },
                     { path: 'receive', component: ReceivingComponent },
                     { path: 'receive/:id', component: ReceivingEditComponent },
                     { path: 'return-receive', component: ReturnReceivingComponent },
@@ -83,9 +91,16 @@ const routes: Routes = [
                     { path: 'stock-mutation/:id', component: StockMutationEditComponent },
                     { path: 'history-stock', component: HistoryStockComponent },
                     { path: 'stock', component: StockComponent },
+                    { path: 'stock-opname', component: StockOpnameComponent },
+                    { path: 'stock-opname/:id', component: StockOpnameEditComponent },
                     { path: 'purchase-order', component: PurchaseOrderComponent },
                     { path: 'purchase-order/:id', component: PurchaseOrderEditComponent },
+                    // { path: 'direct-sales-payment', component: DirectSalesPaymentComponent },
+                    // { path: 'direct-sales-payment', loadChildren:'./entities/direct-sales-payment/direct-sales-payment.module#DirectSalesPaymentModule' },
+                    // { path: 'direct-sales-payment', loadChildren: ()=> DirectSalesPaymentModule },
                     { path: 'direct-sales-payment', component: DirectSalesPaymentComponent },
+                    { path: 'report-payment', component: ReportPaymentComponent },
+                    { path: 'report-sales', component: ReportSalesComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

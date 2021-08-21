@@ -1,15 +1,15 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title" style="color: tomato;">Edit</h5>
+        <h5 class="card-title" style="color: tomato;">Payment</h5>
 
         <div class="btn-group" role="group" *ngIf="payment">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
                 <i class="fa fa-plus-circle fa-lg"></i>
             </button>
-            <button type="button" *ngIf="payment.status === 0 || payment.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
+            <button type="button" *ngIf="payment.status === 0 || payment.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr()">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="payment.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+            <button type="button"  *ngIf="payment.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
             <button type="button" *ngIf="payment.status === 20"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject

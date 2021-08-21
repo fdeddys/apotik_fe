@@ -25,19 +25,19 @@ export class RoleService {
     }
 
     query(req?: any): Observable<HttpResponse<Role[]>> {
-      const options = createRequestOption(req);
-      let pageNumber = null;
-      let pageCount = null;
-      let newresourceUrl = null;
+        const options = createRequestOption(req);
+        let pageNumber = null;
+        let pageCount = null;
+        let newresourceUrl = null;
 
-      Object.keys(req).forEach((key) => {
-          if (key === 'page') {
-              pageNumber = req[key];
-          }
-          if (key === 'count') {
-              pageCount = req[key];
-          }
-      });
+        Object.keys(req).forEach((key) => {
+            if (key === 'page') {
+                pageNumber = req[key];
+            }
+            if (key === 'count') {
+                pageCount = req[key];
+            }
+        });
 
         if (pageNumber !== null ) {
             newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
@@ -104,7 +104,7 @@ export class RoleService {
       return copyOb;
     }
 
-        /**
+    /**
      * Convert a Member to a JSON which can be sent to the server.
      */
     private convert( role: Role): Role {

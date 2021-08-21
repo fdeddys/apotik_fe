@@ -1,8 +1,11 @@
+import { LookupGroup } from "../lookup-group/lookup-group.model";
+
 export class Lookup {
     constructor(
         public id?: number,
         public code?: string,
-        public lookupGroup?: string,
+        public lookupGroupId?: number,
+        public lookupGroup?: LookupGroup,
         public status ?: number,
         public name?: string,
         public isViewable?: number,

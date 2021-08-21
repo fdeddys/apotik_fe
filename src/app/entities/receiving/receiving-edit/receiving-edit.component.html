@@ -1,6 +1,6 @@
 <div class="card border-primary">
         <div class="card-body">
-            <h5 class="card-title" style="color: tomato;">Edit</h5>
+            <h5 class="card-title" style="color: tomato;">Receiving</h5>
     
             <div class="btn-group" role="group" *ngIf="receive">
                 <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
@@ -9,10 +9,10 @@
                 <button type="button" *ngIf="receive.status === 0 || receive.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                     <i class="fa fa-save fa-lg"></i>
                 </button>
-                <button type="button"  *ngIf="receive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+                <button type="button"  *ngIf="receive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                     <i class="fa fa-thumbs-o-up fa-lg"></i>
                 </button>
-                <button type="button" *ngIf="receive.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+                <button type="button" *ngIf="receive.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
                     <i class="fa fa-times fa-lg"></i>
                 </button>
                 <button type="button" *ngIf="receive.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview
@@ -28,7 +28,7 @@
                 <table class="table table-sm table-striped">
                     <tbody style="color: cornflowerblue;">
                         <tr>
-                            <td>Sales Order No</td>
+                            <td>Receive No</td>
                             <td><input type="text" readonly size="50%" [(ngModel)]="receive.receiveNo">
                                 [{{receive.id}}]
                             </td>
@@ -46,8 +46,8 @@
                         <tr>
                             <td>Date</td>
                             <td>
-                                <input type="text" ngbDatepicker #d="ngbDatepicker" readonly [(ngModel)]="selectedDate" />
-                                <button (click)="d.toggle()">
+                                <input type="text" ngbDatepicker #d="ngbDatepicker" readonly [(ngModel)]="selectedDate" style="margin-right: 5px;" />
+                                <button (click)="d.toggle()" class="btn btn-outline-success btn-sm">
                                     <i class="fa fa-calendar"></i>
                                 </button>
                             </td>
@@ -85,22 +85,35 @@
                                 {{getStatus(receive.status)}}
                                 <!-- <input type="text" readonly size="50%" [(ngModel)]="receive.status">  -->
                             </td>
+                            <td>Warehouse</td>
+                            <td>
+                                <select [(ngModel)]="warehouseSelected" class="form-control"
+                                    [ngModelOptions]="{standalone: true}">
+                                    <option *ngFor="let warehouse of warehouses" [value]="warehouse">
+                                        {{warehouse.name}}
+                                    </option>
+                                </select>
+                                <!-- {{warehouseSelected.id }} -->
+                            </td>
                         </tr>
                         <tr>
                             <td>
                                 Receive By PO
                             </td>
                             <td>
-                                <button (click)="loadPO()">
-                                    Search PO
+                                <button (click)="loadPO()"  class="btn btn-outline-warning btn-sm" style="margin-right: 5px;">
+                                    Search PO  <i class="fa fa-search fa-lg"></i>
                                 </button>
-                                <button (click)="removePO()">
-                                    Remove PO
+                                <button (click)="removePO()"  class="btn btn-outline-danger btn-sm" >
+                                    Remove PO  <i class="fa fa-times fa-lg"></i>
                                 </button>
+                                <br>
+                                 {{ receive.poNo}}
                             </td>
                             <td>Note</td>
                             <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
                         </tr>
+                     
                     </tbody>
                 </table>
             </div>
@@ -165,7 +178,7 @@
             </div>
             <div *ngIf="receive">
                 <!-- {{receiveDetails | json}} -->
-                <div style="height:350px; padding: 5px 15px 5px 15px; ">
+                <div style="height:355px; padding: 5px 15px 5px 15px; ">
                     <table class="table table-sm table-hover table-striped">
                         <thead>
                             <tr>
@@ -179,26 +192,50 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let receiveDetail of receiveDetails">
+                            <tr *ngFor="let receiveDetail of receiveDetailShow">
                                 <td *ngIf ="receive">
                                     <button type="button" *ngIf="receive.status === 10"  (click)="confirmDelItem(receiveDetail)" class="btn btn-outline-danger btn-sm">
                                         <i class="fa fa-trash fa-lg"></i>
                                     </button>
                                 </td>
                                 <td>{{receiveDetail.product.name}}</td>
-                                <td>{{receiveDetail.price | number:'0.0-0' }}</td>
-                                <td>{{receiveDetail.qty | number:'0.0-0' }}</td>
+                                <td>
+                                    <input type="number" [(ngModel)]="receiveDetail.price"  >
+                                    <!-- {{receiveDetail.price | number:'0.0-0' }} -->
+                                </td>
+                                <td>
+                                    <input type="number" [(ngModel)]="receiveDetail.qty " placeholder="input disc" >
+                                    <!-- {{receiveDetail.qty | number:'0.0-0' }} -->
+                                </td>
                                 <td>{{receiveDetail.uom.name}}</td>
-                                <td>{{receiveDetail.disc1  }}</td>
+                                <td>
+                                    <input type="number" [(ngModel)]="receiveDetail.disc1 "  >
+                                    <!-- {{receiveDetail.disc1  }} -->
+                                </td>
                                 <td>{{ receiveDetail.price * receiveDetail.qty * ((100 - receiveDetail.disc1 ) /100)   | number:'0.0-0'  }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
-                    (pageChange)="loadPage()" [boundaryLinks]="true">
-                </ngb-pagination>
-    
+
+                <div>
+                    <table style="width: 100%; padding: 5px 15px 5px 15px; ">
+                        <tr>
+                            <td style="width: 50%;">
+                                <ngb-pagination size="sm" [collectionSize]="totalRecord" [(page)]="curPage" [maxSize]="10"  [maxSize]="5"
+                                    (pageChange)="loadPage()" [boundaryLinks]="true">
+                                </ngb-pagination>
+                            </td>
+                            <td style="text-align: right;">
+                                <button type="button"  *ngIf="receive.status === 10"  class="btn btn-outline-info btn-sm" (click)="updateDetail()">
+                                    Update Detail <i class="fa fa-upload fa-lg"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <!-- totalrec:{{totalRecord}} curpage:{{curPage}} -->
             </div>
     
     

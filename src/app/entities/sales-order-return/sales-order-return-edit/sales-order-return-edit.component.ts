@@ -65,6 +65,8 @@ export class SalesOrderReturnEditComponent implements OnInit {
     loadedSalesman =false;
     loadedCustomer =false;
 
+    isCash: boolean = false;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -92,8 +94,15 @@ export class SalesOrderReturnEditComponent implements OnInit {
             this.backToLIst();
             return;
         }
-        this.loadData(+id);
-        this.setToday();
+
+        this.route.data.subscribe(
+            data => {
+                console.log("data===>",data.cash);
+                this.isCash = data.cash;
+                this.loadData(+id);
+                this.setToday();
+            }
+        );
     }
 
     // checkIsNumber(numb): any {
@@ -138,7 +147,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
         this.priceAdded = event.item.sellPrice;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.SmallUom.name;
+        this.uomAddedName = event.item.smallUom.name;
     }
 
     loadDataByOrderId(orderId: number) {
@@ -440,7 +449,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {

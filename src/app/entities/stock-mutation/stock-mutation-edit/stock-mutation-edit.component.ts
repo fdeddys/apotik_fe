@@ -310,7 +310,7 @@ export class StockMutationEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {

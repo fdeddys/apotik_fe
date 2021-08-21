@@ -69,7 +69,7 @@ body {
 
 form[role=login] {
 	color: #5d5d5d;
-	background: #f2f2f2;
+	/* background: #f2f2f2; */
 	padding: 26px;
 	border-radius: 15px;
 	-moz-border-radius: 10px;
@@ -106,4 +106,21 @@ form[role=login] {
     -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+
+.background {
+    /* padding-bottom: 100px; */
+    width: 100%;
+    /* height: 100%; */
+    height: 100vh;
+    /* text-align: center; */
+    /* height: 800px;
+    margin: auto;
+    width: 800px; */
+    background: url('../../../assets/images/background/login-register.jpg') no-repeat ;
+    background-size: cover;
+    color: #f2f2f2;
+    text-align: center;
 }

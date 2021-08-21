@@ -99,6 +99,9 @@ export class PaymentModalOrderComponent implements OnInit {
             case 40:
                 statusName = 'Invoice';
                 break;
+            case 50:
+                statusName = 'Paid';
+                break;
         }
         return statusName;
     }

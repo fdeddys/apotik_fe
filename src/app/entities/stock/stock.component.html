@@ -1,10 +1,10 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title">Product</h5>
+        <h5 class="card-title">Stock In Warehouse</h5>
         <div>
             <form>
                 <div class="row">
-                    <div class="col-md-9 mb-9">
+                    <div class="col-md-6 mb-6">
                         <div class="form-group">
                             <label for="productCodeInput">Nama</label>
                             <input 
@@ -12,9 +12,19 @@
                                 id="productCodeInput" aria-describedby="productCodeInput" 
                                 [(ngModel)]='searchTerm.name'
                                 name="searchTerm"
-                                placeholder="Enter Code or Name">
+                                placeholder="Product Name">
                         </div>
-                    
+                    </div>
+                    <div class="col-md-6 mb-6">
+                        <div class="form-group">
+                            <label for="productComposition">Composition</label>
+                            <input 
+                                type="text" class="form-control" 
+                                id="productCompositionInput" aria-describedby="productCompositionInput" 
+                                [(ngModel)]='searchTerm.composition'
+                                name="searchTerm"
+                                placeholder="Product Composition">
+                        </div>
                     </div>
                 </div>
                 <div class="btn-group" role="group">
@@ -36,6 +46,7 @@
                         <th scope="col">Brand</th>
                         <th scope="col">Name</th>
                         <th scope="col">UOM</th>
+                        <th scope="col">SellPrice</th>
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
@@ -51,6 +62,7 @@
                         <td>{{product.Brand.name}}</td>
                         <td>{{product.name}}</td>
                         <td>{{product.smallUom.name}}</td>
+                        <td>{{getSellPrice(product) |  number:'0.0-0'}}</td>
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
                     </tr>
                 </tbody>

@@ -1,11 +1,14 @@
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
+import { Warehouse } from '../warehouse/warehouse.model';
 
 export class Adjustment {
     constructor(
         public id?: number,
         public adjustmentNo?: string,
         public adjustmentDate ?: string,
+        public warehouseId?: number,
+        public warehouse?: Warehouse,
         public note?: string,
         public total?: number,
         public status?: number,

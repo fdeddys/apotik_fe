@@ -25,7 +25,7 @@ export class StockComponent implements OnInit {
     searchTerm = {
         code: '',
         name: '',
-        description : '',
+        composition : '',
 
     };
     closeResult: string;
@@ -108,7 +108,7 @@ export class StockComponent implements OnInit {
         this.searchTerm = {
             code: '',
             name: '',
-            description : '',
+            composition : '',
 
         };
         this.loadAll(1);
@@ -118,4 +118,11 @@ export class StockComponent implements OnInit {
         this.loadAll(this.curPage);
     }
 
+    getSellPrice(product: Product) {
+
+        if (product.sellPriceType==0) {
+            return product.sellPrice
+        }
+        return  Math.round(product.hpp + (product.sellPrice * product.hpp / 100))
+    }
 }

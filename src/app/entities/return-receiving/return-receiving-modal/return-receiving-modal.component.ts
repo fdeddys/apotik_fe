@@ -132,6 +132,11 @@ export class ReturnReceivingModalComponent implements OnInit {
     loadDataByReturnId(returnId: number) {
 
         this.spinner.show();
+        setTimeout(() => {
+
+            this.spinner.hide();
+        }, 2000);
+
         let returnReq = this.returnReceiveService.findById(returnId);
         let supplierReq = this.supplierService.filter({
             page: 1,
@@ -411,7 +416,7 @@ export class ReturnReceivingModalComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {

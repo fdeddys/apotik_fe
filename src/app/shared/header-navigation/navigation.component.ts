@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserChangePasswordComponent } from 'src/app/entities/user/user-change-password.component';
 import { LoginService } from 'src/app/entities/login/login.service';
+import { APPNAME } from '../constants/base-constant';
 
 @Component({
     selector: 'op-navigation',
@@ -12,7 +13,8 @@ import { LoginService } from 'src/app/entities/login/login.service';
 })
 export class NavigationComponent implements OnInit {
 
-    title = 'Distribution System';
+    // title = 'Apotek Kurnia Sehat';
+    title =  APPNAME;
     constructor(private localStorage: LocalStorageService,
                 private router: Router,
                 private userService: UserService,

@@ -1,6 +1,6 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title" style="color: tomato;">Edit</h5>
+        <h5 class="card-title" style="color: tomato;">Sales Order</h5>
 
         <div class="btn-group" role="group" *ngIf="salesOrder">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
@@ -9,10 +9,10 @@
             <button type="button" *ngIf="salesOrder.status === 0 || salesOrder.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="salesOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+            <button type="button"  *ngIf="salesOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrder.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+            <button type="button" *ngIf="salesOrder.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
                 <i class="fa fa-times fa-lg"></i>
             </button>
             <button type="button" *ngIf="salesOrder.status === 20 && isCash === false " class="btn btn-outline-warning btn-sm" (click)="preview('so')">Preview SO
@@ -40,9 +40,13 @@
                 </thead>
                 <tbody style="color: cornflowerblue;">
                     <tr>
-                        <td>Sales Order No</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo">
-                            [{{salesOrder.id}}]
+                        <td>Sales Order No [{{salesOrder.id}}]</td>
+                        <td>
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="salesOrder.salesOrderNo"> -->
+                            <span style="color: blue;">
+                                {{salesOrder.salesOrderNo  }}
+                            </span>
+                            
                         </td>
                         <!-- < -->
                         <td>Total</td>
@@ -60,7 +64,7 @@
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </td>
-                        <td>Tax <input type="checkbox" [(ngModel)]="isTax" (ngModelChange)="checkTax()"></td>
+                        <td>Tax <input type="checkbox"  [(ngModel)]="isTax" (ngModelChange)="checkTax()"></td>
                         <td>
                             <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
                             <span style="color: blue;">
@@ -82,7 +86,7 @@
                             CASH
                         </td>
                         <td>Grand total</td>
-                        <td>
+                        <td class='rightText'>
                             <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
                             <span style="color: blue;">
                                     {{ grandTotal | number:'0.0-0'}}
@@ -91,37 +95,42 @@
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="salesOrder.status"> </td>
+                        <td>
+                            {{getStatus(salesOrder.status)}}
+                            <!-- <input type="text" readonly size="50%" [(ngModel)]="salesOrder.status">  -->
+                        </td>
                         <td>Note</td>
                         <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
                     </tr>
-                    <tr>
-                        <td>Salesman</td>
-                        <td>
-                            <span *ngIf="salesmans">
-                                <select id="select-type-basic" [(ngModel)]="salesmanSelected" style="width: 80%;">
-                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id">
-                                    {{salesman.name}}
-                                    </option>
-                                </select>
-                                [ {{salesmanSelected}} ] 
-                            </span>
-                        </td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                   
                     
                     <tr>
-                        <td>Warehouse</td>
+                        <td>Warehouse [ {{warehouseSelected}} ] </td>
                         <td >
                             <span *ngIf="warehouses" >
-                                <select id="select-type-basic" [(ngModel)]="warehouseSelected" style="width: 80%;"  >
+                                <select id="select-type-basic"  class="form-control"  [(ngModel)]="warehouseSelected" style="width: 80%;"  >
                                     <option *ngFor="let warehouse of warehouses" [value]="warehouse.id" >
                                     {{warehouse.name}}
                                     </option>
                                 </select>
                             </span>
-                            [ {{warehouseSelected}} ]
+                            <!-- [ {{warehouseSelected}} ] -->
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>Salesman</td>
+                        <td>
+                            <span *ngIf="salesmans">
+                                <select id="select-type-basic"  class="form-control"   [(ngModel)]="salesmanSelected" style="width: 80%;">
+                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id">
+                                    {{salesman.name}}
+                                    </option>
+                                </select>
+                                <!-- [ {{salesmanSelected}} ]  -->
+                            </span>
                         </td>
                         <td></td>
                         <td></td>
@@ -134,16 +143,16 @@
         <div>
             <table class="table table-sm table-striped">
                 <thead>
-                    <tr>
-                        <td style="width: 20%;">Product</td>
-                        <td style="width: 15%;">Price</td>
-                        <td style="width:  5%;">Qty</td>
-                        <td style="width:  5%;">Unit</td>
-                        <td style="width: 15%;">Disc 1 [%]</td>
-                        <td style="width: 15%;">Disc 2 [%]</td>
-                        <td style="width: 20%;">Total</td>
-                        <td style="width: 10%;">#</td>
-                    </tr>
+                    <!-- <tr> -->
+                        <td scope="col" style="width: 20%;">Product</td>
+                        <td scope="col" style="width: 15%;">Price</td>
+                        <td scope="col" style="width:  5%;">Qty</td>
+                        <td scope="col" style="width:  5%;">Unit</td>
+                        <td scope="col" style="width: 15%;">Disc 1 [%]</td>
+                        <td scope="col" style="width: 15%;">Disc 2 [%]</td>
+                        <td scope="col" style="width: 20%;">Total</td>
+                        <td scope="col" style="width: 10%;">#</td>
+                    <!-- </tr> -->
 
                 </thead>
                 <tbody style="color: hotpink; background-color: ghostwhite;">
@@ -170,10 +179,10 @@
                             {{uomAddedName}}
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
+                            <input type="number" [(ngModel)]="discAdded " placeholder="input " >
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="disc2Added " placeholder="input disc" >
+                            <input type="number" [(ngModel)]="disc2Added " placeholder="input " >
                         </td>
                         <td>
                             <!-- <input type="number" readonly> -->
@@ -196,13 +205,13 @@
                         <tr>
                             <th *ngIf ="salesOrder" style="width: 5%;"></th>
                             <th scope="col" style="width: 20%;">Product</th>
-                            <th scope="col" style="width: 10%;">Price</th>
-                            <th scope="col" style="width: 10%;">Qty</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
+                            <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
                             <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th>
-                            <th scope="col" style="width: 10%;">Unit</th>
-                            <th scope="col" style="width: 10%;">Disc 1[%]</th>
-                            <th scope="col" style="width: 10%;">Disc 2[%]</th>
-                            <th scope="col" style="width: 10%;">Total</th>
+                            <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc 1[%]</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc 2[%]</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -216,16 +225,16 @@
                                 </button>
                             </td>
                             <td>{{salesOrderDetail.product.name}}</td>
-                            <td>{{salesOrderDetail.price | number:'0.0-0' }}</td>
-                            <td>{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
+                            <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
+                            <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
                             <td *ngIf="salesOrder.status === 20" >
                                 <input type="number" [(ngModel)]="salesOrderDetail.qtyReceive " placeholder="input disc" >
                                 <!-- {{salesOrderDetail.qtyReceive | number:'0.0-0' }} -->
                             </td>
-                            <td>{{salesOrderDetail.uom.name}}</td>
-                            <td>{{salesOrderDetail.disc1  }}</td>
-                            <td>{{salesOrderDetail.disc2  }}</td>
-                            <td>{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
+                            <td style="text-align: center;">{{salesOrderDetail.uom.name}}</td>
+                            <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td>
+                            <td style="text-align: end;">{{salesOrderDetail.disc2  }}</td>
+                            <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
                             <!-- <td>{{ (salesOrderDetail.price * salesOrderDetail.qtyOrder ) - salesOrderDetail.disc1 | number:'0.0-0'  }}</td> -->
                         </tr>
                     </tbody>

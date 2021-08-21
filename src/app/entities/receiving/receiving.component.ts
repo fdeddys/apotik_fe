@@ -99,10 +99,10 @@ export class ReceivingComponent implements OnInit {
                 statusName = 'Outstanding';
                 break;
             case 20:
-                statusName = 'Approved';
+                statusName = 'Submit';
                 break;
             case 30:
-                statusName = 'Rejected';
+                statusName = 'Cancel';
                 break;
         }
         return statusName;

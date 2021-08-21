@@ -32,7 +32,7 @@ export class LookupModalComponent implements OnInit {
     isFormDirty: Boolean = false;
     statusSelected: string;
     lookupGroups: LookupGroup[];
-    lookupGroupSelected: string;
+    lookupGroupSelected: number;
 
     constructor(public lookupService: LookupService,
                 public modalService: NgbModal,
@@ -42,11 +42,11 @@ export class LookupModalComponent implements OnInit {
         console.log(this.objEdit);
         console.log(this.statusRec);
         if (this.statusRec === 'addnew') {
-            this.findAllGroup('-');
+            this.findAllGroup();
             this.setDefaultValue();
         } else {
             this.setSelectedLookup(this.objEdit);
-            this.findAllGroup(this.objEdit.lookupGroup);
+            this.findAllGroup();
             // this.setSelectedGroup(this.objEdit.lookupGroup);
         }
     }
@@ -65,18 +65,18 @@ export class LookupModalComponent implements OnInit {
         } else {
             this.statusSelected = this.statuses[1];
         }
-        this.lookupGroupSelected =  lookupData.lookupGroup;
+        this.lookupGroupSelected =  lookupData.lookupGroupId;
     }
 
-    findAllGroup(lookupGr: string) {
+    findAllGroup() {
         this.lookupGroupService.findForMerchantGroup()
             .subscribe(
                 result => {
                     this.lookupGroups = result.body.contents;
-                    this.lookupGroupSelected = this.lookupGroups[0].name;
-                    if (lookupGr !== '-') {
-                        this.lookupGroupSelected = lookupGr;
-                    }
+                    this.lookupGroupSelected = this.lookupGroups[0].id;
+                    // if (lookupGr !== '-') {
+                    //     this.lookupGroupSelected = lookupGr;
+                    // }
                 }
             );
     }
@@ -88,7 +88,7 @@ export class LookupModalComponent implements OnInit {
     }
 
     save(): void {
-        this.lookup.lookupGroup = this.lookupGroupSelected;
+        this.lookup.lookupGroupId = +this.lookupGroupSelected;
         this.lookup.status = (this.statusSelected === 'Active' ? 1 : 0 );
         this.lookupService.save(this.lookup).subscribe(result => {
             this.isFormDirty = true;

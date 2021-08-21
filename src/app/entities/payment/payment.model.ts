@@ -15,7 +15,7 @@ export class Payment {
         public totalReturn?: number,
         public totalPayment?: number,
         public status?: number,
-
+        public isCash?: boolean,
         public errCode?: string,
         public errDesc?: string,
     ) {
@@ -23,7 +23,7 @@ export class Payment {
         this.totalOrder = 0,
         this.totalPayment = 0,
         this.totalReturn = 0,
-        this.status =0
+        this.status =1
     }
 }
 

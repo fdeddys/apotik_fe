@@ -148,7 +148,13 @@ export class SalesOrderEditComponent implements OnInit {
         // event.preventDefault();
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = event.item.sellPrice;
+        let price = 0;
+        if (event.item.sellPriceType === 0) {
+            price =event.item.sellPrice;
+        } else {
+            price = Math.round(event.item.hpp + ( event.item.hpp * event.item.sellPrice / 100))
+        }
+        this.priceAdded = price;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
@@ -269,7 +275,8 @@ export class SalesOrderEditComponent implements OnInit {
                         Swal.fire('error',"Failed get data salesman", "error");
                         return ;
                     }
-                    this.salesmans = response.body.contents;   
+                    this.salesmans = response.body.contents;  
+                    this.salesmanSelected = this.salesmans[0].id; 
                 }
             );
     }
@@ -284,6 +291,7 @@ export class SalesOrderEditComponent implements OnInit {
                         return ;
                     }
                     this.warehouses = response.body.contents;
+                    this.warehouseSelected = this.warehouses[0].id;
                     // .filter(items => items.whOut ==1 );
                 }
             );
@@ -348,10 +356,10 @@ export class SalesOrderEditComponent implements OnInit {
 
         const filter = {
                     name: term,
-                    code: '',
+                    warehouseId: this.warehouseSelected,
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/search/page/1/count/10`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(
@@ -364,7 +372,8 @@ export class SalesOrderEditComponent implements OnInit {
 
 
     formatterProdList(value: any) {
-        return value.name + ' Sell Price { ' + value.sellPrice + ' } ';
+        return value.name + "   [ " + value.qtyOnHand + "  ]";
+        // + ' Sell Price { ' + value.sellPrice + ' } ';
     }
 
     formatterProdInput(value: any) {
@@ -483,7 +492,7 @@ export class SalesOrderEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {
@@ -871,4 +880,29 @@ export class SalesOrderEditComponent implements OnInit {
                 () => {  }
             );
     }
+
+    getStatus(id): string {
+        let statusName = 'Unknown';
+        switch (id) {
+            case 0:
+            case 1:
+            case 10:
+                statusName = 'Outstanding';
+                break;
+            case 20:
+                statusName = 'Submit';
+                break;
+            case 30:
+                statusName = 'Cancel';
+                break;
+            case 40:
+                statusName = 'Invoice';
+                break;
+            case 50:
+                statusName = 'Paid';
+                break;
+        }
+        return statusName;
+    }
+
 }

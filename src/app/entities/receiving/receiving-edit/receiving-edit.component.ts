@@ -13,6 +13,12 @@ import Swal from 'sweetalert2';
 import { debounceTime, distinctUntilChanged, switchMap, map, catchError } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { ReceivingSearchPoModalComponent } from '../receiving-search-po-modal/receiving-search-po-modal.component';
+import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
+import { WarehouseService } from '../../warehouse/warehouse.service';
+import { data } from 'jquery';
+import { flatMap } from 'lodash';
+import * as _ from 'lodash';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -24,9 +30,14 @@ export class ReceivingEditComponent implements OnInit {
     selectedDate: NgbDateStruct;
     receive: Receive;
     receiveDetails: ReceivingDetail[];
+    receiveDetailShow: ReceivingDetail[];
 
     suppliers: Supplier[];
     supplierSelected: Supplier;
+
+
+    warehouses: Warehouse[];
+    warehouseSelected: Warehouse;
 
     total: number;
     grandTotal: number;
@@ -48,6 +59,8 @@ export class ReceivingEditComponent implements OnInit {
     uomAdded = 0;
     uomAddedName = '';
     closeResult: string;
+    curPage =1;
+    totalRecord =0;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -56,6 +69,8 @@ export class ReceivingEditComponent implements OnInit {
         private receiveService: ReceivingService,
         private receiveDetailService: ReceivingDetailService,
         private modalService: NgbModal,
+        private warehouseService: WarehouseService,
+        private spinner: NgxSpinnerService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -96,6 +111,7 @@ export class ReceivingEditComponent implements OnInit {
         console.log('id ==>?', orderId);
         if (orderId === 0) {
             this.loadSupplier();
+            this.loadWarehouse();
             this.loadNewData();
             return;
         }
@@ -124,9 +140,23 @@ export class ReceivingEditComponent implements OnInit {
             });
     }
 
+    loadWarehouse() {
+        this.warehouseService.getWarehouse()
+            .subscribe(
+            (response: HttpResponse<WarehouseDto>) => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get warehouse data !', 'error');
+                    return;
+                }
+                this.warehouses = response.body.contents;
+                this.warehouseSelected = this.warehouses[0] ;
+            });
+    }
+
     setSupplierDefault() {
         this.supplierSelected = this.receive.supplier;
         console.log('set selected supplier =>', this.supplierSelected );
+        this.warehouseSelected = this.receive.warehouse ;
     }
 
     loadNewData() {
@@ -141,14 +171,16 @@ export class ReceivingEditComponent implements OnInit {
         this.priceAdded = 0;
         this.receive = new Receive();
         this.receive.id = 0;
-        this.receive.status = 10;
+        this.receive.status = 0;
         this.receiveDetails = [];
         this.setToday() ;
         this.clearDataAdded();
         if (this.suppliers !== undefined) {
             this.receive.supplier = this.suppliers[0];
+            this.receive.warehouse = this.warehouses[0];
             this.setSupplierDefault();
         }
+        
     }
 
     clearDataAdded() {
@@ -163,6 +195,12 @@ export class ReceivingEditComponent implements OnInit {
 
     loadDataByOrderId(orderId: number) {
 
+        this.spinner.show();
+
+        setTimeout(() => {
+            this.spinner.hide();
+        }, 10000);
+
         let receiveReq = this.receiveService.findById(orderId);
 
         let supplierReq = this.supplierService.filter({
@@ -176,23 +214,33 @@ export class ReceivingEditComponent implements OnInit {
 
         let receiveDetailReq = this.receiveDetailService
             .findByReceiveId({
-                count: 10,
+                count: 1000,
                 page: 1,
                 filter : {
                     receiveId: orderId,
                 }
             });
+        
+        let warehouseReq = this.warehouseService.getWarehouse();
 
         const requestArray = [];
         requestArray.push(receiveReq);
         requestArray.push(supplierReq);
         requestArray.push(receiveDetailReq);
+        requestArray.push(warehouseReq);
 
         forkJoin(requestArray).subscribe(results => {
             this.processReceive(results[0]);
             this.processSupplier(results[1]);
             this.processReceiveDtil(results[2]);
+            this.processWarehouse(results[3]);
             this.setSupplierDefault();
+        },
+        ()=> {
+            
+        },
+        ()=> {
+            this.spinner.hide();
         });
 
     }
@@ -205,11 +253,11 @@ export class ReceivingEditComponent implements OnInit {
         console.log('isi receive result', result);
         this.receive = result;
 
-        this.receiveDetails = result.detail;
-        console.log('isi receive detauil', this.receiveDetails);
-        this.calculateTotal();
+        // this.receiveDetails = result.detail;
+        // console.log('isi receive detauil', this.receiveDetails);
+        // this.calculateTotal();
 
-        this.receive.detail = null;
+        // this.receive.detail = null;
     }
 
     calculateTotal() {
@@ -242,14 +290,21 @@ export class ReceivingEditComponent implements OnInit {
         this.suppliers = result.body.contents;
     }
 
+    processWarehouse(result: HttpResponse<WarehouseDto>) {
+        if (result.body.contents.length < 0) {
+            return;
+        }
+        this.warehouses = result.body.contents;
+    }
+
     getItem(event: any) {
         // event.preventDefault();
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = event.item.sellPrice;
+        this.priceAdded = 0;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.SmallUom.name;
+        this.uomAddedName = event.item.smallUom.name;
     }
 
 
@@ -371,30 +426,30 @@ export class ReceivingEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
-            res => {
-                console.log('observable model ', res);
-                if ( !res ) {
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi ! ', 'error');
-                    // return false ;
-                    result = false;
-                }
-                const product =  res;
-                console.log('obser hasil akhir => ', product);
-                console.log('type [', typeof(product), '] ');
-                const typeObj = typeof(product);
-                if (typeObj == 'object') {
-                    result = true;
-                }
+        of(this.model).toPromise().then(
+            (res) => {
+               console.log('observable model ', res);
+               if ( !res ) {
+                   Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi ! ', 'error');
+                   // return false ;
+                   result = false;
+               }
+               const product =  res;
+               console.log('obser hasil akhir => ', product);
+               console.log('type [', typeof(product), '] ');
+               const typeObj = typeof(product);
+               if (typeObj == 'object') {
+                   result = true;
+               }
 
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
-                    return result;
-                }
-            }
+               console.log(typeof(product) , '] [', typeof('product'))
+               if (typeof(product) == typeof('product')) {
+                   // console.log('masok pakeo 2');
+                   Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                   result = false;
+                   return result;
+               }
+           }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
         return result;
@@ -446,7 +501,7 @@ export class ReceivingEditComponent implements OnInit {
     reloadDetail(id: number) {
         this.receiveDetailService
             .findByReceiveId({
-                count: 10,
+                count: 1000,
                 page: 1,
                 filter : {
                     receiveId: id,
@@ -461,11 +516,37 @@ export class ReceivingEditComponent implements OnInit {
     fillDetail(res: HttpResponse<ReceivingDetailPageDto>) {
         this.receiveDetails = [];
         if (res.body.contents.length > 0) {
-
+            
             this.receiveDetails = res.body.contents;
+            console.log('isi detail ===>', this.receiveDetails);
+            this.totalRecord = this.receiveDetails.length;
+            
+            this.fillGridDetail();
             this.calculateTotal();
             this.clearDataAdded();
         }
+    }
+
+
+    fillGridDetail() {
+
+        var recKe =1;
+        this.receiveDetailShow = [];
+        this.receiveDetails.every(data => {
+            // page 1 rec 1 .. 10
+            // page 2 rec 11 ..20
+            if ((this.curPage-1) * 10 < recKe ) {
+                this.receiveDetailShow.push(data);
+                console.log('add .. ', this.receiveDetailShow.length);
+                // jika sampe 10 rec, exit
+                if (this.receiveDetailShow.length >= 10) {
+                    return;
+                }
+            }
+            recKe++;
+            return true;
+        })
+        console.log('exit ya..');
     }
 
     confirmDelItem (receiveDtl: ReceivingDetail) {
@@ -504,7 +585,7 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.supplier = null;
         this.receive.supplierId = this.supplierSelected.id;
         this.receive.receiveDate = this.getSelectedDate();
-
+        this.receive.warehouseId = this.warehouseSelected.id;
         // this.receive.supplierId = 0;
         this.receiveService
             .save(this.receive)
@@ -642,7 +723,10 @@ export class ReceivingEditComponent implements OnInit {
             // this.loadAll(this.curPage);
         }, (reason) => {
             console.log('reason',reason);
-            console.log(reason.substring(0,2));
+            if ( reason === 0 ) {
+                return;
+            }
+            // console.log(reason.substring(0,2));
             if (reason.substring(0,2) == 'ok') {
                 var recvID = reason.replace('ok:','');
                 this.loadDataByOrderId(+recvID);
@@ -703,7 +787,67 @@ export class ReceivingEditComponent implements OnInit {
                     }
                 }
             );
+    }
 
+    loadPage() {
+        this.copyDataToShowData();
+        this.fillGridDetail();
+    }
+
+    copyDataToShowData() {
+
+        this.receiveDetailShow.forEach(datashow =>{
+            let findIndex = _.findIndex(this.receiveDetails, function(datadetail){
+                        return datadetail.id == datashow.id;
+                    })
+            
+            if (findIndex === undefined) {
+                console.log('data undefined ');
+            } else {
+                console.log('data found ', findIndex);
+                this.receiveDetails[findIndex].price = datashow.price;
+                this.receiveDetails[findIndex].disc1 = datashow.disc1;
+                this.receiveDetails[findIndex].qty = datashow.qty;
+            }
+        })
+        this.calculateTotal();
+        // _.forEach(this.receiveDetailShow, function(datashow) {
+            
+        //      _.find(this.receiveDetails, function(datadetail){
+        //         return datadetail.id == datashow.id;
+        //     })
+
+        //     // console.log('data show ', dataFind);
+        // });
+    }
+
+    updateDetail(){
+
+        this.copyDataToShowData();
+        this.spinner.show();
+
+        setTimeout(() => {
+            this.spinner.hide();
+        }, 5000);
+
+        this.receiveDetailService.updateDetail(this.receiveDetails)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                        // this.router.navigate(['/main/receive']);
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                },
+                (res: HttpErrorResponse) => {
+                    // if (res.bod)
+                },
+                ()=> {
+                    this.spinner.hide();
+                }
+            );
+        
     }
 
 }

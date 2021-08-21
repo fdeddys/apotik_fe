@@ -10,6 +10,8 @@ import { AdjustmentDetailService } from '../adjustment-detail.service';
 import { debounceTime, distinctUntilChanged, switchMap, catchError, map } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import Swal from 'sweetalert2';
+import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
+import { WarehouseService } from '../../warehouse/warehouse.service';
 
 @Component({
   selector: 'op-adjustment-edit',
@@ -39,12 +41,16 @@ export class AdjustmentEditComponent implements OnInit {
     uomAdded = 0;
     uomAddedName = '';
 
+    warehouses: Warehouse[];
+    warehouseSelected: Warehouse;
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private http: HttpClient,
         private adjustmentService: AdjustmentService,
         private adjustmentDetailService: AdjustmentDetailService,
+        private warehouseService: WarehouseService,
     ) {
         this.total = 0;
         this.qtyAdded = 0;
@@ -81,6 +87,7 @@ export class AdjustmentEditComponent implements OnInit {
 
         console.log('id ==>?', orderId);
         if (orderId === 0) {
+            this.loadWarehouse();
             this.loadNewData();
             return;
         }
@@ -91,6 +98,19 @@ export class AdjustmentEditComponent implements OnInit {
         this.addNew();
     }
 
+    loadWarehouse() {
+        this.warehouseService.getWarehouse()
+            .subscribe(
+            (response: HttpResponse<WarehouseDto>) => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get warehouse data !', 'error');
+                    return;
+                }
+                this.warehouses = response.body.contents;
+                this.warehouseSelected = this.warehouses[0] ;
+            });
+    }
+    
     addNew() {
         this.total = 0;
         this.qtyAdded = 0;
@@ -98,6 +118,9 @@ export class AdjustmentEditComponent implements OnInit {
         this.adjustment.id = 0;
         this.adjustment.status = 0;
         this.adjustmentDetails = [];
+        if (this.warehouses !== undefined) {
+            this.adjustment.warehouse = this.warehouses[0];
+        }
         this.setToday() ;
         this.clearDataAdded();
     }
@@ -115,13 +138,16 @@ export class AdjustmentEditComponent implements OnInit {
     loadDataByOrderId(orderId: number) {
 
         let adjustmentReq = this.adjustmentService.findById(orderId);
+        let warehouseReq = this.warehouseService.getWarehouse();
 
 
         const requestArray = [];
         requestArray.push(adjustmentReq);
-
+        requestArray.push(warehouseReq);
         forkJoin(requestArray).subscribe(results => {
             this.processAdjustment(results[0]);
+            this.processWarehouse(results[1]);
+            this.setDefaultWarehouse();
         });
 
     }
@@ -135,6 +161,17 @@ export class AdjustmentEditComponent implements OnInit {
         this.calculateTotal();
 
         this.adjustment.detail = null;
+    }
+
+    processWarehouse(result: HttpResponse<WarehouseDto>) {
+        if (result.body.contents.length < 0) {
+            return;
+        }
+        this.warehouses = result.body.contents;
+    }
+
+    setDefaultWarehouse() {
+        this.warehouseSelected = this.adjustment.warehouse ;
     }
 
     calculateTotal() {
@@ -152,7 +189,7 @@ export class AdjustmentEditComponent implements OnInit {
         this.qtyAdded = 0;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.SmallUom.name;
+        this.uomAddedName = event.item.smallUom.name;
         this.hppAdded = event.item.hpp
     }
 
@@ -255,7 +292,7 @@ export class AdjustmentEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).subscribe(
+        of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
                 if ( !res ) {
@@ -368,6 +405,7 @@ export class AdjustmentEditComponent implements OnInit {
 
     saveHdr() {
         this.adjustment.adjustmentDate = this.getSelectedDate();
+        this.adjustment.warehouseId = this.warehouseSelected.id;
         this.adjustmentService
             .save(this.adjustment)
             .subscribe(

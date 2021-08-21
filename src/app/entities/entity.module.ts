@@ -7,7 +7,7 @@ import { LoginModule } from './login/login.module';
 import { AppParameterModule } from './app-parameter/app-parameter.module';
 import { SystemParameterModule } from './system-parameter/system-parameter.module';
 import { AccessMatrixModule } from './access-matrix/access-matrix.module';
-import { ReportModule } from './report/report.module';
+// import { ReportModule } from './report/report.module';
 import { LookupGroupModule } from './lookup-group/lookup-group.module';
 import { ProductGroupModule } from './product-group/product-group.module';
 import { BrandModule } from './brand/brand.module';
@@ -31,6 +31,10 @@ import { HistoryStockModule } from './history-stock/history-stock.module';
 import { StockModule } from './stock/stock.module';
 import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 import { DirectSalesPaymentModule } from './direct-sales-payment/direct-sales-payment.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { StockOpnameModule } from './stock-opname/stock-opname.module';
+import { ReportPaymentModule } from './report/report-payment/report-payment.module';
+import { ReportSalesModule } from './report/report-sales/report-sales.module';
 
 @NgModule({
     imports: [
@@ -41,7 +45,7 @@ import { DirectSalesPaymentModule } from './direct-sales-payment/direct-sales-pa
         AppParameterModule,
         SystemParameterModule,
         AccessMatrixModule,
-        ReportModule,
+        // ReportModule,
         LookupGroupModule,
         ProductGroupModule,
         BrandModule,
@@ -63,6 +67,10 @@ import { DirectSalesPaymentModule } from './direct-sales-payment/direct-sales-pa
         StockModule,
         PurchaseOrderModule,
         DirectSalesPaymentModule,
+        DashboardModule,
+        StockOpnameModule,
+        ReportPaymentModule,
+        ReportSalesModule,
     ],
     entryComponents: [],
     providers: [],

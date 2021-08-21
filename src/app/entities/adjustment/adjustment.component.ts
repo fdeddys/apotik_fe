@@ -94,12 +94,14 @@ export class AdjustmentComponent implements OnInit {
         let statusName = 'Unknown';
         switch (id) {
             case 0:
+            case 1:
+            case 10:
                 statusName = 'Outstanding';
                 break;
-            case 10:
+            case 20:
                 statusName = 'Approved';
                 break;
-            case 20:
+            case 30:
                 statusName = 'Rejected';
                 break;
         }

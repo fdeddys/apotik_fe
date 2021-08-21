@@ -1,6 +1,6 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title" style="color: tomato;">Edit</h5>
+        <h5 class="card-title" style="color: tomato;">Return Receiving</h5>
 
         <div class="btn-group" role="group" *ngIf="returnReceive">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
@@ -9,10 +9,10 @@
             <button type="button" *ngIf="returnReceive.status === 0 || returnReceive.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="returnReceive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+            <button type="button"  *ngIf="returnReceive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="returnReceive.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+            <button type="button" *ngIf="returnReceive.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
                 <i class="fa fa-times fa-lg"></i>
             </button>
             <button type="button" *ngIf="returnReceive.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview('return-so')">Preview

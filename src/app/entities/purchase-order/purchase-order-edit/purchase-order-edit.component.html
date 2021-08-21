@@ -1,6 +1,6 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title" style="color: tomato;">Edit</h5>
+        <h5 class="card-title" style="color: tomato;">Purchase Order</h5>
 
         <div class="btn-group" role="group" *ngIf="purchaseOrder">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
@@ -9,10 +9,10 @@
             <button type="button" *ngIf="purchaseOrder.status === 0 || purchaseOrder.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="purchaseOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Approve
+            <button type="button"  *ngIf="purchaseOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="purchaseOrder.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
+            <button type="button" *ngIf="purchaseOrder.status === 20  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
                 <i class="fa fa-times fa-lg"></i>
             </button>
             <button type="button" *ngIf="purchaseOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview
@@ -29,7 +29,7 @@
                 <tbody style="color: cornflowerblue;">
                     <tr>
                         <td>Purchase Order No</td>
-                        <td><input type="text" readonly size="50%" [(ngModel)]="purchaseOrder.purchaseOrderNo">
+                        <td><input type="text" disabled readonly size="50%" [(ngModel)]="purchaseOrder.purchaseOrderNo">
                             [{{purchaseOrder.id}}]
                         </td>
                         <td>Total</td>
@@ -49,7 +49,7 @@
                         </td>
                         <td>Tax <input type="checkbox" [(ngModel)]="purchaseOrder.isTax" (ngModelChange)="checkTax()"></td>
                         <td>
-\                            <span style="color: blue;">
+                            <span style="color: blue;">
                                     {{ taxAmount | number:'0.0-0'}}
                             </span>
                         </td>
@@ -91,7 +91,7 @@
                         <td style="width: 15%;">Price</td>
                         <td style="width: 5%;">Qty</td>
                         <td style="width: 5%;">Unit</td>
-                        <td style="width: 15%;">Disc</td>
+                        <td style="width: 15%;">Disc[%]</td>
                         <td style="width: 20%;">Total</td>
                         <td style="width: 10%;">#</td>
                     </tr>
@@ -120,7 +120,7 @@
                             <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
                         </td>
                         <td>
-                            {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
+                            {{  ( (priceAdded*qtyAdded) - (priceAdded*qtyAdded *discAdded/100)  ) | number:'0.0-0' }}
                         </td>
                         <td *ngIf ="purchaseOrder">
                             <button type="button"  *ngIf="purchaseOrder.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">

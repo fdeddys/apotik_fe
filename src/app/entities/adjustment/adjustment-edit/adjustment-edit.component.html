@@ -1,6 +1,6 @@
 <div class="card border-primary">
     <div class="card-body">
-        <h5 class="card-title" style="color: tomato;">Edit</h5>
+        <h5 class="card-title" style="color: tomato;">Adjustment</h5>
 
         <div class="btn-group" role="group" *ngIf="adjustment">
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
@@ -30,9 +30,17 @@
         <br>
         <div *ngIf="adjustment">
             <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <td style="width: 15%;"></td>
+                        <td style="width: 35%;"></td>
+                        <td style="width: 15%;"></td>
+                        <td style="width: 35%;"></td>
+                    </tr>
+                </thead>
                 <tbody style="color: cornflowerblue;">
                     <tr>
-                        <td>Sales Order No</td>
+                        <td>Adjustment No</td>
                         <td><input type="text" readonly size="50%" [(ngModel)]="adjustment.adjustmentNo">
                             [{{adjustment.id}}]
                         </td>
@@ -42,10 +50,8 @@
                             <span style="color: blue;">
                                 {{ total | number:'0.0-0'}}
                             </span>
-                            <!-- <input type="text" size="50%" [(ngModel)]="total"> -->
 
                         </td>
-
                     </tr>
                     <tr>
                         <td>Date</td>
@@ -55,31 +61,28 @@
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </td>
-                        <td>Tax <input type="checkbox" [(ngModel)]="isTax" (ngModelChange)="checkTax()"></td>
-                        <td>
-                            <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
-                            <span style="color: blue;">
-                                {{ taxAmount | number:'0.0-0'}}
-                            </span>
-                        </td>
+                        <td>Note</td>
+                        <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
                     </tr>
                     <tr>
                         <td>Status</td>
                         <td><input type="text" readonly size="50%" [(ngModel)]="adjustment.status"> </td>
-
-                        <td>Grand total</td>
-                        <td>
-                            <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
-                            <span style="color: blue;">
-                                {{ grandTotal | number:'0.0-0'}}
-                            </span>
-                        </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
+                        <td>Warehouse</td>
+                        <td>
+                            <select [(ngModel)]="warehouseSelected" class="form-control"
+                                [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let warehouse of warehouses" [value]="warehouse">
+                                    {{warehouse.name}}
+                                </option>
+                            </select>
+                            <!-- {{warehouseSelected.id }} -->
+                        </td>
                         <td></td>
                         <td></td>
-                        <td>Note</td>
-                        <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
                     </tr>
                 </tbody>
             </table>
@@ -97,7 +100,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input id="typeahead-http" type="text" [(ngModel)]="model" [ngbTypeahead]="search"
+                            <input id="typeahead-http" type="text" [(ngModel)]="model" [ngbTypeahead]="search"  class="form-control"
                                 [resultFormatter]="formatterProdList" [inputFormatter]="formatterProdInput" size="50%"
                                 placeholder="search product name" (selectItem)="getItem($event)" />
                         </td>

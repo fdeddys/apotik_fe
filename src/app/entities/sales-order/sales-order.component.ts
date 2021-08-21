@@ -140,13 +140,16 @@ export class SalesOrderComponent implements OnInit {
                 statusName = 'Outstanding';
                 break;
             case 20:
-                statusName = 'Approved';
+                statusName = 'Submit';
                 break;
             case 30:
-                statusName = 'Rejected';
+                statusName = 'Cancel';
                 break;
             case 40:
                 statusName = 'Invoice';
+                break;
+            case 50:
+                statusName = 'Paid';
                 break;
         }
         return statusName;

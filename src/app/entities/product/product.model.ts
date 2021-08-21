@@ -8,6 +8,7 @@ export class Product {
         public id?: number,
         public code?: string,
         public name?: string,
+        public plu?: string,
 
         public productGroupId?: number,
         public ProductGroup?: ProductGroup,
@@ -26,10 +27,18 @@ export class Product {
         public qtyUom?: number,
         public hpp?: number,
         public sellPrice?: number,
+        public sellPriceType?: number,
         public errCode?: string,
         public errDesc?: string,
+
+        public qty?: number,
+        public composition?: string,
     ) {
+        this.name= '';
         this.qtyUom = 1;
+        this.sellPriceType=1;
+        this.status =1 ;
+        this.sellPrice = 0;
     }
 }
 

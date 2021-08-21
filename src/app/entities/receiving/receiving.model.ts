@@ -3,6 +3,7 @@ import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
 import { Supplier } from '../supplier/supplier.model';
+import { Warehouse } from '../warehouse/warehouse.model';
 
 export class Receive {
     constructor(
@@ -12,6 +13,9 @@ export class Receive {
 
         public supplierId?: number,
         public supplier?: Supplier,
+
+        public warehouseId?: number,
+        public warehouse?: Warehouse,
 
         public note?: string,
         public tax?: number,

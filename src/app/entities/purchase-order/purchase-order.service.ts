@@ -60,6 +60,13 @@ export class PurchaseOrderService {
             );
     }
 
+    findLastPrice(productid: number): Observable<any> {
+
+        const pathOrderDetailUrl = SERVER_PATH + 'purchase-order-detail/last-price';
+
+        return this.http.get<PurchaseOrder>(`${pathOrderDetailUrl}/${productid}`)
+    }
+
     save(purchaseOrder: PurchaseOrder): Observable<EntityResponseType> {
         const copy = this.convert(purchaseOrder);
         return this.http.post<PurchaseOrder>(`${this.serverUrl}`, copy, { observe: 'response'})

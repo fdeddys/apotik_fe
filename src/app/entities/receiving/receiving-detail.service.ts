@@ -31,6 +31,12 @@ export class ReceivingDetailService {
         return this.http.post<ReceivingDetailPageDto>(`${newresourceUrl}`, req['filter'], { observe: 'response' });
     }
 
+    updateDetail(receiveDetail: ReceivingDetail[]): Observable<HttpResponse<ReceivingDetail>> {
+        
+        return this.http.post<ReceivingDetail>(`${this.serverUrl}/updateDetail`, receiveDetail, { observe: 'response' })
+            .pipe(map((res: HttpResponse<ReceivingDetail>) => this.convertResponse(res)));
+    }
+
     save(receiveDetail: ReceivingDetail): Observable<HttpResponse<ReceivingDetail>> {
         const copy = this.convert(receiveDetail);
         return this.http.post<ReceivingDetail>(`${this.serverUrl}`, copy, { observe: 'response' })

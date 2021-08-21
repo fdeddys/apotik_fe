@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
   }
 
   connectToServer() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.loginService.login(this.credential).subscribe((data) => {
           console.log('hasil login isi resolve data ', data);
           resolve(data);
@@ -71,9 +71,9 @@ export class LoginComponent implements OnInit {
           } else {
             console.log('isi data --> ', data);
             this.showAlert = true;
-            const err_login = this.localStorage.retrieve('err_login');
+            // let err_login = this.localStorage.retrieve('err_login');
             this.msgAlert = 'Invalid login !';
-            Swal.fire('Failed', err_login, 'error');
+            // Swal.fire('Failed', err_login, 'error');
             // grecaptcha.reset();
             // console.log('user not valid');
           }

@@ -5,36 +5,35 @@
         <div>
             <form>
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-9 mb-3">
                         <label for="date1">Filter</label>
                         <div>
                             <span style="margin-right: 20px;margin-left: 1px;">Order Date : </span>
                             <input type="text" ngbDatepicker #d="ngbDatepicker" 
                                 readonly [(ngModel)]="dateStart" 
                                 [ngModelOptions]="{standalone: true}"/>
-                                <button (click)="d.toggle()">
+                            <button (click)="d.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+
+                            <span style="margin-right: 20px;margin-left: 20px;">s/d</span>
+                            
+                            <input type="text" ngbDatepicker #d2="ngbDatepicker" 
+                                readonly [(ngModel)]="dateEnd" 
+                                [ngModelOptions]="{standalone: true}"/>
+                                <button (click)="d2.toggle()">
                                     <i class="fa fa-calendar"></i>
                                 </button>
 
-                                <span style="margin-right: 20px;margin-left: 20px;">s/d</span>
-                                
-                                <input type="text" ngbDatepicker #d2="ngbDatepicker" 
-                                    readonly [(ngModel)]="dateEnd" 
-                                    [ngModelOptions]="{standalone: true}"/>
-                                    <button (click)="d2.toggle()">
-                                        <i class="fa fa-calendar"></i>
-                                    </button>
-
-                                <span style="margin-right: 20px;margin-left: 20px;"> Status :</span>
-                                
-                                <select [(ngModel)]="statusSelected" style="width: 100px;" [ngModelOptions]="{standalone: true}">
-                                    <option *ngFor="let status of statuses" [value]="status">
-                                        {{status}}
-                                    </option>
-                                </select>
-
+                            <span style="margin-right: 20px;margin-left: 20px;">Payment Status :</span>
+                            
+                            <select [(ngModel)]="statusSelected" style="width: 100px;" [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let status of statuses" [value]="status.code">
+                                    {{status.desc}}
+                                </option>
+                            </select>
+                                {{statusSelected}}
                         </div>
-                       
                     </div>
                     
                 </div>
@@ -54,32 +53,34 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th scope="col">Payment status</th>
+                        <th scope="col">Payment No.</th>
                         <th scope="col">Order No</th>
                         <th scope="col" class='centerText' >Date</th>
-                        <th scope="col" class='centerText' >Status</th>
-                        <th scope="col" class='centerText' >Type</th>
+                        <th scope="col" class='centerText' >Order Status</th>
                         <th scope="col" class='rightText' >Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let salesOrder of salesOrders">
+                    <tr *ngFor="let directSalesPayment of directSalesPayments">
                         <td>
-                            <button type="button" (click)="open(salesOrder)" class="btn btn-outline-warning btn-sm">
+                            <button type="button" (click)="open(directSalesPayment)" class="btn btn-outline-warning btn-sm">
                                 <i class="fa fa-list fa-lg"></i>
                             </button>
                         </td>
-                        <td>{{salesOrder.salesOrderNo}}</td>
-                        <td class='centerText' >{{salesOrder.orderDate | date:'dd-MMM-yyyy'}}</td>
-                        <td class='centerText' >{{getStatus(salesOrder.status)}} </td>
-                        <td class='centerText' >{{salesOrder.isCash === true ? 'Cash' : 'Non Cash'}}</td>
-                        <td class='rightText'>{{salesOrder.grandTotal | number:'0.0-0' }}</td>
+                        <td>{{getStatus(directSalesPayment.paymentStatus)}}</td>
+                        <td>{{directSalesPayment.paymentNo}}</td>
+                        <td>{{directSalesPayment.salesOrderNo}}</td>
+                        <td class='centerText' >{{directSalesPayment.orderDate | date:'dd-MMM-yyyy'}}</td>
+                        <td class='centerText' >{{getStatus(directSalesPayment.soStatus)}} </td>
+                        <td class='rightText'>{{directSalesPayment.salesOrderGrandTotal | number:'0.0-0' }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
+        <!-- <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
             (pageChange)="loadPage()" [boundaryLinks]="true">
-        </ngb-pagination>
+        </ngb-pagination> -->
     </div>
 
 </div>

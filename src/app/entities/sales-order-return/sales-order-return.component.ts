@@ -94,14 +94,16 @@ export class SalesOrderReturnComponent implements OnInit {
     getStatus(id): string {
         let statusName = "Unknown [" + id + "]"
         switch (id) {
+            case 0:
+            case 1:
             case 10:
                 statusName = 'Outstanding';
                 break;
             case 20:
-                statusName = 'Approved';
+                statusName = 'Submit';
                 break;
             case 30:
-                statusName = 'Rejected';
+                statusName = 'Cancel';
                 break;
         }
         return statusName;

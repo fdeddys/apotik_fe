@@ -35,6 +35,15 @@ export class PaymentService {
         return this.http.post<PaymentPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
+    findBySalesOrderID(salesOrderId?: any): Observable<HttpResponse<Payment>> {
+   
+        let newresourceUrl = null;
+
+        newresourceUrl = this.serverUrl + `/salesOrderId/${salesOrderId}`;
+
+        return this.http.post<Payment>(newresourceUrl, {}, { observe: 'response' });
+    }
+
     findById(id: number): Observable<any> {
 
         return this.http.get<Payment>(`${this.serverUrl}/${id}`);
