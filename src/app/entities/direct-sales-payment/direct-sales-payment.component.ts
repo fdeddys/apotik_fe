@@ -31,7 +31,8 @@ export class DirectSalesPaymentComponent implements OnInit {
     statuses = [
         { 'code': 0, 'desc': 'ALL'},
         { 'code': 20, 'desc': 'Approved'}, 
-        { 'code': 50, 'desc': 'Paid' }
+        { 'code': 30, 'desc': 'Cancel'}, 
+        // { 'code': 50, 'desc': 'Paid' }
     ];
     statusSelected: number;
 
@@ -89,6 +90,7 @@ export class DirectSalesPaymentComponent implements OnInit {
         // this.searchTerm.stat= String(this.statusSelected);
         this.searchTerm.startDate = this.getSelectedDateStart();
         this.searchTerm.endDate = this.getSelectedDateEnd();
+        this.searchTerm.paymentStatus =+this.statusSelected;
         this.directSalesPaymentService.filter({
             filter: this.searchTerm,
             page: this.curPage,
@@ -124,13 +126,16 @@ export class DirectSalesPaymentComponent implements OnInit {
                 statusName = 'Approved';
                 break;
             case 30:
-                statusName = 'Rejected';
+                statusName = 'Cancel';
                 break;
             case 40:
                 statusName = 'Invoice';
                 break;
             case 50:
                 statusName = 'Paid';
+                break;
+            case 60:
+                statusName = 'Payment Cancel';
                 break;
         }
         return statusName;
@@ -153,6 +158,10 @@ export class DirectSalesPaymentComponent implements OnInit {
             console.log(this.closeResult);
             this.onFilter();
         });
+    }
+
+    loadPage(){
+        this.filterSales();
     }
 
 }

@@ -1,6 +1,13 @@
+import { environment } from "src/environments/environment";
+
+
 // develop
 // export const SERVER = 'http://localhost:8800/';
-export const SERVER = 'http://103.82.242.11:8800/';
+// export const SERVER = 'http://103.82.242.11:8800/';
+export const SERVER = environment.APIEndpoint;
+
+// server LOCAL
+// export const SERVER = 'http://192.168.100.200:8800/';
 // PROD
 // export const SERVER = '/rosebe/';
 
@@ -104,4 +111,5 @@ export const WILAYAH_KELURAHAN  = 'kelurahan';
 // 
 export const CUSTOMER_CASH_ID = 99999999;
 export const APPNAME = 'APOTEK KURNIA SEHAT';
-
+export const APP_VERSION = 'F1';
+export const APP_DATE = '281021';

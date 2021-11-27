@@ -45,8 +45,8 @@
                         <th scope="col">Group</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Name</th>
-                        <th scope="col">UOM</th>
-                        <th scope="col">SellPrice</th>
+                        <!-- <th scope="col">UOM</th>
+                        <th scope="col">SellPrice</th> -->
                         <th scope="col">Status</th>
                     </tr>
                 </thead>
@@ -61,8 +61,8 @@
                         <td>{{product.ProductGroup.name}}</td>
                         <td>{{product.Brand.name}}</td>
                         <td>{{product.name}}</td>
-                        <td>{{product.smallUom.name}}</td>
-                        <td>{{getSellPrice(product) |  number:'0.0-0'}}</td>
+                        <!-- <td>{{product.smallUom.name}}</td> -->
+                        <!-- <td>{{getSellPrice(product) |  number:'0.0-0'}}</td> -->
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
                     </tr>
                 </tbody>
@@ -81,6 +81,8 @@
                         <th scope="col">Code</th>
                         <th scope="col">Name</th>
                         <th scope="col">Qty</th>
+                        <th scope="col">UOM</th>
+                        <th scope="col">Sell Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +90,8 @@
                         <td>{{stock.warehouse.code}}</td>
                         <td>{{stock.warehouse.name}}</td>
                         <td>{{stock.qty}}</td>
+                        <td>{{uomSelected}}</td>
+                        <td>{{sellPriceSelected |  number:'0.0-0'}}</td>
                     </tr>
                 </tbody>
             </table>

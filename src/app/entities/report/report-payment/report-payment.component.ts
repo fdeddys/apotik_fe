@@ -63,7 +63,7 @@ export class ReportPaymentComponent implements OnInit {
         let tgl2 = this.getSelectedDate2();
         console.log('tg  bettwen ',tgl1, ' : ', tgl2);
 
-        let filename = "report-payment-cash" + tgl1 + "+" + tgl2 +  ".csv"; 
+        let filename = "report-payment-cash" + tgl1 + "+" + tgl2 +  ".xlsx"; 
         this.spinner.show();
         setTimeout(() => {
             this.spinner.hide();
@@ -72,13 +72,22 @@ export class ReportPaymentComponent implements OnInit {
         this.reportPaymentService.reportPaymentService(tgl1, tgl2)
             .subscribe(dataBlob => {
                 console.log('data blob ==> ', dataBlob);
-                const newBlob = new Blob([dataBlob], { type: 'text/csv' });
+                // const newBlob = new Blob([dataBlob], { type: 'text/csv' });
+                // const objBlob = window.URL.createObjectURL(newBlob);
+                // const element = document.createElement("a");
+                // element.href = objBlob;
+                // element.download = filename
+                // element.click();
+                // this.spinner.hide();
+
+                const newBlob = new Blob([dataBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                 const objBlob = window.URL.createObjectURL(newBlob);
                 const element = document.createElement("a");
                 element.href = objBlob;
                 element.download = filename
                 element.click();
                 this.spinner.hide();
+
 
                 // window.open(objBlob);
             });

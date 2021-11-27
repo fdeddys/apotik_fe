@@ -11,6 +11,14 @@ export class User {
         public roleId?: number,
         public errCode?: string,
         public errDesc?: string,
-        public curPass?: string
+        public curPass?: string,
+        public contents?: any,
+    ) {}
+}
+
+export class Version {
+    constructor (
+        public date?: string,
+        public version?: string,
     ) {}
 }

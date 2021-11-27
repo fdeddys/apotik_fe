@@ -57,6 +57,8 @@ export class ReceivingEditComponent implements OnInit {
     discAdded = 0;
     qtyAdded = 0;
     uomAdded = 0;
+    batchNo = "";
+    expiredDate :NgbDateStruct;
     uomAddedName = '';
     closeResult: string;
     curPage =1;
@@ -90,6 +92,7 @@ export class ReceivingEditComponent implements OnInit {
         }
         this.loadData(+id);
         this.setToday();
+        this.setTodayED();
     }
 
 
@@ -104,6 +107,15 @@ export class ReceivingEditComponent implements OnInit {
             day: today.getDate(),
             month: today.getMonth() + 1,
         };
+    }
+    
+    setTodayED() {
+        const today = new Date();
+        this.expiredDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        }
     }
 
     loadData(orderId: number) {
@@ -150,13 +162,18 @@ export class ReceivingEditComponent implements OnInit {
                 }
                 this.warehouses = response.body.contents;
                 this.warehouseSelected = this.warehouses[0] ;
+                console.log('set wh selected ', this.warehouseSelected)
             });
     }
 
     setSupplierDefault() {
         this.supplierSelected = this.receive.supplier;
         console.log('set selected supplier =>', this.supplierSelected );
+    }
+    
+    setWarehouseDefault(){
         this.warehouseSelected = this.receive.warehouse ;
+        console.log('set wh selected =>', this.warehouseSelected );
     }
 
     loadNewData() {
@@ -169,11 +186,13 @@ export class ReceivingEditComponent implements OnInit {
         this.taxAmount = 0;
         this.isTax = false;
         this.priceAdded = 0;
+        this.batchNo = '';
         this.receive = new Receive();
         this.receive.id = 0;
         this.receive.status = 0;
         this.receiveDetails = [];
         this.setToday() ;
+        this.setTodayED();
         this.clearDataAdded();
         if (this.suppliers !== undefined) {
             this.receive.supplier = this.suppliers[0];
@@ -191,6 +210,8 @@ export class ReceivingEditComponent implements OnInit {
         this.qtyAdded = 1;
         this.model = null;
         this.uomAddedName = '';
+        this.batchNo='';
+        this.setTodayED();
     }
 
     loadDataByOrderId(orderId: number) {
@@ -235,6 +256,7 @@ export class ReceivingEditComponent implements OnInit {
             this.processReceiveDtil(results[2]);
             this.processWarehouse(results[3]);
             this.setSupplierDefault();
+            this.setWarehouseDefault();
         },
         ()=> {
             
@@ -495,6 +517,8 @@ export class ReceivingEditComponent implements OnInit {
         receiveDetail.productId = this.productIdAdded;
         receiveDetail.qty = this.qtyAdded;
         receiveDetail.uomId = this.uomAdded;
+        receiveDetail.ed = this.getEd();
+        receiveDetail.batchNo = this.batchNo;
         return receiveDetail;
     }
 
@@ -518,8 +542,19 @@ export class ReceivingEditComponent implements OnInit {
         if (res.body.contents.length > 0) {
             
             this.receiveDetails = res.body.contents;
+            this.receiveDetails.forEach(detail => {
+
+                // pecah total order jadi big dan small uom
+                detail.bigUom = detail.product.bigUom;
+                detail.smallUom = detail.product.smallUom;
+                let totalOrder = detail.qty;
+                let totalBig = Math.floor(totalOrder/detail.product.qtyUom)
+                let totalSmall = totalOrder - (totalBig * detail.product.qtyUom)
+                detail.qtyUomBig = totalBig;
+                detail.qtyUomSmall= totalSmall;
+            });
             console.log('isi detail ===>', this.receiveDetails);
-            this.totalRecord = this.receiveDetails.length;
+            this.totalRecord = res.body.totalRow;
             
             this.fillGridDetail();
             this.calculateTotal();
@@ -586,6 +621,11 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.supplierId = this.supplierSelected.id;
         this.receive.receiveDate = this.getSelectedDate();
         this.receive.warehouseId = this.warehouseSelected.id;
+        if (this.isTax === true) {
+            this.receive.tax = 10;
+        } else {
+            this.receive.tax = 0;
+        }
         // this.receive.supplierId = 0;
         this.receiveService
             .save(this.receive)
@@ -606,6 +646,15 @@ export class ReceivingEditComponent implements OnInit {
 
         const month = ('0' + this.selectedDate.month).slice(-2);
         const day = ('0' + this.selectedDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.selectedDate.year + '-' + month + '-' + day + tz;
+    }
+
+    getEd(): string{
+
+        const month = ('0' + this.expiredDate.month).slice(-2);
+        const day = ('0' + this.expiredDate.day).slice(-2);
         const tz = 'T00:00:00+07:00';
 
         return this.selectedDate.year + '-' + month + '-' + day + tz;
@@ -635,6 +684,11 @@ export class ReceivingEditComponent implements OnInit {
 
 
     approveProccess() {
+        if (this.isTax === true) {
+            this.receive.tax = 10;
+        } else {
+            this.receive.tax = 0;
+        }
         this.receiveService.approve(this.receive)
             .subscribe(
                 (res) => {
@@ -796,6 +850,7 @@ export class ReceivingEditComponent implements OnInit {
 
     copyDataToShowData() {
 
+        console.log("Copy data to show!");
         this.receiveDetailShow.forEach(datashow =>{
             let findIndex = _.findIndex(this.receiveDetails, function(datadetail){
                         return datadetail.id == datashow.id;
@@ -808,6 +863,10 @@ export class ReceivingEditComponent implements OnInit {
                 this.receiveDetails[findIndex].price = datashow.price;
                 this.receiveDetails[findIndex].disc1 = datashow.disc1;
                 this.receiveDetails[findIndex].qty = datashow.qty;
+                this.receiveDetails[findIndex].qtyUomBig = datashow.qtyUomBig;
+                this.receiveDetails[findIndex].qtyUomSmall = datashow.qtyUomSmall;
+                this.receiveDetails[findIndex].batchNo = datashow.batchNo;
+                this.receiveDetails[findIndex].ed = datashow.ed;
             }
         })
         this.calculateTotal();
@@ -830,6 +889,10 @@ export class ReceivingEditComponent implements OnInit {
             this.spinner.hide();
         }, 5000);
 
+        this.receiveDetails.forEach(detail => {
+            detail.qty = (detail.qtyUomBig * detail.product.qtyUom) +(detail.qtyUomSmall) 
+            // detail.qtyUomBig * detail.product.qtyUom) + (detail.qtyUomSmall));
+        });
         this.receiveDetailService.updateDetail(this.receiveDetails)
             .subscribe(
                 (res) => {
@@ -848,6 +911,47 @@ export class ReceivingEditComponent implements OnInit {
                 }
             );
         
+    }
+
+    rejectProccess(){
+        this.receiveService.reject(this.receive)
+            .subscribe(
+                (res) => { 
+                    console.log('success');
+                    this.router.navigate(['/main/receive']); 
+                    Swal.fire('OK', 'Save success', 'success');
+                }
+            )
+    }
+
+    reject() {
+
+        if (!this.isValidDataApprove()){
+            return;
+        }
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to Reject ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.rejectProccess();
+                }
+            });
+    }
+
+    getDetailTotalPerRow(detail: ReceivingDetail){
+        let price = detail.price;
+        let total = price * (( detail.qtyUomBig * detail.product.qtyUom) + (detail.qtyUomSmall));
+        let disc = total * detail.disc1 / 100;
+        let grandTotal = total - disc
+        return grandTotal;
     }
 
 }

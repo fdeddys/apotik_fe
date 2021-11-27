@@ -10,6 +10,7 @@ import { catchError, debounceTime, distinctUntilChanged, filter, map } from 'rxj
 import { Subject, Observable, merge } from 'rxjs';
 import Swal from 'sweetalert2';
 import * as _ from 'lodash';
+import { flatMap } from 'lodash';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -96,19 +97,22 @@ export class UserModalComponent implements OnInit {
     //   }
     // });
 
+    this.user.roleId = +this.user.roleId;
+    this.user.role = null;
     this.userService.save(this.user).subscribe(result => {
       this.isFormDirty = true;
       console.log('Result==>' + result);
       if (result.body.errCode === '00') {
         if (this.statusRec === 'addnew') {
-            Swal.fire('Success', 'User created with password ' + result.body.curPass, 'success');
-            this.user.curPass = result.body.curPass;
+            Swal.fire('Success', 'User created with password ' + result.body.contents.email, 'success');
+            // this.user.curPass = result.body.curPass;
         } else {
             Swal.fire('Success', 'User updated !', 'success');
         }
         console.log('Toast success');
         this.user.id = result.body.id;
         this.statusRec = 'edit';
+        this.closeForm();
         // this.user.curPass = result.body.curPass;
 
       } else {
@@ -131,10 +135,10 @@ export class UserModalComponent implements OnInit {
   resetP(): void {
 
     this.userService.resetP(this.user.id).subscribe(result => {
-
-      if (result.body.errCode === '00') {
+      console.log('result reset pass==>',result);
+      if (result.errCode == '00') {
         console.log('Toast success');
-        this.newResetRassword = result.body.curPass;
+        this.newResetRassword = result.contents;
         // this.user.curPass = result.body.curPass;
 
       } else {

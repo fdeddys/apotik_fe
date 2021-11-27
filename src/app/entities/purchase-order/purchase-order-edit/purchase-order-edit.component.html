@@ -12,7 +12,7 @@
             <button type="button"  *ngIf="purchaseOrder.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="purchaseOrder.status === 20  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
+            <button type="button" *ngIf="purchaseOrder.status === 20 || purchaseOrder.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
                 <i class="fa fa-times fa-lg"></i>
             </button>
             <button type="button" *ngIf="purchaseOrder.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview
@@ -84,15 +84,15 @@
         </div>
         <hr>
         <div>
-            <table class="table table-sm table-striped">
+            <table class="table table-sm table-striped" style="width: 100%;" >
                 <tbody style="color: hotpink; background-color: ghostwhite;">
                     <tr>
                         <td style="width: 30%;">Product</td>
-                        <td style="width: 15%;">Price</td>
                         <td style="width: 5%;">Qty</td>
-                        <td style="width: 5%;">Unit</td>
-                        <td style="width: 15%;">Disc[%]</td>
-                        <td style="width: 20%;">Total</td>
+                        <td style="width: 15%;">Unit</td>
+                        <td style="width: 15%;">Price</td>
+                        <td style="width: 5%;">Disc[%]</td>
+                        <td style="width: 20%;padding-right: 5px;text-align: right;">Total</td>
                         <td style="width: 10%;">#</td>
                     </tr>
                     <tr>
@@ -103,27 +103,37 @@
                                 [resultFormatter]="formatterProdList" 
                                 [inputFormatter]="formatterProdInput" 
                                 size="50%"
+                                style="width: 100%;"
                                 placeholder="search product name" 
                                 (selectItem)="getItem($event)"
                                 /> 
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="priceAdded"  >
+                            <input type="number" style="width: 100%;"[(ngModel)]="qtyAdded" placeholder="input qty" >
+                        </td>
+                        <td>
+                            <!-- {{uomAddedName}} -->
+                            <select [(ngModel)]="poUom" class="form-control" 
+                                (change)="onChangeUOM($event.target.value)"
+                                [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let uomList of uomLists" [value]="uomList.id">
+                                    {{uomList.name}}
+                                </option>
+                            </select>
+                            <!-- {{poUom }} -->
+                        </td>
+                        <td>
+                            <!-- <input type="number" style="width: 100%;"[(ngModel)]="priceAdded"  > -->
+                            {{priceAdded * poUomQty}}
                         </td>                       
                         <td>
-                            <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty" >
+                            <input type="number" style="width: 100%;"[(ngModel)]="discAdded " placeholder="input disc" >
                         </td>
-                        <td>
-                            {{uomAddedName}}
-                        </td>
-                        <td>
-                            <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
-                        </td>
-                        <td>
-                            {{  ( (priceAdded*qtyAdded) - (priceAdded*qtyAdded *discAdded/100)  ) | number:'0.0-0' }}
+                        <td style="text-align: right;padding-right: 5px;" >
+                            {{  ( (priceAdded*qtyAdded*poUomQty) - (priceAdded*qtyAdded*poUomQty*discAdded/100)  ) | number:'0.0-0' }}
                         </td>
                         <td *ngIf ="purchaseOrder">
-                            <button type="button"  *ngIf="purchaseOrder.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
+                            <button type="button" style="width: 100%;" *ngIf="purchaseOrder.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
                                 <i class="fa fa-check fa-lg"></i>
                             </button>
                         </td>
@@ -153,9 +163,9 @@
                                 </button>
                             </td>
                             <td>{{purchaseOrderDetail.product.name}}</td>
-                            <td>{{purchaseOrderDetail.price | number:'0.0-0' }}</td>
-                            <td>{{purchaseOrderDetail.qty | number:'0.0-0' }}</td>
-                            <td>{{purchaseOrderDetail.uom.name}}</td>
+                            <td>{{purchaseOrderDetail.poPrice | number:'0.0-0' }}</td>
+                            <td>{{purchaseOrderDetail.poQty | number:'0.0-0' }}</td>
+                            <td>{{purchaseOrderDetail.poUom.name}}</td>
                             <td>{{purchaseOrderDetail.disc1  }}</td>
                             <td>{{ purchaseOrderDetail.price * purchaseOrderDetail.qty * ((100 - purchaseOrderDetail.disc1 ) /100)   | number:'0.0-0'  }}</td>
                         </tr>

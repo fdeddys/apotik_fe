@@ -50,6 +50,11 @@ baseline.json
 
 # Ignore .history for the xyz.local-history VSCode extension
 .history
-
+*.pdf
+*.sh
+node_modules/*
+node_modules
 # Husky
 .husky/_
+
+build.sh

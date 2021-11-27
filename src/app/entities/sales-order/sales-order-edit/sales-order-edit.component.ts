@@ -17,6 +17,7 @@ import { Salesman, SalesmanDto } from '../../salesman/salesman.model';
 import { SalesmanService } from '../../salesman/salesman.service';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
+import * as moment from 'moment';
 
 
 @Component({
@@ -63,6 +64,9 @@ export class SalesOrderEditComponent implements OnInit {
     uomAddedName = '';
     isCash: boolean = false;
 
+    curPage =1;
+    totalData =0;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -98,8 +102,8 @@ export class SalesOrderEditComponent implements OnInit {
             data => {
                 console.log("data===>",data.cash);
                 this.isCash = data.cash;
-                this.loadData(+id);
                 this.setToday();
+                this.loadData(+id);
             }
         );
     }
@@ -125,7 +129,16 @@ export class SalesOrderEditComponent implements OnInit {
             month: today.getMonth() + 1,
         };
     }
-
+    
+    setSelectedDate(curDate: string) {
+        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
+        };
+    }
     loadData(orderId: number) {
 
         console.log('id ==>?', orderId);
@@ -198,12 +211,14 @@ export class SalesOrderEditComponent implements OnInit {
     processOrder(result: SalesOrder) {
         console.log('isi sales order result', result);
         this.salesOrder = result;
+        this.setSelectedDate(this.salesOrder.orderDate);
 
-        this.salesOrderDetails = result.detail;
-        console.log('isi sales order detauil', this.salesOrderDetails);
-        this.calculateTotal();
+        // this.salesOrderDetails = result.detail;
+        // console.log('isi sales order detauil', this.salesOrderDetails);
+        // this.calculateTotal();
 
-        this.salesOrder.detail = null;
+        // this.salesOrder.detail = null;
+        this.reloadDetail(this.salesOrder.id) 
     }
 
     calculateTotal() {
@@ -370,7 +385,6 @@ export class SalesOrderEditComponent implements OnInit {
             );
     }
 
-
     formatterProdList(value: any) {
         return value.name + "   [ " + value.qtyOnHand + "  ]";
         // + ' Sell Price { ' + value.sellPrice + ' } ';
@@ -389,7 +403,9 @@ export class SalesOrderEditComponent implements OnInit {
         // if (this.checkInputValid() === false) {
         //     return ;
         // }
-        if (this.checkInputProductValid() === false ) {
+        let cekValid = this.checkInputProductValid();
+        console.log('Cek valid ', cekValid); 
+        if ( cekValid === false ) {
             Swal.fire('Error', 'Product belum terpilih ! ', 'error');
             return ;
         }
@@ -483,7 +499,7 @@ export class SalesOrderEditComponent implements OnInit {
 
         let result = false;
         // 1. jika belum pernah di isi
-        if ( this.model === undefined )  {
+        if ( this.model === null )  {
             // return false ;
             result = false;
             return result;
@@ -492,9 +508,10 @@ export class SalesOrderEditComponent implements OnInit {
         // 2.  sudah diisi
         // 2.a lalu di hapus
         // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).toPromise().then(
-            res => {
-                console.log('observable model ', res);
+        // of(this.model).toPromise().then(
+        //     res => {
+                let res = this.model; 
+                // console.log('observable model ', res);
                 if ( !res ) {
                     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi ! ', 'error');
                     // return false ;
@@ -504,8 +521,10 @@ export class SalesOrderEditComponent implements OnInit {
                 console.log('obser hasil akhir => ', product);
                 console.log('type [', typeof(product), '] ');
                 const typeObj = typeof(product);
-                if (typeObj == 'object') {
+                console.log('Type obj [', typeObj,']');
+                if (typeObj === 'object') {
                     result = true;
+                    return result;
                 }
 
                 console.log(typeof(product) , '] [', typeof('product'))
@@ -515,8 +534,8 @@ export class SalesOrderEditComponent implements OnInit {
                     result = false;
                     return result;
                 }
-            }
-        );
+        //     }
+        // );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
         return result;
     }
@@ -526,7 +545,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.orderDetailService
             .findByOrderId({
                 count: 10,
-                page: 1,
+                page: this.curPage,
                 filter : {
                     orderId: orderId,
                 }
@@ -546,9 +565,15 @@ export class SalesOrderEditComponent implements OnInit {
 
     fillDetail(res: HttpResponse<SalesOrderDetailPageDto>) {
         this.salesOrderDetails = [];
+        if (res.body.contents === null) {
+            return
+        }
         if (res.body.contents.length > 0) {
 
             this.salesOrderDetails = res.body.contents;
+
+            this.totalData  = res.body.totalRow;
+
             this.calculateTotal();
             this.clearDataAdded();
         }
@@ -807,10 +832,17 @@ export class SalesOrderEditComponent implements OnInit {
     rejectProccess(){
         this.orderService.reject(this.salesOrder)
             .subscribe(
-                (res) => { console.log('success'); }
+                (res) => { 
+                    // console.log('success');
+                    if (this.isCash) {
+                        this.router.navigate(['/main/direct-sales']);
+                    } else {
+                        this.router.navigate(['/main/sales-order']);
+                    }
+                }
             )
 
-        Swal.fire('OK', 'Save success', 'success');
+        Swal.fire('OK', 'Reject success', 'success');
     }
 
     reject() {
@@ -903,6 +935,10 @@ export class SalesOrderEditComponent implements OnInit {
                 break;
         }
         return statusName;
+    }
+
+    loadPage(){
+        this.reloadDetail(this.salesOrder.id);
     }
 
 }

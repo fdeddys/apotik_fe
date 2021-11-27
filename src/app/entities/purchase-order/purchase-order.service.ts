@@ -33,6 +33,13 @@ export class PurchaseOrderService {
         return this.http.post<PurchaseOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
+    export(req?: any): Observable<Blob>  {
+        let newresourceUrl = null;
+
+        newresourceUrl = this.serverUrl + `/export`;
+        return this.http.post(newresourceUrl, req['filter'], { responseType: 'blob' });
+    }
+
 
     findById(id: number): Observable<any> {
 
@@ -80,9 +87,9 @@ export class PurchaseOrderService {
     }
 
 
-    reject(purchaseOrder: PurchaseOrder): Observable<EntityResponseType> {
-        const copy = this.convert(purchaseOrder);
-        return this.http.post<PurchaseOrder>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
+    reject(poId: number): Observable<EntityResponseType> {
+        // const copy = this.convert(purchaseOrder);
+        return this.http.post<PurchaseOrder>(`${this.serverUrl}/reject/${poId}`,null , { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 

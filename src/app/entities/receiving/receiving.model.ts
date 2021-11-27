@@ -59,9 +59,18 @@ export class ReceivingDetail {
         public price?: number,
         public disc1?: number,
         public disc2?: number,
+        public ed?: string,
+        public batchNo?: string,
 
         public uomId?: number,
         public uom?: Lookup,
+
+        public bigUom?: Lookup,
+        public qtyUomBig?: number,
+        
+        public smallUom?: Lookup,
+        public qtyUomSmall?: number,
+
         public errCode?: string,
         public errDesc?: string,
 

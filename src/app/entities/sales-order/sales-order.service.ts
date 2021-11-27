@@ -57,26 +57,26 @@ export class SalesOrderService {
         const pathOrderDetailUrl = SERVER_PATH + 'sales-order-detail';
 
         return this.http.get<SalesOrder>(`${this.serverUrl}/${id}`)
-            .pipe(
-                // map((salesOrder: any) => salesOrder),
-                flatMap(
-                    (salesOrder: any) => {
-                        const filter = {
-                            OrderNo : '',
-                            orderId : salesOrder.id,
-                        };
-                        return this.http.post<SalesOrderDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/1000`, 
-                            filter, { observe: 'response' })
-                            .pipe(
-                                map( (resDetail) => {
-                                    let details = resDetail.body.contents;
-                                    salesOrder.detail = details;
-                                    return salesOrder;
-                                })
-                            );
-                    }
-                )
-            );
+            // .pipe(
+            //     // map((salesOrder: any) => salesOrder),
+            //     flatMap(
+            //         (salesOrder: any) => {
+            //             const filter = {
+            //                 OrderNo : '',
+            //                 orderId : salesOrder.id,
+            //             };
+            //             return this.http.post<SalesOrderDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/10`, 
+            //                 filter, { observe: 'response' })
+            //                 .pipe(
+            //                     map( (resDetail) => {
+            //                         let details = resDetail.body.contents;
+            //                         salesOrder.detail = details;
+            //                         return salesOrder;
+            //                     })
+            //                 );
+            //         }
+            //     )
+            // );
         // .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 

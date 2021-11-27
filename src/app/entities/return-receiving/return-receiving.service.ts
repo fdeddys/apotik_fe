@@ -37,17 +37,17 @@ export class ReturnReceivingService {
 
     findById(id: number): Observable<any> {
 
-        const pathOrderDetailUrl = SERVER_PATH + 'return-sales-order-detail';
+        const pathReturnDetailUrl = SERVER_PATH + 'return-receive-detail';
 
         return this.http.get<ReturnReceiveDetail>(`${this.serverUrl}/${id}`)
             .pipe(
                 flatMap(
                     (returnReceive: any) => {
                         const filter = {
-                            OrderNo : '',
-                            orderId : returnReceive.id,
+                            returnNo : '',
+                            returnId : returnReceive.id,
                         };
-                        return this.http.post<ReturnReceiveDetailPageDto>(`${pathOrderDetailUrl}/page/1/count/1000`, 
+                        return this.http.post<ReturnReceiveDetailPageDto>(`${pathReturnDetailUrl}/page/1/count/10`, 
                             filter, { observe: 'response' })
                             .pipe(
                                 map( (resDetail) => {

@@ -112,4 +112,14 @@ export class ReceivingService {
         const copyOb: Receive = Object.assign({}, receive);
         return copyOb;
     }
+
+
+    export(req?: any): Observable<Blob>  {
+        let newresourceUrl = null;
+
+        newresourceUrl = this.serverUrl + `/export`;
+        return this.http.post(newresourceUrl, req['filter'], { responseType: 'blob' });
+    }
+
+    
 }

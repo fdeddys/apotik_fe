@@ -29,6 +29,8 @@ export class StockComponent implements OnInit {
 
     };
     closeResult: string;
+    uomSelected = '';
+    sellPriceSelected : number= 0;
     constructor(
         private route: ActivatedRoute,
         private productService: ProductService,
@@ -70,6 +72,8 @@ export class StockComponent implements OnInit {
        
         this.curPageWh = 1;
         this.selectedProduct = product;
+        this.uomSelected = product.smallUom.name;
+        this.sellPriceSelected =product.sellPrice;
         this.loadStockWarehouse(product.id, this.curPageWh);
     }
     

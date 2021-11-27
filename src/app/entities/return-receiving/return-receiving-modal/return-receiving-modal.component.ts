@@ -126,7 +126,7 @@ export class ReturnReceivingModalComponent implements OnInit {
         this.priceAdded = event.item.sellPrice;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.SmallUom.name;
+        this.uomAddedName = event.item.smallUom.name;
     }
 
     loadDataByReturnId(returnId: number) {
@@ -137,6 +137,7 @@ export class ReturnReceivingModalComponent implements OnInit {
             this.spinner.hide();
         }, 2000);
 
+        console.log("load data return ID");
         let returnReq = this.returnReceiveService.findById(returnId);
         let supplierReq = this.supplierService.filter({
             page: 1,
@@ -158,12 +159,12 @@ export class ReturnReceivingModalComponent implements OnInit {
         const requestArray = [];
         requestArray.push(returnReq);
         requestArray.push(supplierReq);
-        requestArray.push(returnReceiveDetailReq)
+        // requestArray.push(returnReceiveDetailReq)
 
         forkJoin(requestArray).subscribe(results => {
             this.processReturnReceive(results[0]);
             this.processSupplier(results[1]);
-            this.processDetail(results[2]);
+            // this.processDetail(results[2]);
             this.setSupplierDefault();
             this.setWarehouseSelected();
             this.spinner.hide();
@@ -352,15 +353,15 @@ export class ReturnReceivingModalComponent implements OnInit {
     }
 
     composeReturnDetail(): ReturnReceiveDetail {
-        let orderDetail = new ReturnReceiveDetail();
-        orderDetail.returnReceiveId = this.returnReceive.id;
-        orderDetail.disc1 = this.discAdded;
-        orderDetail.disc2 = this.disc2Added;
-        orderDetail.price = this.priceAdded;
-        orderDetail.productId = this.productIdAdded;
-        orderDetail.qty = this.qtyAdded;
-        orderDetail.uomId = this.uomAdded;
-        return orderDetail;
+        let returnDetail = new ReturnReceiveDetail();
+        returnDetail.returnReceiveId = this.returnReceive.id;
+        returnDetail.disc1 = this.discAdded;
+        returnDetail.disc2 = this.disc2Added;
+        returnDetail.price = this.priceAdded;
+        returnDetail.productId = this.productIdAdded;
+        returnDetail.qty = this.qtyAdded;
+        returnDetail.uomId = this.uomAdded;
+        return returnDetail;
     }
 
     checkInputNumberValid(): boolean {
@@ -429,20 +430,21 @@ export class ReturnReceivingModalComponent implements OnInit {
                 console.log('type [', typeof(product), '] ');
                 const typeObj = typeof(product);
                 if (typeObj == 'object') {
-                    result = true;
+                    // result = true;
+                    return true;
                 }
 
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
-                    return result;
-                }
+                // console.log(typeof(product) , '] [', typeof('product'))
+                // if (typeof(product) == typeof('product')) {
+                //     // console.log('masok pakeo 2');
+                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                //     result = false;
+                //     return result;
+                // }
             }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
-        return result;
+        // return result;
     }
 
     reloadDetail(orderReturnId: number) {
@@ -662,7 +664,7 @@ export class ReturnReceivingModalComponent implements OnInit {
                     this.spinner.hide();
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
-                        this.router.navigate(['/main/sales-order-return']);
+                        this.router.navigate(['/main/return-receive']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
@@ -752,5 +754,27 @@ export class ReturnReceivingModalComponent implements OnInit {
                 () => {  }
             );
     }
+
+    getStatus(id): string {
+        let statusName = 'Unknown';
+        switch (id) {
+            case 1:
+            case 10:
+                statusName = 'Outstanding';
+                break;
+            case 20:
+                statusName = 'Submit';
+                break;
+            case 30:
+                statusName = 'Cancel';
+                break;
+            case 40:
+                statusName = 'Receiving';
+                break;
+            
+        }
+        return statusName;
+    }
+
 
 }

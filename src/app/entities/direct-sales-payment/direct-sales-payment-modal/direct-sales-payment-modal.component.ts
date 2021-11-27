@@ -9,6 +9,7 @@ import { PaymentDetailService } from '../../payment/payment-detail.service';
 import { PaymentOrderService } from '../../payment/payment-order.service';
 import { Payment, PaymentDetail, PaymentDetailPageDto, PaymentOrder } from '../../payment/payment.model';
 import { PaymentService } from '../../payment/payment.service';
+import { SalesOrder } from '../../sales-order/sales-order.model';
 import { SalesOrderService } from '../../sales-order/sales-order.service';
 import { DirectSalesPayment } from '../direct-sales-payment.model';
 import { DirectSalesPaymentService } from '../direct-sales-payment.service';
@@ -52,6 +53,9 @@ export class DirectSalesPaymentModalComponent implements OnInit {
         //     this.reloadPaymentDetail(this.directSalesPayment.paymentId);
         // }
         // this.loadPayment(this.directSalesPayment.salesOrderNo);
+        if (this.directSalesPayment.paymentStatus === 0) {
+            this.nominalInputBayar = this.directSalesPayment.salesOrderGrandTotal;
+        }
     }
 
     getStatus(id): string {
@@ -87,7 +91,7 @@ export class DirectSalesPaymentModalComponent implements OnInit {
                     this.payment = response.body;
                     if (this.payment.id > 0 ) {
                         this.reloadPaymentDetail(this.payment.id);
-                    }
+                    } 
                 }); 
 
     }
@@ -274,9 +278,6 @@ export class DirectSalesPaymentModalComponent implements OnInit {
         this.payment.totalPayment = total 
     }
 
-
-
-
     approve(): void {
         Swal.fire({
             title : 'Confirm',
@@ -313,6 +314,7 @@ export class DirectSalesPaymentModalComponent implements OnInit {
                 (res) => {
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
+                        this.createInvoice('a');
                         this.modalService.dismissAll('refresh');
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
@@ -366,6 +368,80 @@ export class DirectSalesPaymentModalComponent implements OnInit {
                 const objBlob = window.URL.createObjectURL(newBlob);
                 window.open(objBlob);
             });
+    }
+
+    cancelSO() {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to Cancel this Sales Order ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.prosesCancelSO();
+                }
+            }
+        );
+    }
+
+    prosesCancelSO() {
+        var salesOrder : SalesOrder = new SalesOrder();
+        salesOrder.salesOrderNo = this.directSalesPayment.salesOrderNo;
+        salesOrder.id = this.directSalesPayment.salesOrderId;
+
+        this.orderService.reject(salesOrder)
+            .subscribe(
+                (res) => { 
+                    this.modalService.dismissAll('refresh');
+                }
+            )
+
+        Swal.fire('OK', 'Cancel success', 'success');
+    }
+
+
+    rejectPayment() {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to CANCEL Payment ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.rejectPaymentProccess();
+                }
+            }
+        );
+    }
+
+    rejectPaymentProccess() {
+
+        this.directSalesPayment.paymentId = this.payment.id;
+        this.directSalesPayment.paymentNo =this.payment.paymentNo;
+        this.directSalesPayment.paymentStatus = this.payment.status;
+        this.directSalesPaymentService.reject(this.directSalesPayment)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                        this.createInvoice('a');
+                        this.modalService.dismissAll('refresh');
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                }
+            );
+
+        
+        Swal.fire('OK', 'Cancel success', 'success');
     }
 
     closeForm() {

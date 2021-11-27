@@ -61,7 +61,7 @@
 
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-danger" (click)="save()">Save
+    <button  type="button" class="btn btn-outline-danger" *ngIf="role.id == 0" (click)="save()">Save
         <i class="fa fa-save fa-lg"></i>
     </button>
     <button type="button" class="btn btn-outline-dark" (click)="closeForm()">Close

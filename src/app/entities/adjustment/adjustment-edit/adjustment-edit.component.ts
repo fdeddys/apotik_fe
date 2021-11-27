@@ -306,19 +306,20 @@ export class AdjustmentEditComponent implements OnInit {
                 const typeObj = typeof(product);
                 if (typeObj == 'object') {
                     result = true;
-                }
-
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
                     return result;
                 }
+
+                // console.log(typeof(product) , '] [', typeof('product'))
+                // if (typeof(product) == typeof('product')) {
+                //     // console.log('masok pakeo 2');
+                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                //     result = false;
+                //     return result;
+                // }
             }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
-        return result;
+        // return result;
     }
 
     checkInputNumberValid(): boolean {
@@ -491,6 +492,24 @@ export class AdjustmentEditComponent implements OnInit {
                 window.open(objBlob);
             });
 
+    }
+
+    getStatus(id): string {
+        let statusName = 'Unknown';
+        switch (id) {
+            case 0:
+            case 1:
+            case 10:
+                statusName = 'Outstanding';
+                break;
+            case 20:
+                statusName = 'Approved';
+                break;
+            case 30:
+                statusName = 'Rejected';
+                break;
+        }
+        return statusName;
     }
 
 }

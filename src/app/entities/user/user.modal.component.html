@@ -46,12 +46,12 @@
             </tr>
            
             <tr>
-              <td>Role</td>
+              <td>Role </td>
               <td>
                 <select [(ngModel)]="user.roleId" class="form-control" style="width: 50%"
                 [ngClass]="{ 'is-invalid': submitted && (user.roleId == null || user.roleId == undefined) }">
                   <option *ngFor="let role of roleList" [value]="role.id">
-                    {{role.name}}
+                    {{role.name}} - {{role.id}}
                   </option>
                 </select>
                 <div *ngIf="submitted && (user.roleId == null || user.roleId == undefined)">

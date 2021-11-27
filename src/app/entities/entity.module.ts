@@ -35,6 +35,10 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { StockOpnameModule } from './stock-opname/stock-opname.module';
 import { ReportPaymentModule } from './report/report-payment/report-payment.module';
 import { ReportSalesModule } from './report/report-sales/report-sales.module';
+import { StockInfoBatchModule } from './stock-info-batch/stock-info-batch.module';
+import { PaymentSupplierModule } from './payment-supplier/payment-supplier.module';
+import { ReportServiceService } from './report/report-service/report-service.service';
+import { ReportServiceModule } from './report/report-service/report-service.module';
 
 @NgModule({
     imports: [
@@ -71,6 +75,9 @@ import { ReportSalesModule } from './report/report-sales/report-sales.module';
         StockOpnameModule,
         ReportPaymentModule,
         ReportSalesModule,
+        StockInfoBatchModule,
+        PaymentSupplierModule,
+        ReportServiceModule,
     ],
     entryComponents: [],
     providers: [],

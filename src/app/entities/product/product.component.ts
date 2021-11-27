@@ -7,6 +7,9 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from './product.service';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ProductModalComponent } from './product-modal/product-modal.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ReportPaymentService } from '../report/report-payment/report-payment.service';
+import { ReportServiceService } from '../report/report-service/report-service.service';
 
 
 @Component({
@@ -31,6 +34,8 @@ export class ProductComponent implements OnInit {
         private modalService: NgbModal,
         private productService: ProductService,
         private location: Location,
+        private spinner: NgxSpinnerService,
+        private reportService: ReportServiceService,
     ) { }
 
     ngOnInit() {
@@ -113,6 +118,28 @@ export class ProductComponent implements OnInit {
 
     goBack() {
         this.location.back();
+    }
+
+    export() {
+        this.spinner.show();
+        setTimeout(() => {
+            this.spinner.hide();
+        }, 5000);
+
+        this.reportService.reportMasterProduct()
+            .subscribe(dataBlob => {
+                console.log('data blob ==> ', dataBlob);
+
+                const newBlob = new Blob([dataBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+                const element = document.createElement("a");
+                element.href = objBlob;
+                element.download = "ReportPayment.xlsx"
+                element.click();
+                this.spinner.hide();
+
+
+            });
     }
 
 }

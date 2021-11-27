@@ -56,6 +56,11 @@ export class PurchaseOrderDetail {
         public price?: number,
         public disc1?: number,
         public disc2?: number,
+        
+        public poUomId?: number,
+        public poUomQty?: number,
+        public poQty?: number,
+        public poPrice?: number, 
 
         public uomId?: number,
         public uom?: Lookup,

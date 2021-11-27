@@ -105,7 +105,7 @@
                    
                     
                     <tr>
-                        <td>Warehouse [ {{warehouseSelected}} ] </td>
+                        <td>Warehouse  </td>
                         <td >
                             <span *ngIf="warehouses" >
                                 <select id="select-type-basic"  class="form-control"  [(ngModel)]="warehouseSelected" style="width: 80%;"  >
@@ -148,8 +148,8 @@
                         <td scope="col" style="width: 15%;">Price</td>
                         <td scope="col" style="width:  5%;">Qty</td>
                         <td scope="col" style="width:  5%;">Unit</td>
-                        <td scope="col" style="width: 15%;">Disc 1 [%]</td>
-                        <td scope="col" style="width: 15%;">Disc 2 [%]</td>
+                        <td scope="col" style="width: 15%;">Disc  [%]</td>
+                        <!-- <td scope="col" style="width: 15%;">Disc 2 [%]</td> -->
                         <td scope="col" style="width: 20%;">Total</td>
                         <td scope="col" style="width: 10%;">#</td>
                     <!-- </tr> -->
@@ -181,9 +181,9 @@
                         <td>
                             <input type="number" [(ngModel)]="discAdded " placeholder="input " >
                         </td>
-                        <td>
+                        <!-- <td>
                             <input type="number" [(ngModel)]="disc2Added " placeholder="input " >
-                        </td>
+                        </td> -->
                         <td>
                             <!-- <input type="number" readonly> -->
                             {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
@@ -199,19 +199,19 @@
         </div>
         <div *ngIf="salesOrder">
             <!-- {{salesOrderDetails | json}} -->
-            <div style="height:350px; padding: 5px 15px 5px 15px; ">
+            <div style="height:360px; padding: 5px 15px 5px 15px; ">
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
                             <th *ngIf ="salesOrder" style="width: 5%;"></th>
-                            <th scope="col" style="width: 20%;">Product</th>
+                            <th scope="col" style="width: 25%;">Product</th>
                             <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
                             <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
-                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc 1[%]</th>
-                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc 2[%]</th>
-                            <th scope="col" style="width: 10%;" style="text-align: end;">Total</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc [%]</th>
+                            <!-- <th scope="col" style="width: 10%;" style="text-align: end;">Disc 2[%]</th> -->
+                            <th scope="col" style="width: 20%;" style="text-align: end;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -224,7 +224,7 @@
                                     <i class="fa fa-check fa-lg"></i>
                                 </button>
                             </td>
-                            <td>{{salesOrderDetail.product.name}}</td>
+                            <td style="white-space: nowrap;" >{{salesOrderDetail.product.name}}</td>
                             <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
                             <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
                             <td *ngIf="salesOrder.status === 20" >
@@ -233,14 +233,14 @@
                             </td>
                             <td style="text-align: center;">{{salesOrderDetail.uom.name}}</td>
                             <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td>
-                            <td style="text-align: end;">{{salesOrderDetail.disc2  }}</td>
+                            <!-- <td style="text-align: end;">{{salesOrderDetail.disc2  }}</td> -->
                             <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
                             <!-- <td>{{ (salesOrderDetail.price * salesOrderDetail.qtyOrder ) - salesOrderDetail.disc1 | number:'0.0-0'  }}</td> -->
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
+            <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="10"
                 (pageChange)="loadPage()" [boundaryLinks]="true">
             </ngb-pagination>
 

@@ -92,7 +92,7 @@ export class LookupComponent implements OnInit {
             return;
         }
         this.lookupList = data.contents;
-        this.totalData = data.totalElements;
+        this.totalData = data.totalRow;
     }
 
     private onError(error) {

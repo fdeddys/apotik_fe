@@ -32,7 +32,7 @@
                                     {{status.desc}}
                                 </option>
                             </select>
-                                {{statusSelected}}
+                                <!-- {{statusSelected}} -->
                         </div>
                     </div>
                     
@@ -78,9 +78,9 @@
                 </tbody>
             </table>
         </div>
-        <!-- <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
+        <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="10"
             (pageChange)="loadPage()" [boundaryLinks]="true">
-        </ngb-pagination> -->
+        </ngb-pagination>
     </div>
 
 </div>

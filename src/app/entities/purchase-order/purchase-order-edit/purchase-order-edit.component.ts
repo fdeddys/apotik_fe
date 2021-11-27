@@ -6,12 +6,14 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import Swal from 'sweetalert2';
+import { LookupTemplate } from '../../lookup/lookup.model';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { Supplier, SupplierPageDto } from '../../supplier/supplier.model';
 import { SupplierService } from '../../supplier/supplier.service';
 import { PurchaseOrderDetailService } from '../purchase-order-detail.service';
 import { PurchaseOrder, PurchaseOrderDetail, PurchaseOrderDetailPageDto } from '../purchase-order.model';
 import { PurchaseOrderService } from '../purchase-order.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'op-purchase-order-edit',
@@ -23,6 +25,8 @@ export class PurchaseOrderEditComponent implements OnInit {
     selectedDate: NgbDateStruct;
     purchaseOrder: PurchaseOrder;
     purchaseOrderDetails: PurchaseOrderDetail[];
+
+    uomLists : LookupTemplate[]=[];
 
     suppliers: Supplier[];
     supplierSelected: Supplier;
@@ -44,8 +48,15 @@ export class PurchaseOrderEditComponent implements OnInit {
     priceAdded = 0;
     discAdded = 0;
     qtyAdded = 0;
-    uomAdded = 0;
-    uomAddedName = '';
+    // uomAdded = 0;
+    // uomAddedName = '';
+    // poUom :LookupTemplate;
+    poUom : number = 0;
+    poUomQty = 0;
+    bigUomID : number=0;
+
+    curPage =1;
+    totalData =0;
 
     constructor(
         private route: ActivatedRoute,
@@ -66,13 +77,13 @@ export class PurchaseOrderEditComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
         const isValidParam = isNaN(+id);
         console.log('Param ==>', id, ' nan=>', isValidParam);
+        this.setToday();
         if (isValidParam) {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
         }
         this.loadData(+id);
-        this.setToday();
     }
 
 
@@ -86,6 +97,16 @@ export class PurchaseOrderEditComponent implements OnInit {
             year: today.getFullYear(),
             day: today.getDate(),
             month: today.getMonth() + 1,
+        };
+    }
+
+    setSelectedDate(curDate: string) {
+        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
         };
     }
 
@@ -153,10 +174,14 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.productIdAdded = null;
         this.priceAdded = 0;
         this.productNameAdded = null;
-        this.uomAdded = 0;
+        // this.uomAdded = 0;
+        this.poUomQty = 0;
+        this.poUom ;
+        this.bigUomID = 0;
         this.qtyAdded = 1;
         this.model = null;
-        this.uomAddedName = '';
+        this.uomLists =[];
+        // this.uomAddedName = '';
     }
 
     loadDataByOrderId(orderId: number) {
@@ -206,7 +231,8 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.purchaseOrderDetails = result.detail;
         console.log('isi purchaseOrder detauil', this.purchaseOrderDetails);
         this.calculateTotal();
-
+        this.setSelectedDate(this.purchaseOrder.purchaseOrderDate);
+        // this.selectedDate = this.purchaseOrder.purchaseOrderDate;
         this.purchaseOrder.detail = null;
     }
 
@@ -242,13 +268,35 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     getItem(event: any) {
         // event.preventDefault();
+        this.uomLists = [];
+
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
         this.priceAdded = 0;
         this.discAdded =0;
         this.productNameAdded = event.item.name;
-        this.uomAdded = event.item.smallUomId;
-        this.uomAddedName = event.item.smallUom.name;
+        // this.uomAdded = event.item.smallUomId;
+        // this.uomAddedName = event.item.smallUom.name;
+        
+        let biglUom: LookupTemplate = new LookupTemplate()  ;
+        biglUom.name = event.item.bigUom.name + " [ " + event.item.qtyUom + " " + event.item.smallUom.name + " ]";
+        biglUom.code = event.item.bigUom.code;
+        biglUom.id = event.item.bigUom.id;
+        biglUom.qty = event.item.qtyUom;
+        this.uomLists.push(biglUom);
+
+        // this.poUom = biglUom;
+        this.poUom = +event.item.bigUom.id;
+        this.poUomQty =event.item.qtyUom;
+        this.bigUomID = +event.item.bigUom.id;
+
+        let smallUom: LookupTemplate = new LookupTemplate()  ;
+        smallUom.name = event.item.smallUom.name;
+        smallUom.id = event.item.smallUom.id;
+        smallUom.code = event.item.smallUom.code;
+        smallUom.qty = 1;
+        this.uomLists.push(smallUom);
+
         this.purchaseOrderService.findLastPrice(event.item.id).toPromise().then(
             res => {
                 console.log("hasil cek harga ",res)
@@ -364,7 +412,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             );
     }
 
-    checkInputProductValid(): boolean {
+    checkInputProductValid() {
 
         let result = false;
         // 1. jika belum pernah di isi
@@ -391,18 +439,19 @@ export class PurchaseOrderEditComponent implements OnInit {
                 const typeObj = typeof(product);
                 if (typeObj == 'object') {
                     result = true;
-                }
-
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
                     return result;
                 }
+
+                // console.log(typeof(product) , '] [', typeof('product'))
+                // if (typeof(product) == typeof('product')) {
+                //     // console.log('masok pakeo 2');
+                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                //     result = false;
+                //     return result;
+                // }
             }
         );
-        return result;
+        // return result;
     }
 
     checkInputNumberValid(): boolean {
@@ -437,14 +486,32 @@ export class PurchaseOrderEditComponent implements OnInit {
         return true;
     }
 
+    onChangeUOM(val) {
+        console.log('Change UOM =?', val);
+
+        if (this.uomLists[0].id == val) {
+            this.poUomQty = this.uomLists[0].qty;
+        } else {
+            this.poUomQty = this.uomLists[1].qty;
+        }
+    }
+
     composePurchaseOrderDetail(): PurchaseOrderDetail {
         let purchaseOrderDetail = new PurchaseOrderDetail();
         purchaseOrderDetail.purchaseOrderId = this.purchaseOrder.id;
         purchaseOrderDetail.disc1 = this.discAdded;
-        purchaseOrderDetail.price = this.priceAdded;
+        // purchaseOrderDetail.price = this.priceAdded;
         purchaseOrderDetail.productId = this.productIdAdded;
-        purchaseOrderDetail.qty = this.qtyAdded;
-        purchaseOrderDetail.uomId = this.uomAdded;
+        purchaseOrderDetail.poQty = this.qtyAdded;
+        // purchaseOrderDetail.uomId = this.uomAdded;
+
+        purchaseOrderDetail.poUomId = +this.poUom;
+        if (this.poUom == this.bigUomID) {
+            purchaseOrderDetail.poUomQty = this.poUomQty;
+        } else {
+            purchaseOrderDetail.poUomQty = 1;
+        }
+        purchaseOrderDetail.poPrice = this.priceAdded * this.poUomQty;
         return purchaseOrderDetail;
     }
 
@@ -468,6 +535,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         if (res.body.contents.length > 0) {
 
             this.purchaseOrderDetails = res.body.contents;
+            this.totalData  = res.body.totalRow;
             this.calculateTotal();
             this.clearDataAdded();
         }
@@ -615,4 +683,56 @@ export class PurchaseOrderEditComponent implements OnInit {
         return statusName;
     }
 
+    reject() {
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to cancel ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.rejectProses();
+                }
+            }
+        );
+
+
+    }
+        
+    rejectProses() {
+        this.purchaseOrderService.reject(this.purchaseOrder.id)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00'){
+                        Swal.fire('OK', 'Save success', 'success');
+                        this.router.navigate(['/main/purchase-order']);
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'warning');
+                    }
+                }
+            );
+
+    }
+
+    loadPage() {
+        this.purchaseOrderDetailService
+            .findByPurchaseOrderId({
+                count: 10,
+                page: this.curPage,
+                filter : {
+                    purchaseOrderId: this.purchaseOrder.id,
+                }
+            })
+            .subscribe(
+                (res => {
+                    this.fillDetail(res)
+                })
+            );;
+    }
 }
+

@@ -43,6 +43,10 @@ import { StockOpnameEditComponent } from './entities/stock-opname/stock-opname-e
 import { ReportPaymentComponent } from './entities/report/report-payment/report-payment.component';
 import { DashboardComponent } from './entities/dashboard/dashboard.component';
 import { ReportSalesComponent } from './entities/report/report-sales/report-sales.component';
+import { StockInfoBatchService } from './entities/stock-info-batch/stock-info-batch.service';
+import { StockInfoBatchComponent } from './entities/stock-info-batch/stock-info-batch.component';
+import { PaymentSupplierComponent } from './entities/payment-supplier/payment-supplier.component';
+import { PaymentSupplierEditComponent } from './entities/payment-supplier/payment-supplier-edit/payment-supplier-edit.component';
 
 
 const routes: Routes = [
@@ -101,6 +105,9 @@ const routes: Routes = [
                     { path: 'direct-sales-payment', component: DirectSalesPaymentComponent },
                     { path: 'report-payment', component: ReportPaymentComponent },
                     { path: 'report-sales', component: ReportSalesComponent },
+                    { path: 'stock-batch', component: StockInfoBatchComponent },
+                    { path: 'payment-supplier', component: PaymentSupplierComponent },
+                    { path: 'payment-supplier/:id', component: PaymentSupplierEditComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

@@ -41,6 +41,12 @@ export class DirectSalesPaymentService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    reject(directSalesPayment: DirectSalesPayment): Observable<EntityResponseType> {
+        const copy = this.convert(directSalesPayment);
+        return this.http.post<DirectSalesPayment>(`${this.serverUrl}/reject`, copy, { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
     private convert(directSalesPayment: DirectSalesPayment): DirectSalesPayment {
         const copy: DirectSalesPayment = Object.assign({}, directSalesPayment);
         return copy;

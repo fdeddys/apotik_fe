@@ -17,10 +17,11 @@ export class Product {
         public Brand?: Brand,
 
         public smallUomId?: number,
-        public SmallUom?: Lookup,
+        public smallUom?: Lookup,
 
         public bigUomId?: number,
         public BigUom?: Lookup,
+        public bigUom?: Lookup,
 
         public status?: number,
         public qtyStock?: number,

@@ -31,8 +31,8 @@ export class StockOpnameDetailService {
             if (key === 'stockOpnameId') {
                 stockOpnameID = req[key];
             }
+            console.log('service =>',req[key]);
         });
-
 
         const filter = {
             stockOpnameId : stockOpnameID,

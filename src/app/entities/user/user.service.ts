@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { SERVER_PATH, SERVER, AUTH_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from './user.model';
+import { User, Version } from './user.model';
 import { createRequestOption } from 'src/app/shared/httpUtil';
 import { tap, map } from 'rxjs/operators';
 // import { sha512 } from 'js-sha512';
-import * as sha512 from 'js-sha512';
+// import * as sha512 from 'js-sha512';
+// import { sha256 } from 'js-sha256';
+import * as sha256 from 'js-sha256';
 
 
 export type EntityResponseType = HttpResponse<User>;
@@ -65,8 +67,8 @@ export class UserService {
 
         const data = {
             username: userName,
-            oldPass: sha512.sha512(userName + credential.oldPass),
-            newPass: sha512.sha512(userName + credential.newPass)
+            oldPassword: sha256.sha256(userName + credential.oldPass),
+            newPassword: sha256.sha256(userName + credential.newPass)
         };
         const result = this.http.post<User>(SERVER + `auth/update-password`, data, { observe: 'response' });
         //     .pipe(map())
@@ -80,9 +82,9 @@ export class UserService {
         return this.http.get<User> (newresourceUrl, { observe: 'response' });
     }
 
-    resetP(idUser): Observable<HttpResponse<User>> {
-        const newresourceUrl = SERVER + `auth/${idUser}/resetpassword`;
-        return this.http.get<User>(newresourceUrl, { observe: 'response' });
+    resetP(idUser): Observable<User> {
+        const newresourceUrl = this.serverUrl + `/reset/${idUser}`;
+        return this.http.post<User>(newresourceUrl, { observe: 'response' });
     }
 
     forceLogout(idUser): Observable<HttpResponse<User>> {
@@ -115,6 +117,13 @@ export class UserService {
     private convert( user: User): User {
         const copy: User = Object.assign({}, user);
         return copy;
+    }
+
+
+    getCurrentVersion(): Observable<HttpResponse<Version>> {
+        const newresourceUrl = SERVER_PATH + `version`;
+
+        return this.http.get<Version> (newresourceUrl, { observe: 'response' });
     }
 
 }

@@ -151,6 +151,9 @@ export class SalesOrderComponent implements OnInit {
             case 50:
                 statusName = 'Paid';
                 break;
+            case 60:
+                statusName = 'Payment Cancel';
+                break;
         }
         return statusName;
     }

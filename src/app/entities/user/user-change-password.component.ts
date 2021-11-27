@@ -30,7 +30,7 @@ export class UserChangePasswordComponent implements OnInit {
     ngOnInit() {
         this.userService.getCurrentUser()
             .subscribe(
-                (res: HttpResponse<User>) => this.userName = res.body.userName,
+                (res: HttpResponse<User>) => this.userName = res.body.errDesc,
                 (res: HttpErrorResponse) => console.log('error', res.message)
             );
 
@@ -44,7 +44,10 @@ export class UserChangePasswordComponent implements OnInit {
         } else if (this.credential.newPass === '') {
             this.errMsg = 'Password cannot be null';
             this.confirmStatus = false;
-        } else {
+        }else if (this.credential.newPass.length <8 ) {
+            this.errMsg = 'Password  min 8 char';
+            this.confirmStatus = false;
+        }else {
             this.errMsg = '';
             this.confirmStatus = true;
 
@@ -52,6 +55,13 @@ export class UserChangePasswordComponent implements OnInit {
     }
 
     save(): void {
+
+        this.savePassword();
+
+    }
+
+
+    save2(): void {
         console.log('dsadas');
 
         const re = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$');

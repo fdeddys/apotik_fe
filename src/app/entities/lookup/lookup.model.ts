@@ -37,3 +37,12 @@ export class LookupDto {
         public code?: string,
     ) {}
 }
+
+export class LookupTemplate {
+    constructor (
+        public id?: number,
+        public code?: string,
+        public name?: string,
+        public qty?: number,
+    ) {}
+}

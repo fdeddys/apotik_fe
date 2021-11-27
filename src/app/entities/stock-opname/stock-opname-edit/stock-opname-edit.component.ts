@@ -3,6 +3,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { flatMap } from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
@@ -376,14 +377,15 @@ export class StockOpnameEditComponent implements OnInit {
     }
 
     reloadDetail(stockOpnameId: number) {
+        console.log('stock opname =>', stockOpnameId);
         this.spinner.show();
         this.stockOpnameDetailService
             .findByStockOpnameId({
                 count: 10,
                 page: 1,
-                filter : {
-                    stockOpnameId: stockOpnameId,
-                }
+                stockOpnameId: stockOpnameId,
+                // filter : {
+                // }
             }).subscribe(
                 (res: HttpResponse<StockOpnameDetailPageDto>) => 
                     {
@@ -739,13 +741,14 @@ export class StockOpnameEditComponent implements OnInit {
             const formData = new FormData();
             formData.append("data-stock-opname.csv", this.fileUpload);
             console.log(this.fileUpload);
-        
+            this.spinner.show();
             this.stockOpnameService
                 .uploadTemplate(formData,this.stockOpname.id)
                 .subscribe(res=>{
                     this.myInputVariable.nativeElement.value='';
                     this.fileUpload=null;
                     if (res.body.errCode == "00") {
+                        this.spinner.hide();
                         Swal.fire("Success","Success process !","success");
                         this.curPage=1
                         this.loadDetail(this.curPage);    
