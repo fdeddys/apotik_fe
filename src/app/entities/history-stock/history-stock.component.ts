@@ -2,10 +2,13 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { isNumber } from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { LocalStorageService } from 'ngx-webstorage';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH, TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
+import { GlobalComponent } from 'src/app/shared/global-component';
 import Swal from 'sweetalert2';
 import { Product, ProductPageDto } from '../product/product.model';
 import { ProductService } from '../product/product.service';
@@ -34,16 +37,22 @@ export class HistoryStockComponent implements OnInit {
     historyStocks: HistoryStock[];
     totalData = 0;
     curPage =1;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     constructor(
         private http: HttpClient,
         private spinner: NgxSpinnerService,
         private warehouseService: WarehouseService,
         private historyStockService: HistoryStockService,
+        private localStorage: LocalStorageService,
     ) {
     }
     
     ngOnInit(): void {
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
+        }
         this.loadWarehouse();
         this.setDefaultValue();
     }
@@ -105,7 +114,7 @@ export class HistoryStockComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

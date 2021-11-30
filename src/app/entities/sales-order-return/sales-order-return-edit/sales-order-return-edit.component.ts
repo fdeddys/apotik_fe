@@ -2,11 +2,13 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { result } from 'lodash';
+import { isNumber, result } from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { LocalStorageService } from 'ngx-webstorage';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
+import { GlobalComponent } from 'src/app/shared/global-component';
 import Swal from 'sweetalert2';
 import { Customer, CustomerPageDto } from '../../customer/customer.model';
 import { CustomerService } from '../../customer/customer.service';
@@ -52,6 +54,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -76,7 +79,8 @@ export class SalesOrderReturnEditComponent implements OnInit {
         private salesOrderReturnDetailService: SalesOrderReturnDetailService,
         private spinner: NgxSpinnerService,
         private salesmanService: SalesmanService,
-        private warehouseService: WarehouseService,
+        private warehouseService: WarehouseService,        
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -94,7 +98,10 @@ export class SalesOrderReturnEditComponent implements OnInit {
             this.backToLIst();
             return;
         }
-
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
+        }
         this.route.data.subscribe(
             data => {
                 console.log("data===>",data.cash);
@@ -327,7 +334,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

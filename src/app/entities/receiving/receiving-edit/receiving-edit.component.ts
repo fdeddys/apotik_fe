@@ -16,9 +16,11 @@ import { ReceivingSearchPoModalComponent } from '../receiving-search-po-modal/re
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { data } from 'jquery';
-import { flatMap } from 'lodash';
+import { flatMap, isNumber } from 'lodash';
 import * as _ from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { GlobalComponent } from 'src/app/shared/global-component';
+import { LocalStorageService } from 'ngx-webstorage';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -50,6 +52,7 @@ export class ReceivingEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -73,6 +76,7 @@ export class ReceivingEditComponent implements OnInit {
         private modalService: NgbModal,
         private warehouseService: WarehouseService,
         private spinner: NgxSpinnerService,
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -90,6 +94,11 @@ export class ReceivingEditComponent implements OnInit {
             this.backToLIst();
             return;
         }
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
+        }
+
         this.loadData(+id);
         this.setToday();
         this.setTodayED();
@@ -355,7 +364,7 @@ export class ReceivingEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

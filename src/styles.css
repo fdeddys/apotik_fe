@@ -18,3 +18,9 @@ table, th, td {
     font-size: 12px;
     font-weight: 200;
 }
+
+ngb-typeahead-window {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }

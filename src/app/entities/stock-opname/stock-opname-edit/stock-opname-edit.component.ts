@@ -3,11 +3,13 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { flatMap } from 'lodash';
+import { flatMap, isNumber } from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { LocalStorageService } from 'ngx-webstorage';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH, TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
+import { GlobalComponent } from 'src/app/shared/global-component';
 import Swal from 'sweetalert2';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
@@ -38,6 +40,7 @@ export class StockOpnameEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -60,6 +63,7 @@ export class StockOpnameEditComponent implements OnInit {
         private stockOpnameService: StockOpnameService,
         private stockOpnameDetailService: StockOpnameDetailService,
         private spinner: NgxSpinnerService,
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
     }
@@ -72,6 +76,10 @@ export class StockOpnameEditComponent implements OnInit {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
+        }
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
         }
         this.loadData(+id);
         this.setToday();
@@ -242,7 +250,7 @@ export class StockOpnameEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

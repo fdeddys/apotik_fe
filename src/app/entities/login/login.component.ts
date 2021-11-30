@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { LoginService } from './login.service';
 import Swal from 'sweetalert2';
+import { ParameterService } from '../parameter/parameter.service';
+import { Parameter } from '../parameter/parameter.model';
+import { ThrowStmt } from '@angular/compiler';
+import { GlobalComponent } from 'src/app/shared/global-component';
+import { isNumber } from 'lodash';
 // declare var grecaptcha: any;
 
 @Component({
@@ -22,7 +27,8 @@ export class LoginComponent implements OnInit {
   };
   constructor(private router: Router,
               private localStorage: LocalStorageService,
-              private loginService: LoginService
+              private loginService: LoginService,
+              private parameterService: ParameterService,
      ) { }
 
   ngOnInit() {
@@ -67,6 +73,25 @@ export class LoginComponent implements OnInit {
           if (data !== '') {
             // grecaptcha.reset();
             this.router.navigate(['main']);
+            this.parameterService.findByName("total_record_product")
+              .subscribe(
+                (res => {
+                  if (res.body.value !== '0') {
+                    let resBody = res.body.value;
+                    let total = Number(resBody);
+                    // if (  isNumber(resBody)){
+                    //   total = Number(resBody)
+                    // } else {
+                    //   console.log('not number ' + resBody + ' -- ' + isNumber(resBody));
+                    // };
+                    GlobalComponent.maxRecord = total;
+                    this.localStorage.store('max_search_product', total);
+                  } 
+                }),
+                (err => {
+                    console.log("Failed get param")
+                })
+              )
             return null;
           } else {
             console.log('isi data --> ', data);

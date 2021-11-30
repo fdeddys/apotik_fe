@@ -14,6 +14,9 @@ import { PurchaseOrderDetailService } from '../purchase-order-detail.service';
 import { PurchaseOrder, PurchaseOrderDetail, PurchaseOrderDetailPageDto } from '../purchase-order.model';
 import { PurchaseOrderService } from '../purchase-order.service';
 import * as moment from 'moment';
+import { GlobalComponent } from 'src/app/shared/global-component';
+import { LocalStorageService } from 'ngx-webstorage';
+import { isNumber } from 'lodash';
 
 @Component({
   selector: 'op-purchase-order-edit',
@@ -42,6 +45,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -58,6 +62,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     curPage =1;
     totalData =0;
 
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -65,6 +70,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         private http: HttpClient,
         private purchaseOrderService: PurchaseOrderService,
         private purchaseOrderDetailService: PurchaseOrderDetailService,
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -82,6 +88,10 @@ export class PurchaseOrderEditComponent implements OnInit {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
+        }
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
         }
         this.loadData(+id);
     }
@@ -333,7 +343,7 @@ export class PurchaseOrderEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

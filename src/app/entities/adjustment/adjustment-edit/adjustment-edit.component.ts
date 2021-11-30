@@ -12,6 +12,9 @@ import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import Swal from 'sweetalert2';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import { WarehouseService } from '../../warehouse/warehouse.service';
+import { GlobalComponent } from 'src/app/shared/global-component';
+import { LocalStorageService } from 'ngx-webstorage';
+import { isNumber } from 'lodash';
 
 @Component({
   selector: 'op-adjustment-edit',
@@ -33,6 +36,7 @@ export class AdjustmentEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -51,6 +55,7 @@ export class AdjustmentEditComponent implements OnInit {
         private adjustmentService: AdjustmentService,
         private adjustmentDetailService: AdjustmentDetailService,
         private warehouseService: WarehouseService,
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
         this.qtyAdded = 0;
@@ -64,6 +69,10 @@ export class AdjustmentEditComponent implements OnInit {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
+        }
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
         }
         this.loadData(+id);
         this.setToday();
@@ -219,7 +228,7 @@ export class AdjustmentEditComponent implements OnInit {
                     code: '',
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(

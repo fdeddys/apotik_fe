@@ -18,6 +18,9 @@ import { SalesmanService } from '../../salesman/salesman.service';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import * as moment from 'moment';
+import { GlobalComponent } from 'src/app/shared/global-component';
+import { LocalStorageService } from 'ngx-webstorage';
+import { isNumber } from 'lodash';
 
 
 @Component({
@@ -53,6 +56,7 @@ export class SalesOrderEditComponent implements OnInit {
     model: Observable<Product[]>;
     searching = false;
     searchFailed = false;
+    totalRecordProduct = GlobalComponent.maxRecord;
 
     productIdAdded = 0;
     productNameAdded = '';
@@ -77,6 +81,7 @@ export class SalesOrderEditComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private salesmanService: SalesmanService,
         private warehouseService: WarehouseService,
+        private localStorage: LocalStorageService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -96,6 +101,10 @@ export class SalesOrderEditComponent implements OnInit {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
+        }
+        let total = this.localStorage.retrieve('max_search_product');
+        if ( isNumber(total)) {
+            this.totalRecordProduct = total;
         }
         
         this.route.data.subscribe(
@@ -374,7 +383,7 @@ export class SalesOrderEditComponent implements OnInit {
                     warehouseId: this.warehouseSelected,
                 };
         const serverUrl = SERVER_PATH + 'product';
-        const newresourceUrl = serverUrl + `/search/page/1/count/10`;
+        const newresourceUrl = serverUrl + `/search/page/1/count/${this.totalRecordProduct}`;
         return  this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(
