@@ -36,12 +36,10 @@
                             <td>Total</td>
                             <td>
                                 <span style="color: blue;">
-                                        {{ total | number:'0.0-0'}}
+                                    {{ total | number:'0.0-0'}}
                                 </span>
                                 <!-- <input type="text" size="50%" [(ngModel)]="total"> -->
-                               
                             </td>
-    
                         </tr>
                         <tr>
                             <td>Date</td>
@@ -172,13 +170,15 @@
                                 <table>
                                     <tr>
                                         <td>
-                                            <input type="text" ngbDatepicker #d="ngbDatepicker"  placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" />
+                                            <!-- <input type="text" ngbDatepicker #d="ngbDatepicker"  placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" /> -->
+                                            <input type="text" placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" />
                                         </td>
+                                        <!-- {{selectedDate | json}}
                                         <td>
                                             <button (click)="d.toggle()" class="btn btn-outline-success btn-sm">
                                                 <i class="fa fa-calendar"></i>
                                             </button>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 </table>
                             </td>

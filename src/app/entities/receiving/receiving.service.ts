@@ -75,9 +75,15 @@ export class ReceivingService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
-    removeByPO(receive: Receive): Observable<EntityResponseType> {
+    removeByPO(receive: Receive, clearData: boolean): Observable<EntityResponseType> {
         const copy = this.convert(receive);
-        let newresourceUrl = this.serverUrl + `/remove-PO`;
+        let newresourceUrl = this.serverUrl;
+        if (clearData===true) {
+            newresourceUrl = newresourceUrl + `/remove-PO`; 
+        } else {
+            newresourceUrl = newresourceUrl + `/remove-PO-all`;
+        }
+        
         return this.http.post<Receive>(newresourceUrl, copy, { observe: 'response'})
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }

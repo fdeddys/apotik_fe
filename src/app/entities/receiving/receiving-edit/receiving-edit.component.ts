@@ -61,7 +61,8 @@ export class ReceivingEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     batchNo = "";
-    expiredDate :NgbDateStruct;
+    // expiredDate :NgbDateStruct;
+    expiredDate: string;
     uomAddedName = '';
     closeResult: string;
     curPage =1;
@@ -101,7 +102,7 @@ export class ReceivingEditComponent implements OnInit {
 
         this.loadData(+id);
         this.setToday();
-        this.setTodayED();
+        // this.setTodayED();
     }
 
 
@@ -118,14 +119,14 @@ export class ReceivingEditComponent implements OnInit {
         };
     }
     
-    setTodayED() {
-        const today = new Date();
-        this.expiredDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        }
-    }
+    // setTodayED() {
+    //     const today = new Date();
+    //     this.expiredDate = {
+    //         year: today.getFullYear(),
+    //         day: today.getDate(),
+    //         month: today.getMonth() + 1,
+    //     }
+    // }
 
     loadData(orderId: number) {
 
@@ -201,7 +202,7 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.status = 0;
         this.receiveDetails = [];
         this.setToday() ;
-        this.setTodayED();
+        // this.setTodayED();
         this.clearDataAdded();
         if (this.suppliers !== undefined) {
             this.receive.supplier = this.suppliers[0];
@@ -220,7 +221,7 @@ export class ReceivingEditComponent implements OnInit {
         this.model = null;
         this.uomAddedName = '';
         this.batchNo='';
-        this.setTodayED();
+        // this.setTodayED();
     }
 
     loadDataByOrderId(orderId: number) {
@@ -473,17 +474,17 @@ export class ReceivingEditComponent implements OnInit {
                    result = true;
                }
 
-               console.log(typeof(product) , '] [', typeof('product'))
-               if (typeof(product) == typeof('product')) {
-                   // console.log('masok pakeo 2');
-                   Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                   result = false;
-                   return result;
-               }
+            //    console.log(typeof(product) , '] [', typeof('product'))
+            //    if (typeof(product) == typeof('product')) {
+            //        // console.log('masok pakeo 2');
+            //        Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+            //        result = false;
+            //        return result;
+            //    }
            }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
-        return result;
+        // return result;
     }
 
     checkInputNumberValid(): boolean {
@@ -526,7 +527,8 @@ export class ReceivingEditComponent implements OnInit {
         receiveDetail.productId = this.productIdAdded;
         receiveDetail.qty = this.qtyAdded;
         receiveDetail.uomId = this.uomAdded;
-        receiveDetail.ed = this.getEd();
+        receiveDetail.ed = this.expiredDate;
+        // receiveDetail.ed = this.getEd();
         receiveDetail.batchNo = this.batchNo;
         return receiveDetail;
     }
@@ -548,6 +550,7 @@ export class ReceivingEditComponent implements OnInit {
 
     fillDetail(res: HttpResponse<ReceivingDetailPageDto>) {
         this.receiveDetails = [];
+        this.receiveDetailShow = [];
         if (res.body.contents.length > 0) {
             
             this.receiveDetails = res.body.contents;
@@ -565,10 +568,10 @@ export class ReceivingEditComponent implements OnInit {
             console.log('isi detail ===>', this.receiveDetails);
             this.totalRecord = res.body.totalRow;
             
-            this.fillGridDetail();
-            this.calculateTotal();
-            this.clearDataAdded();
         }
+        this.fillGridDetail();
+        this.calculateTotal();
+        this.clearDataAdded();
     }
 
 
@@ -660,14 +663,14 @@ export class ReceivingEditComponent implements OnInit {
         return this.selectedDate.year + '-' + month + '-' + day + tz;
     }
 
-    getEd(): string{
+    // getEd(): string{
 
-        const month = ('0' + this.expiredDate.month).slice(-2);
-        const day = ('0' + this.expiredDate.day).slice(-2);
-        const tz = 'T00:00:00+07:00';
+    //     const month = ('0' + this.expiredDate.month).slice(-2);
+    //     const day = ('0' + this.expiredDate.day).slice(-2);
+    //     const tz = 'T00:00:00+07:00';
 
-        return this.selectedDate.year + '-' + month + '-' + day + tz;
-    }
+    //     return this.selectedDate.year + '-' + month + '-' + day + tz;
+    // }
 
     approve() {
 
@@ -828,22 +831,44 @@ export class ReceivingEditComponent implements OnInit {
         .then(
             (result) => {
             if (result.value) {
-                    this.removePoProcess();
+                    this.confirmRemoveItem();
                 }
         });        
         
     }
+
+    confirmRemoveItem() {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'You want to clear all Item data ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'YES, clear data',
+            cancelButtonText : 'NO, keep it !'
+        })
+        .then(
+            (result) => {
+            console.log("result confirmRemoveItem: ", result)
+            if (result.value) {
+                this.removePoProcess(false);
+            } else {
+                this.removePoProcess(true);
+            }
+        });    
+
+    }
     
-    removePoProcess() {
+    removePoProcess(clearData : boolean) {
         let receive = new Receive();
         receive.id = this.receive.id
         receive.poNo = this.receive.poNo
-        this.receiveService.removeByPO(receive)
+        this.receiveService.removeByPO(receive, clearData)
             .subscribe(
                 (res) => {
                     if (res.body.errCode === '00'){
                         Swal.fire('OK', 'Save success', 'success');
                         this.receive.poNo = ""
+                        this.reloadDetail(this.receive.id);
                         // this.router.navigate(['/main/receive']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
