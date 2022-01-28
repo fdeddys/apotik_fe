@@ -9,7 +9,8 @@ import { PaymentDetailService } from '../../payment/payment-detail.service';
 import { PaymentOrderService } from '../../payment/payment-order.service';
 import { Payment, PaymentDetail, PaymentDetailPageDto, PaymentOrder } from '../../payment/payment.model';
 import { PaymentService } from '../../payment/payment.service';
-import { SalesOrder } from '../../sales-order/sales-order.model';
+import { SalesOrderDetailService } from '../../sales-order/sales-order-detail.service';
+import { SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from '../../sales-order/sales-order.model';
 import { SalesOrderService } from '../../sales-order/sales-order.service';
 import { DirectSalesPayment } from '../direct-sales-payment.model';
 import { DirectSalesPaymentService } from '../direct-sales-payment.service';
@@ -34,6 +35,12 @@ export class DirectSalesPaymentModalComponent implements OnInit {
     totalDetail: number =0;
     bayarRP: number ;
 
+    // page so detail
+    curPageSO: number = 1
+    totalData =0;
+
+    salesOrderDetails: SalesOrderDetail[];
+    
     constructor(
         private lookupService: LookupService,
         private paymentService: PaymentService,
@@ -42,6 +49,7 @@ export class DirectSalesPaymentModalComponent implements OnInit {
         private directSalesPaymentService: DirectSalesPaymentService,
         private modalService: NgbModal,
         private orderService: SalesOrderService,
+        private orderDetailService: SalesOrderDetailService,
     ) { }
 
     ngOnInit() {
@@ -49,12 +57,43 @@ export class DirectSalesPaymentModalComponent implements OnInit {
         console.log('obj to edit -> ', this.directSalesPayment);
         this.loadPaymentType();
         this.loadPayment(this.directSalesPayment.salesOrderId);
+        this.loadDetailSOById(this.objEdit.salesOrderId);
         // if (this.directSalesPayment.paymentId > 0 ) {
         //     this.reloadPaymentDetail(this.directSalesPayment.paymentId);
         // }
         // this.loadPayment(this.directSalesPayment.salesOrderNo);
         if (this.directSalesPayment.paymentStatus === 0) {
             this.nominalInputBayar = this.directSalesPayment.salesOrderGrandTotal;
+        }
+    }
+
+    loadDetailSOById(orderId) {
+
+        this.orderDetailService
+        .findByOrderId({
+            count: 10,
+            page: this.curPageSO,
+            filter : {
+                orderId: orderId,
+            }
+        }).subscribe(
+            (res: HttpResponse<SalesOrderDetailPageDto>) => {
+                    this.fillDetail(res)
+                },
+            (res: HttpErrorResponse) =>{
+                console.log(res.message)
+                },
+        );
+    }
+
+    fillDetail(res: HttpResponse<SalesOrderDetailPageDto>) {
+        this.salesOrderDetails = [];
+        if (res.body.contents === null) {
+            return
+        }
+        if (res.body.contents.length > 0) {
+            this.salesOrderDetails = res.body.contents;
+            this.totalData  = res.body.totalRow;
         }
     }
 

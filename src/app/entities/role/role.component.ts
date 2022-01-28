@@ -84,7 +84,7 @@ private onSuccess(data, headers) {
       return ;
   }
   this.roleList = data.contents;
-  this.totalData = data.totalElements;
+  this.totalData = data.totalRow;
   // Swal.fire('Success', 'Data save', 'info');
 }
 

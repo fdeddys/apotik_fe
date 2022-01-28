@@ -70,23 +70,32 @@
                     </tr>
                     <tr>
                         <td>
-                            Payment Type
+                            Supplier Info
                         </td>
-                        <td style="width: 40%;">
-                            <span *ngIf="paymentTypes" >
-                                <select id="select-type-basic" 
-                                    class="form-control"
-                                    style="width: 40%;"
-                                    [(ngModel)]="paymentTypeSelected"   >
-                                    <option *ngFor="let paymentType of paymentTypes" [value]="paymentType.id"  >
-                                    {{paymentType.name}}
-                                    </option>
-                                </select>
-                            </span>
+                        <td >
+                            {{getBankInfo(supplierSelected)}}
+                            <!-- <div *ngIf="supplierSelected" >
+                                <div *ngIf="supplierSelected.bank.id !== 0" >
+                                    {{supplierSelected.bank.name | json }} |
+                                </div>
+                                {{supplierSelected.bankAccountNo }} | {{supplierSelected.bankAccountName }}
+                            </div> -->
                         </td>
                         <td></td>
                         <td></td>
                     </tr>
+
+                    <tr>
+                        <td>
+                            Payment No Reff.
+                        </td>
+                        <td>
+                            <input type="text" size="50%" [(ngModel)]="paymentSupplier.paymentReff" />
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
                     <tr>
                         <td>
                             Payment No Reff.
@@ -118,7 +127,8 @@
         <hr>
         
         <div *ngIf="paymentSupplier">
-            <div style="height:370px; padding: 5px 15px 5px 15px; ">
+            <!-- height:370px; -->
+            <div style=" padding: 5px 15px 5px 15px; ">
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
@@ -133,6 +143,9 @@
                             <td *ngIf ="paymentSupplier">
                                 <button type="button" *ngIf="paymentSupplier.status === 10"  (click)="confirmDelItem(paymentSupplierDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
+                                </button>
+                                <button type="button"  (click)="previewReceive(paymentSupplierDetail)" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-print fa-lg"></i>
                                 </button>
                             </td>
                             <td>{{paymentSupplierDetail.receive.receiveNo}}</td>

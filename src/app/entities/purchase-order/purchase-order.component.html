@@ -12,7 +12,7 @@
                     <div class="col-md-2 mb-2">
                         <label for="startDate">Start Date</label>
                         <div>
-                            <input type="text" name="startDate"  ngbDatepicker #d1="ngbDatepicker"  [(ngModel)]="startDate" />
+                            <input type="text" name="startDate" style="width: 80%;" ngbDatepicker #d1="ngbDatepicker"  [(ngModel)]="startDate" />
                             <button (click)="d1.toggle()">
                                 <i class="fa fa-calendar"></i>
                             </button>
@@ -21,7 +21,7 @@
                     <div class="col-md-2 mb-2">
                         <label for="endDate">End Date</label>
                         <div>
-                            <input type="text" name="endDate" ngbDatepicker #d2="ngbDatepicker"  [(ngModel)]="endDate" />
+                            <input type="text" name="endDate" style="width: 80%;" ngbDatepicker #d2="ngbDatepicker"  [(ngModel)]="endDate" />
                             <button (click)="d2.toggle()">
                                 <i class="fa fa-calendar"></i>
                             </button>

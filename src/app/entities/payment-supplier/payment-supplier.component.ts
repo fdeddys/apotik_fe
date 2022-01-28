@@ -13,7 +13,7 @@ import { PaymentSupplierService } from './payment-supplier.service';
 })
 export class PaymentSupplierComponent implements OnInit {
 
-    moduleTitle = "Direct Sales Payment"
+    moduleTitle = "Payment Supplier"
     searchTerm = {
         paymentNo: '',
         salesOrderNo: '',

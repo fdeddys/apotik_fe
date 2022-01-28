@@ -39,6 +39,7 @@ import { StockInfoBatchModule } from './stock-info-batch/stock-info-batch.module
 import { PaymentSupplierModule } from './payment-supplier/payment-supplier.module';
 import { ReportServiceService } from './report/report-service/report-service.service';
 import { ReportServiceModule } from './report/report-service/report-service.module';
+import { ReportPaymentSupplierModule } from './report/report-payment-supplier/report-payment-supplier.module';
 
 @NgModule({
     imports: [
@@ -78,6 +79,7 @@ import { ReportServiceModule } from './report/report-service/report-service.modu
         StockInfoBatchModule,
         PaymentSupplierModule,
         ReportServiceModule,
+        ReportPaymentSupplierModule
     ],
     entryComponents: [],
     providers: [],

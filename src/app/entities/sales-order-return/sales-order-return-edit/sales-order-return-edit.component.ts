@@ -472,13 +472,13 @@ export class SalesOrderReturnEditComponent implements OnInit {
                     result = true;
                 }
 
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
-                    return result;
-                }
+                // console.log(typeof(product) , '] [', typeof('product'))
+                // if (typeof(product) == typeof('product')) {
+                //     // console.log('masok pakeo 2');
+                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                //     result = false;
+                //     return result;
+                // }
             }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');

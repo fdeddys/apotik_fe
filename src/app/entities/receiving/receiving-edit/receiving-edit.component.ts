@@ -21,6 +21,7 @@ import * as _ from 'lodash';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
+import { async } from '@angular/core/testing';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -34,8 +35,8 @@ export class ReceivingEditComponent implements OnInit {
     receiveDetails: ReceivingDetail[];
     receiveDetailShow: ReceivingDetail[];
 
-    suppliers: Supplier[];
-    supplierSelected: Supplier;
+    suppliers: Supplier[]=[];
+    supplierSelected: number;
 
 
     warehouses: Warehouse[];
@@ -59,11 +60,14 @@ export class ReceivingEditComponent implements OnInit {
     priceAdded = 0;
     discAdded = 0;
     qtyAdded = 0;
+    qtyBoxAdded = 0;
     uomAdded = 0;
     batchNo = "";
     // expiredDate :NgbDateStruct;
     expiredDate: string;
     uomAddedName = '';
+    uomBoxAddedName = '';
+    uomQty=0;
     closeResult: string;
     curPage =1;
     totalRecord =0;
@@ -132,9 +136,12 @@ export class ReceivingEditComponent implements OnInit {
 
         console.log('id ==>?', orderId);
         if (orderId === 0) {
-            this.loadSupplier();
-            this.loadWarehouse();
-            this.loadNewData();
+            console.log("load promise Supplier");
+            this.loadSupplierPromose();
+            console.log("load promise warehouse");
+            this.loadWarehousePromise();
+            console.log("load new data");
+            // this.loadNewData();
             return;
         }
         this.loadDataByOrderId(orderId);
@@ -162,6 +169,127 @@ export class ReceivingEditComponent implements OnInit {
             });
     }
 
+    async loadSupplierPromose() {
+        this.supplierService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                code: '',
+                name: '',
+            },
+        })
+        .toPromise()
+        .then(
+            response => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get supplier data !', 'error');
+                    return;
+                }
+                this.suppliers = response.body.contents;
+                this.supplierSelected = this.suppliers[0].id;
+                // if (this.receive.id === 0) {
+                //     this.receive.supplier = this.suppliers[0];
+                //     this.setSupplierDefault();
+                // }
+                console.log("load supp promise");
+                this.loadNewData();
+            },
+            rej=> {
+
+            }
+        )
+    }    
+
+    loadWarehousePromise() {
+
+        this.warehouseService.getWarehouse()
+            .toPromise()
+            .then(
+                (response: HttpResponse<WarehouseDto>) => {
+                    if (response.body.contents.length <= 0) {
+                        Swal.fire('error', 'failed get warehouse data !', 'error');
+                        return;
+                    }
+                    this.warehouses = response.body.contents;
+                    this.warehouseSelected = this.warehouses[0] ;
+                    console.log('set wh selected ', this.warehouseSelected);
+                    this.loadNewData();
+
+                });
+
+        // let serverUrl = SERVER_PATH + 'warehouse';
+        
+        // let promise = new Promise((resolve, reject) => {
+        //     // let apiURL = `${this.apiRoot}?term=${term}&media=music&limit=20`;
+        //     this.http.get(serverUrl)
+        //       .toPromise()
+        //       .then(
+        //         res => { // Success
+        //         //   console.log(res);
+        //           console.log("load ww promisesss", res);
+        //           resolve;
+        //         }
+        //       );
+        // });
+        // return promise;
+
+        // var request = new XMLHttpRequest();
+        // request.open('GET', serverUrl, false);
+        // request.send(); 
+
+        // if (request.status === 200) {   
+        //     let hasil = request.response;
+        //     console.log("load ww promisesss", request);
+        //     this.warehouses = request.response.contents;
+        //     console.log("warehouses =>",this.warehouses);
+        //     this.warehouseSelected = this.warehouses[0] ;
+        //  }
+        // const promise = this.http.get(serverUrl).toPromise();
+        // console.log(promise);  
+
+        // promise.then(
+        //     data => {
+        //     }
+        // )
+        // promise. .then((data)=>{
+            // this.Movie = JSON.stringify(data)
+            // console.log(JSON.stringify(data));
+        // })
+        
+        // let dataPromise = await this.getDataSynchronous();
+
+        // dataPromise.then
+        // console.log("load ww promise", dataPromise);
+
+        // if (dataPromise.contents.length <= 0) {
+        //     Swal.fire('error', 'failed get warehouse data !', 'error');
+        //     return;
+        // }
+        // this.warehouses = dataPromise.contents;
+        // this.warehouseSelected = this.warehouses[0] ;
+        // console.log('set wh selected ', this.warehouseSelected);
+        // console.log("load ww promise");
+
+        // dataPromise
+        //     .then(
+        //         dataWh => {
+        //             console.log("data wh =>", dataWh)
+        //             if (dataWh.contents.length <= 0) {
+        //                 Swal.fire('error', 'failed get warehouse data !', 'error');
+        //                 return;
+        //             }
+        //             this.warehouses = dataWh.contents;
+        //             this.warehouseSelected = this.warehouses[0] ;
+        //             console.log('set wh selected ', this.warehouseSelected);
+        //             console.log("load ww promise");
+        //         }
+        //     )
+    }
+            
+    
+
+
+
     loadWarehouse() {
         this.warehouseService.getWarehouse()
             .subscribe(
@@ -177,7 +305,7 @@ export class ReceivingEditComponent implements OnInit {
     }
 
     setSupplierDefault() {
-        this.supplierSelected = this.receive.supplier;
+        this.supplierSelected = this.receive.supplier.id;
         console.log('set selected supplier =>', this.supplierSelected );
     }
     
@@ -204,12 +332,24 @@ export class ReceivingEditComponent implements OnInit {
         this.setToday() ;
         // this.setTodayED();
         this.clearDataAdded();
-        if (this.suppliers !== undefined) {
-            this.receive.supplier = this.suppliers[0];
-            this.receive.warehouse = this.warehouses[0];
-            this.setSupplierDefault();
+        let suppOK = false;
+        if (this.suppliers !== undefined ) {
+            console.log("--->", this.suppliers);
+            if ( this.suppliers.length>0 ) {
+                this.receive.supplier = this.suppliers[0];
+                this.supplierSelected = this.suppliers[0].id;
+                suppOK = true;
+            }
         }
-        
+        let WhOk = false;
+        if (this.warehouses!== undefined ) {
+            this.receive.warehouse = this.warehouses[0];
+            WhOk= true;
+        }
+        // ini langsung generate no jika add new
+        if (suppOK && WhOk) {
+            this.saveHdr();
+        }
     }
 
     clearDataAdded() {
@@ -217,9 +357,12 @@ export class ReceivingEditComponent implements OnInit {
         this.priceAdded = 0;
         this.productNameAdded = null;
         this.uomAdded = 0;
-        this.qtyAdded = 1;
+        this.qtyAdded = 0;
+        this.qtyBoxAdded = 0;
         this.model = null;
         this.uomAddedName = '';
+        this.uomBoxAddedName = '';
+        this.uomQty = 0;
         this.batchNo='';
         // this.setTodayED();
     }
@@ -337,6 +480,8 @@ export class ReceivingEditComponent implements OnInit {
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
+        this.uomBoxAddedName = event.item.bigUom.name;
+        this.uomQty = event.item.qtyUom;
     }
 
 
@@ -505,11 +650,19 @@ export class ReceivingEditComponent implements OnInit {
             return false;
         }
 
-        if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
+        if ( this.discAdded < 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
             return false;
         }
+
+        if (this.qtyAdded <= 0 && this.qtyBoxAdded <= 0 ) {
+            // this.priceAdded <= 0 ||
+            // result = false;
+            return false;
+        }
+
+
 
         if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
             // result = false;
@@ -525,7 +678,7 @@ export class ReceivingEditComponent implements OnInit {
         receiveDetail.disc1 = this.discAdded;
         receiveDetail.price = this.priceAdded;
         receiveDetail.productId = this.productIdAdded;
-        receiveDetail.qty = this.qtyAdded;
+        receiveDetail.qty = this.qtyAdded + (this.qtyBoxAdded * this.uomQty);
         receiveDetail.uomId = this.uomAdded;
         receiveDetail.ed = this.expiredDate;
         // receiveDetail.ed = this.getEd();
@@ -630,7 +783,7 @@ export class ReceivingEditComponent implements OnInit {
 
     saveHdr() {
         this.receive.supplier = null;
-        this.receive.supplierId = this.supplierSelected.id;
+        this.receive.supplierId = +this.supplierSelected;
         this.receive.receiveDate = this.getSelectedDate();
         this.receive.warehouseId = this.warehouseSelected.id;
         if (this.isTax === true) {
@@ -647,6 +800,7 @@ export class ReceivingEditComponent implements OnInit {
                         this.receive.id = res.body.id;
                         this.receive.receiveNo = res.body.receiveNo;
                         this.receive.status = res.body.status;
+                        Swal.fire('ok', res.body.errDesc, 'success');
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }

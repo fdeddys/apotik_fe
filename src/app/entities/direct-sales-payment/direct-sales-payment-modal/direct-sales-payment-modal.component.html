@@ -155,7 +155,7 @@
             </ngb-pagination> -->
         </div>
 
-        <div style="height:100px; background-color: whitesmoke; ">
+        <!-- <div style="height:100px; background-color: whitesmoke; ">
             <table  class="table-sm " style="color: royalblue;">
                 <thead>
                     <tr>
@@ -191,6 +191,37 @@
 
                 </tbody>
             </table>
+        </div> -->
+        <div *ngIf="salesOrderDetails">
+            <!-- {{salesOrderDetails | json}} -->
+            <div style=" padding: 5px 15px 5px 15px; ">
+                <table class="table table-sm table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 25%;">Product</th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
+                            <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
+                            <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
+                            <!-- <th scope="col" style="width: 10%;" style="text-align: end;">Disc [%]</th> -->
+                            <!-- <th scope="col" style="width: 20%;" style="text-align: end;">Total</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let salesOrderDetail of salesOrderDetails">
+                            <td style="white-space: nowrap;" >{{salesOrderDetail.product.name}}</td>
+                            <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
+                            <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
+                            <td style="text-align: center;">{{salesOrderDetail.uom.name}}</td>
+                            <!-- <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td> -->
+                            <!-- <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPageSO" [maxSize]="10"
+                (pageChange)="loadPageDetailSO()" [boundaryLinks]="true">
+            </ngb-pagination>
+
         </div>
 
         <div class="card-footer text-right">

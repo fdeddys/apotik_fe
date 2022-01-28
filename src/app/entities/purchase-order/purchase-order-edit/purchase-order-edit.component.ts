@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDismissReasons, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { isNumber } from 'lodash';
+import { PurchaseOrderModalComponent } from '../purchase-order-modal/purchase-order-modal.component';
 
 @Component({
   selector: 'op-purchase-order-edit',
@@ -31,8 +32,8 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     uomLists : LookupTemplate[]=[];
 
-    suppliers: Supplier[];
-    supplierSelected: Supplier;
+    suppliers: Supplier[]=[];
+    supplierSelected: number;
 
     total: number;
     grandTotal: number;
@@ -62,7 +63,8 @@ export class PurchaseOrderEditComponent implements OnInit {
     curPage =1;
     totalData =0;
 
-
+    // modal
+    closeResult: string;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -71,6 +73,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         private purchaseOrderService: PurchaseOrderService,
         private purchaseOrderDetailService: PurchaseOrderDetailService,
         private localStorage: LocalStorageService,
+        private modalService: NgbModal,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -93,6 +96,11 @@ export class PurchaseOrderEditComponent implements OnInit {
         if ( isNumber(total)) {
             this.totalRecordProduct = total;
         }
+        this.suppliers.push({
+            id:0,
+            name: "PLEASE SELECT SUPPLIER",
+            code:"",
+        })
         this.loadData(+id);
     }
 
@@ -145,7 +153,7 @@ export class PurchaseOrderEditComponent implements OnInit {
                     Swal.fire('error', 'failed get supplier data !', 'error');
                     return;
                 }
-                this.suppliers = response.body.contents;
+                this.suppliers= this.suppliers.concat(response.body.contents);
                 if (this.purchaseOrder.id === 0) {
                     this.purchaseOrder.supplier = this.suppliers[0];
                     this.setSupplierDefault();
@@ -154,7 +162,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     setSupplierDefault() {
-        this.supplierSelected = this.purchaseOrder.supplier;
+        this.supplierSelected = this.purchaseOrder.supplier.id;
         console.log('set selected supplier =>', this.supplierSelected );
     }
 
@@ -178,6 +186,8 @@ export class PurchaseOrderEditComponent implements OnInit {
             this.purchaseOrder.supplier = this.suppliers[0];
             this.setSupplierDefault();
         }
+        // ini langsung generate no jika add new
+        this.saveHdr()
     }
 
     clearDataAdded() {
@@ -273,7 +283,8 @@ export class PurchaseOrderEditComponent implements OnInit {
         if (result.body.contents.length < 0) {
             return;
         }
-        this.suppliers = result.body.contents;
+        // this.suppliers = result.body.contents;
+        this.suppliers= this.suppliers.concat(result.body.contents);
     }
 
     getItem(event: any) {
@@ -311,7 +322,11 @@ export class PurchaseOrderEditComponent implements OnInit {
             res => {
                 console.log("hasil cek harga ",res)
                 if (res.errCode == "00") {
-                    this.priceAdded = res.price;
+                    if (res.price == 0 ) {
+                        this.priceAdded = res.hpp;
+                    } else {
+                        this.priceAdded = res.price;
+                    }
                     this.discAdded = res.disc1;
                 } 
             }
@@ -551,6 +566,39 @@ export class PurchaseOrderEditComponent implements OnInit {
         }
     }
 
+    cancelSubmit() {
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to cancel submit [ ' + this.purchaseOrder.purchaseOrderNo + ' ] ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.cancelSubmitProses();
+                }
+            });
+    }
+
+    cancelSubmitProses() {
+        this.purchaseOrderService
+            .cancelSubmit(this.purchaseOrder.id)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00') {
+                        Swal.fire('Success', ' Success ...', 'info');
+                        // this.reloadDetail(this.purchaseOrder.id);
+                        this.router.navigate(['/main/purchase-order']);
+                    } else {
+                        Swal.fire('Failed', res.body.errDesc, 'info');
+                    }
+                },
+            );
+    }
+
     confirmDelItem (purchaseOrderDtl: PurchaseOrderDetail) {
         Swal.fire({
             title : 'Confirm',
@@ -585,7 +633,7 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     saveHdr() {
         this.purchaseOrder.supplier = null;
-        this.purchaseOrder.supplierId = this.supplierSelected.id;
+        this.purchaseOrder.supplierId = +this.supplierSelected;
         this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         // this.purchaseOrder.isTax =this.isTax;
         // this.purchaseOrder.supplierId = 0;
@@ -597,6 +645,7 @@ export class PurchaseOrderEditComponent implements OnInit {
                         this.purchaseOrder.id = res.body.id;
                         this.purchaseOrder.purchaseOrderNo = res.body.purchaseOrderNo;
                         this.purchaseOrder.status = res.body.status;
+                        Swal.fire('ok', res.body.errDesc, 'success');
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -615,6 +664,8 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     approve() {
 
+        this.purchaseOrder.supplierId = +this.supplierSelected;
+        this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         if (!this.isValidDataApprove()) {
             return;
         }
@@ -655,10 +706,17 @@ export class PurchaseOrderEditComponent implements OnInit {
             Swal.fire('Error', 'Data no order belum di save !', 'error');
             return false;
         }
+
+        if (this.purchaseOrder.supplierId ===0) {
+            Swal.fire('Error', 'Data supplier belum di save !', 'error');
+            return false;
+        }
+
         if (this.purchaseOrderDetails.length <= 0) {
             Swal.fire('Error', 'Data Barang belum ada', 'error');
             return false;
         }
+
         return true;
     }
 
@@ -744,5 +802,35 @@ export class PurchaseOrderEditComponent implements OnInit {
                 })
             );;
     }
+
+    openEdit(obj) {
+        console.log( obj);
+
+        const modalRef = this.modalService.open(PurchaseOrderModalComponent, { size: 'lg' });
+        modalRef.componentInstance.purchaseOrderDetail = obj;
+
+        modalRef.result.then((result) => {
+            this.closeResult = `Closed with: ${result}`;
+            console.log(this.closeResult);
+            this.curPage = 1;
+            this.reloadDetail(this.purchaseOrder.id);
+        }, (reason) => {
+            console.log(reason);
+            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+            console.log(this.closeResult);
+            this.reloadDetail(this.purchaseOrder.id);
+        });
+    }
+
+    private getDismissReason(reason: any): string {
+        if (reason === ModalDismissReasons.ESC) {
+            return 'by pressing ESC';
+        } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+            return 'by clicking on a backdrop';
+        } else {
+            return `with: ${reason}`;
+        }
+    }
+
 }
 

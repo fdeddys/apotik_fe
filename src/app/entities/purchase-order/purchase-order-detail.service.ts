@@ -58,4 +58,11 @@ export class PurchaseOrderDetailService {
 
         return this.http.delete<PurchaseOrderDetail>(newresourceUrl );
     }
+
+    updateDetailByID(poDetail: PurchaseOrderDetail): Observable<HttpResponse<PurchaseOrderDetail>> {
+        
+        return this.http.post<PurchaseOrderDetail>(`${this.serverUrl}/updateDetail`, poDetail, { observe: 'response' })
+            .pipe(map((res: HttpResponse<PurchaseOrderDetail>) => this.convertResponse(res)));
+    }
+
 }

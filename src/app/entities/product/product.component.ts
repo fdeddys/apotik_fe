@@ -51,7 +51,7 @@ export class ProductComponent implements OnInit {
             filter: this.searchTerm,
             page: page,
             count: this.totalRecord,
-        }).subscribe(
+        }, true).subscribe(
             (res: HttpResponse<ProductPageDto>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res.message),
             () => { }

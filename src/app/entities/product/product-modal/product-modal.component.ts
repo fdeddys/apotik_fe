@@ -76,7 +76,6 @@ export class ProductModalComponent implements OnInit {
                 } else {
                     this.statusSelected = this.statuses[1];
                 }
-
                 this.sellPriceTypeSelected = this.sellPriceTypes[this.product.sellPriceType];
                 this.findAllLookup();
             }

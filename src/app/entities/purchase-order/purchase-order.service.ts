@@ -93,9 +93,20 @@ export class PurchaseOrderService {
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
+    cancelSubmit(poId: number): Observable<EntityResponseType> {
+        // const copy = this.convert(purchaseOrder);
+        return this.http.post<PurchaseOrder>(`${this.serverUrl}/cancel-submit/${poId}`,null , { observe: 'response'})
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
+    }
+
     preview(id: number):  Observable<Blob>  {
         
         return this.http.post(`${this.serverUrl}/print/${id}`, {}, { responseType: 'blob' });
+    }
+
+    previewByPONo(pono: string):  Observable<Blob>  {
+        
+        return this.http.post(`${this.serverUrl}/print-by-pono/${pono}`, {}, { responseType: 'blob' });
     }
 
     private convert(purchaseOrder: PurchaseOrder): PurchaseOrder {

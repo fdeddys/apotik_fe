@@ -16,8 +16,8 @@ export class Supplier {
 
         public bankId?: number,
         public bank?: Lookup,
-        public bankAccNo ?: string,
-        public bankAccName ?: string,
+        public bankAccountNo ?: string,
+        public bankAccountName ?: string,
 
         public errCode?: string,
         public errDesc?: string,

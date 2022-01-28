@@ -12,7 +12,7 @@
                 <button type="button"  *ngIf="receive.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submit
                     <i class="fa fa-thumbs-o-up fa-lg"></i>
                 </button>
-                <button type="button" *ngIf="receive.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
+                <button type="button" *ngIf="receive.status === 10  "  class="btn btn-outline-danger btn-sm" (click)="reject()">Reject
                     <i class="fa fa-times fa-lg"></i>
                 </button>
                 <button type="button" *ngIf="receive.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview()">Preview
@@ -60,14 +60,19 @@
                         <tr>
                             <td>Supplier</td>
                             <td *ngIf="suppliers">
-                                <input id="typeahead-basic" type="text"
+                                <!-- <input id="typeahead-basic" type="text"
                                     [attr.disabled]="receive.poNo!='' ? true : null " 
                                     [(ngModel)]="supplierSelected"
                                     [ngbTypeahead]="searchSupplier" 
                                     [resultFormatter]="formatter"
                                     [inputFormatter]="formatter" />
                                     [ {{supplierSelected.id}} ] 
-                                    {{receive.poNo}}
+                                    {{receive.poNo}} -->
+                                <select [(ngModel)]="supplierSelected" style="width: 80%;"  class="form-control" [ngModelOptions]="{standalone: true}">
+                                    <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+                                        {{supplier.name}}
+                                    </option>
+                                </select>
                             </td>
                             <td>Grand total</td>
                             <td>
@@ -109,7 +114,7 @@
                                  {{ receive.poNo}}
                             </td>
                             <td>Note</td>
-                            <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%"></textarea>
+                            <td rowspan="2"><textarea  [(ngModel)]="receive.note" rows="3" size="100%" style="min-width: 90%"></textarea>
                         </tr>
                      
                     </tbody>
@@ -120,8 +125,8 @@
                 <table class="table table-sm table-striped;  border-collapse: collapse; width:100%; " >
                     <tbody style="color: hotpink; background-color: ghostwhite;">
                         <tr>
-                            <td style="width: 20%;">Product</td>
-                            <td style="width: 15%;">Price</td>
+                            <td style="width: 25%;">Product</td>
+                            <td style="width: 10%;">Price</td>
                             <td style="width: 5%;" >Qty Small</td>
                             <td style="width: 5%;">Unit Small</td>
                             <td style="width: 5%;">Qty Big</td>
@@ -141,46 +146,54 @@
                                     [inputFormatter]="formatterProdInput" 
                                     placeholder="search product name" 
                                     (selectItem)="getItem($event)"
+                                    size="50%"
                                     style="width: 100%;"
                                     /> 
                             </td>
                             <td>
-                                <input type="number" [(ngModel)]="priceAdded"  >
+                                <input type="number" style="width: 100%;" [(ngModel)]="priceAdded"  >
                             </td>
                             <td>
-                                <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty" >
+                                <input type="number" style="width: 100%;" [(ngModel)]="qtyAdded" placeholder="input qty" >
                             </td>
                             <td>
-                                {{uomAddedName}}
+                                <div style="width: 100%;">
+                                    {{uomAddedName}}
+                                </div>
                             </td>
                             <td>
-                                <input type="number"  placeholder="input qty" >
+                                <input type="number" style="width: 100%;" [(ngModel)]="qtyBoxAdded"  placeholder="input qty" >
                             </td>
                             <td>
-                                {{uomAddedName}}
+                                <div style="width: 100%;">
+                                    {{uomBoxAddedName}} [ {{uomQty}}]
+                                </div>
                             </td>
 
                             <td>
-                                <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
+                                <input type="number" style="width: 100%;"[(ngModel)]="discAdded " placeholder="input disc" >
                             </td>
                             <td>
-                                <input type="text" [(ngModel)]="batchNo" placeholder="input batch" >
+                                <input type="text" style="width: 100%;" [(ngModel)]="batchNo" placeholder="input batch" >
                             </td>
                             <td>
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <!-- <input type="text" ngbDatepicker #d="ngbDatepicker"  placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" /> -->
-                                            <input type="text" placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" />
-                                        </td>
-                                        <!-- {{selectedDate | json}}
-                                        <td>
-                                            <button (click)="d.toggle()" class="btn btn-outline-success btn-sm">
-                                                <i class="fa fa-calendar"></i>
-                                            </button>
-                                        </td> -->
-                                    </tr>
-                                </table>
+
+                                <!-- <input type="text" ngbDatepicker #d="ngbDatepicker"  placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" /> -->
+                                <input type="text" style="width: 100%;" placeholder="yyyy-mm-dd" [(ngModel)]="expiredDate" style="margin-right: 5px;" />
+                                
+                                <!-- 
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                {{selectedDate | json}}
+                                                <td>
+                                                    <button (click)="d.toggle()" class="btn btn-outline-success btn-sm">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </table> 
+                                    </td>-->
                             </td>
                             <td>
                                 {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
@@ -196,7 +209,8 @@
             </div>
             <div *ngIf="receive">
                 <!-- {{receiveDetails | json}} -->
-                <div style="height:430px; padding: 5px 15px 5px 15px; ">
+                <div style=" padding: 5px 15px 5px 15px; ">
+                    <!-- height:430px; -->
                     <table class="table table-sm table-hover table-striped">
                         <thead>
                             <tr>

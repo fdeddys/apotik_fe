@@ -14,7 +14,7 @@ export class ProductService {
     private serverUrl = SERVER_PATH + 'product';
     constructor(private http: HttpClient) { }
 
-    filter(req?: any): Observable<HttpResponse<ProductPageDto>> {
+    filter(req?: any, allRecord =false ): Observable<HttpResponse<ProductPageDto>> {
         let pageNumber = null;
         let pageCount = null;
         let newresourceUrl = null;
@@ -28,7 +28,11 @@ export class ProductService {
             }
         });
 
-        newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
+        if (allRecord) {
+            newresourceUrl = this.serverUrl + `/all-status/page/${pageNumber}/count/${pageCount}`;
+        } else {
+            newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
+        }
 
         return this.http.post<ProductPageDto>(newresourceUrl, req['filter'], { observe: 'response' });
     }

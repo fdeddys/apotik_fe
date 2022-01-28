@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PurchaseOrderService } from './purchase-order.service';
 import { PurchaseOrderEditComponent } from './purchase-order-edit/purchase-order-edit.component';
+import { PurchaseOrderModalComponent } from './purchase-order-modal/purchase-order-modal.component';
 
 @NgModule({
     declarations: [
         PurchaseOrderComponent,
-        PurchaseOrderEditComponent
+        PurchaseOrderEditComponent,
+        PurchaseOrderModalComponent
     ],
     imports: [
         CommonModule,
@@ -19,6 +21,7 @@ import { PurchaseOrderEditComponent } from './purchase-order-edit/purchase-order
     entryComponents: [
         PurchaseOrderComponent,
         PurchaseOrderEditComponent,
+        PurchaseOrderModalComponent,
     ],
     providers: [
         PurchaseOrderService,

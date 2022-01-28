@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { LookupTemplate } from '../lookup/lookup.model';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { PurchaseOrderService } from '../purchase-order/purchase-order.service';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class ReceivingComponent implements OnInit {
         status: -1,
         startDate:'',
         endDate:'',
+        supplierName: '',
     };
     closeResult: string;
 
@@ -51,6 +53,7 @@ export class ReceivingComponent implements OnInit {
         private route: Router,
         private receiveService: ReceivingService,
         private location: Location,
+        private purchaseOrderService: PurchaseOrderService
     ) { }
 
     ngOnInit() {
@@ -149,6 +152,7 @@ export class ReceivingComponent implements OnInit {
             status: -1,
             startDate:'',
             endDate:'',
+            supplierName:'',
         };
         this.loadAll(1);
     }
@@ -212,6 +216,29 @@ export class ReceivingComponent implements OnInit {
                 // window.open(objBlob);
             }
         );
+    }
+
+    previewPo(pono){
+        this.purchaseOrderService
+            .previewByPONo(pono)
+            .subscribe(dataBlob => {
+                console.log('data blob ==> ', dataBlob);
+                const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+
+                window.open(objBlob);
+            });
+    }
+
+    previewReceive(receiveId){
+        this.receiveService
+            .preview(receiveId)
+            .subscribe(dataBlob => {
+                console.log('data blob ==> ', dataBlob);
+                const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+                window.open(objBlob);
+            });
     }
 
 }

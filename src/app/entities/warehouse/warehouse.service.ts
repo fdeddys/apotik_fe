@@ -22,6 +22,12 @@ export class WarehouseService {
         return this.http.get<WarehouseDto>(newresourceUrl, { observe: 'response' });
     }
 
+    async getWarehousePromise(req?: any) {
+
+        var newresourceUrl = this.serverUrl;
+        return this.http.get<WarehouseDto>(newresourceUrl).toPromise();
+    }
+
     filter(req?: any): Observable<HttpResponse<WarehousePageDto[]>> {
         let pageNumber = null;
         let pageCount = null;

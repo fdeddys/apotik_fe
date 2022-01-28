@@ -17,6 +17,7 @@ import { PaymentSupplierSearchReceiveModalComponent } from '../payment-supplier-
 import { PaymentSupplier, PaymentSupplierDetail, PaymentSupplierDetailPageDto } from '../payment-supplier.model';
 import { PaymentSupplierService } from '../payment-supplier.service';
 import * as _ from 'lodash';
+import { ReceivingService } from '../../receiving/receiving.service';
 
 @Component({
   selector: 'op-payment-supplier-edit',
@@ -40,6 +41,7 @@ export class PaymentSupplierEditComponent implements OnInit {
     closeResult: string;
     curPage =1;
     totalRecord =10;
+    // bankInfo: string = '';
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -49,6 +51,7 @@ export class PaymentSupplierEditComponent implements OnInit {
         private modalService: NgbModal,
         private spinner: NgxSpinnerService,
         private lookupService: LookupService,
+        private receiveService: ReceivingService,
     ) {
         this.total = 0;
     }
@@ -133,6 +136,7 @@ export class PaymentSupplierEditComponent implements OnInit {
     setSupplierDefault() {
         this.supplierSelected = this.paymentSupplier.supplier;
         console.log('set selected supplier =>', this.supplierSelected );
+        // this.bankInfo = this.supplierSelected.bank.name + " - " + this.supplierSelected.bankAccountNo + " - " + this.supplierSelected.bankAccountName;
     }
     
 
@@ -263,9 +267,13 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
  
     // TYPE AHEAD SUPPLIER
-    formatter = (result: Supplier) => result.name.toUpperCase();
+    formatter = (result: Supplier) => 
+        // this.bankInfo = this.supplierSelected.bank.name + " - " + this.supplierSelected.bankAccountNo + " - " + this.supplierSelected.bankAccountName;
+        result.name.toUpperCase();
+    
 
     searchSupplier = (text$: Observable<string>) =>
+        // this.bankInfo = "";
         text$.pipe(
             debounceTime(200),
             distinctUntilChanged(),
@@ -278,6 +286,7 @@ export class PaymentSupplierEditComponent implements OnInit {
                     )
                     .slice(0, 10))
         )
+    
 
     // TYPE AHEAD SUPPLIER
     // *************************************************************************************
@@ -551,6 +560,49 @@ export class PaymentSupplierEditComponent implements OnInit {
                     this.rejectProccess();
                 }
             });
+    }
+
+    getBankInfo(data: Supplier) {
+        if (typeof(data) === 'object') {
+            // console.log('data->', data)
+            var namaBank= ""
+            if (data.bank.id === 0) {
+                // ini di cari karena default awal nya, data supplier dari payment tidak ke preload
+                namaBank = this.findBankName(data.id)    
+            } else {
+                namaBank = data.bank.name
+            }
+            return namaBank + " - " + data.bankAccountNo + " - " + data.bankAccountName
+        }
+        return ""
+    }
+
+    findBankName(idCari: number ): string {
+        console.log('id cari == ', idCari)
+        let namaBank = '';
+        let findSupp = _.find(this.suppliers, function(dataSupplier){
+            return dataSupplier.id == idCari;
+        })
+        console.log('find supp == ', findSupp)
+        if (findSupp === undefined) {
+            return namaBank
+        } 
+        namaBank = findSupp.bank.name
+        return namaBank;
+    }
+
+    previewReceive(paymentSupplierDetail: PaymentSupplierDetail) {
+        console.log("preview:",paymentSupplierDetail)
+        this.receiveService
+            .preview(paymentSupplierDetail.receive.id)
+            .subscribe(dataBlob => {
+
+                console.log('data blob ==> ', dataBlob);
+                const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
+                const objBlob = window.URL.createObjectURL(newBlob);
+
+                window.open(objBlob);
+        });
     }
 
 }

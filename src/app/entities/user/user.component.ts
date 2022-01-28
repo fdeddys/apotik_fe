@@ -68,7 +68,7 @@ private onSuccess(data, headers) {
       return ;
   }
   this.userlist = data.contents;
-  this.totalData = data.totalElements;
+  this.totalData = data.totalRow;
 }
 
 private onSuccessRole(data, headers) {
