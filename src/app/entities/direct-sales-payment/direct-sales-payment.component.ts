@@ -76,13 +76,13 @@ export class DirectSalesPaymentComponent implements OnInit {
         const month = ('0' + this.dateStart.month).slice(-2);
         const day = ('0' + this.dateStart.day).slice(-2);
         // const tz = 'T00:00:00+07:00';
-        return this.dateStart.year + '-' + month + '-' + day ;
+        return this.dateStart.year + '-' + month + '-' + day + ' 00:00:00.000 +0700' ;
     }
 
     getSelectedDateEnd(): string{
         const month = ('0' + this.dateEnd.month).slice(-2);
         const day = ('0' + this.dateEnd.day).slice(-2);
-        return this.dateEnd.year + '-' + month + '-' + day ;
+        return this.dateEnd.year + '-' + month + '-' + day + ' 23:59:59.999 +0700';
     }
 
 
@@ -104,6 +104,7 @@ export class DirectSalesPaymentComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
+        this.directSalesPayments = []
         if (data.contents.length < 0) {
             return;
         }

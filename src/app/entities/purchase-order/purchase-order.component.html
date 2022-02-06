@@ -4,10 +4,15 @@
         <div>
             <form>
                 <div class="row">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-2 mb-2">
                         <label for="brandCodeInput">PO No.</label>
                         <input style="width: 100%;" type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.pono'
                             name="searchCode" placeholder="Enter Po Number">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="searchSupp">Supplier Name</label>
+                        <input style="width: 100%;" type="text" class="form-control" id="searchSupp" [(ngModel)]='searchTerm.supplierName'
+                            name="searchSupplier" placeholder="Enter Supplier Name">
                     </div>
                     <div class="col-md-2 mb-2">
                         <label for="startDate">Start Date</label>

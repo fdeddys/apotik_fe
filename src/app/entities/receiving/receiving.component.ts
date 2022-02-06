@@ -135,7 +135,8 @@ export class ReceivingComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        if (data.contents.length < 0) {
+        this.receivings=[]
+        if (data.contents==null) {
             return;
         }
         this.receivings = data.contents;

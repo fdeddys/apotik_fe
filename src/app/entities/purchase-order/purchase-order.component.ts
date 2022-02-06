@@ -25,6 +25,7 @@ export class PurchaseOrderComponent implements OnInit {
         status: -1,
         startDate:'',
         endDate:'',
+        supplierName: '',
     };
     startDate: NgbDateStruct;
     endDate : NgbDateStruct;
@@ -149,7 +150,8 @@ export class PurchaseOrderComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        if (data.contents.length < 0) {
+        this.purchaseOrders=[]
+        if (data.contents ==null ) {
             return;
         }
         this.purchaseOrders = data.contents;
@@ -165,7 +167,8 @@ export class PurchaseOrderComponent implements OnInit {
             pono: '',
             status: -1,
             startDate:'',
-            endDate:''
+            endDate:'',
+            supplierName:'',
         };
         this.loadAll(1);
     }
