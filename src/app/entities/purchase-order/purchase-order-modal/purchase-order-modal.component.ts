@@ -15,7 +15,7 @@ export class PurchaseOrderModalComponent implements OnInit {
     @Input() purchaseOrderDetail: PurchaseOrderDetail;
 
     uoms: Lookup[];
-    uomSelected;
+    uomSelected: number;
     isFormDirty: Boolean = false;
     smallUom;
     bigUom:Lookup;
@@ -57,12 +57,13 @@ export class PurchaseOrderModalComponent implements OnInit {
         
         console.log('PO Price', this.purchaseOrderDetail.poPrice);    
         // satuan kecil dipilih, maka po detail convert ke satuan kecil
-        if (this.uomSelected === this.smallUom.id) {
+        console.log("uom selected [" ,this.uomSelected , "] small uom id[" , this.smallUom.id,"]")
+        if (this.uomSelected == this.smallUom.id) {
             console.log('small uom selected ')
             poDetail.poUomQty = 1;
             poDetail.qty = this.purchaseOrderDetail.poQty;
-            poDetail.price = this.purchaseOrderDetail.price;
-            poDetail.uomId = this.uomSelected;
+            poDetail.price = this.purchaseOrderDetail.poPrice;
+            poDetail.uomId = +this.uomSelected;
             // this.purchaseOrderDetail.product.smallUom.id;
         } else {
             // convert jadi satuan besar
@@ -71,7 +72,7 @@ export class PurchaseOrderModalComponent implements OnInit {
             poDetail.poUomQty = this.purchaseOrderDetail.product.qtyUom;
             poDetail.qty = this.purchaseOrderDetail.poQty * this.purchaseOrderDetail.product.qtyUom;
             poDetail.price = this.purchaseOrderDetail.poPrice / this.purchaseOrderDetail.product.qtyUom;
-            poDetail.uomId = this.uomSelected; 
+            poDetail.uomId = +this.uomSelected; 
             // this.purchaseOrderDetail.product.bigUom.id;
         }
 
