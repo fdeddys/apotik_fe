@@ -29,6 +29,7 @@ export class PaymentSupplierSearchReceiveModalComponent implements OnInit {
     searchTerm = {
         supplierId: 0,
         status: 20,
+        supplierName: ""
     };
 
     constructor(
@@ -47,6 +48,7 @@ export class PaymentSupplierSearchReceiveModalComponent implements OnInit {
     loadReceive(page):void {
 
         this.searchTerm.supplierId = this.supplier.id;
+        this.searchTerm.supplierName = this.supplier.name
         // this.spinner.show();
         this.receiveService.filter({
             filter: this.searchTerm,

@@ -17,7 +17,7 @@ import { ReceivingService } from '../receiving.service';
 })
 export class ReceivingSearchPoModalComponent implements OnInit {
     @Input() receive: Receive;
-    @Input() supplier: Supplier;
+    @Input() supplier: number;
     @Input() receiveDate: string;
 
     purchaseOrders: PurchaseOrder[];
@@ -41,12 +41,14 @@ export class ReceivingSearchPoModalComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("supplier selected 1 => ", this.supplier)
         this.loadPurchaseOrder(1);
     }
 
     loadPurchaseOrder(page):void {
 
-        this.searchTerm.supplierId = this.supplier.id;
+        console.log("supplier selected 2 => ", this.supplier)
+        this.searchTerm.supplierId = +this.supplier;
         // this.spinner.show();
         this.purchaseOrderService.filter({
             filter: this.searchTerm,
@@ -78,7 +80,7 @@ export class ReceivingSearchPoModalComponent implements OnInit {
         console.log('===>', purchaseOrder);
         this.receive.receiveDate = this.receiveDate;
         this.receive.receiveNo = '';
-        this.receive.supplierId = this.supplier.id;
+        this.receive.supplierId = this.supplier;
         this.receive.poNo = purchaseOrder.purchaseOrderNo;
         // console.log('xx===>', receive);
         this.receivingService.saveByPO(this.receive)

@@ -919,12 +919,10 @@ export class ReceivingEditComponent implements OnInit {
                 return
             }
         }
-
         if (this.receive.poNo != '' ) {
             Swal.fire('Error', 'PO already found ! ', 'error');
             return
         }
-
         console.log('receive -->', this.receive);
         console.log('Receive date ', this.getSelectedDate());
         const modalRef = this.modalService.open(ReceivingSearchPoModalComponent, { size: 'lg' });

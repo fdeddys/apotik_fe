@@ -28,7 +28,7 @@ export class PurchaseOrderService {
                 pageCount = req[key];
             }
         });
-
+        console.log("http =>", req['filter'])
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
         return this.http.post<PurchaseOrderPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
