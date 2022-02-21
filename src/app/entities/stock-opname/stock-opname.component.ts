@@ -100,6 +100,9 @@ export class StockOpnameComponent implements OnInit {
                 statusName = 'Submit';
                 break;
             case 20:
+                statusName = 'Success';
+                break;
+            case 30:
                 statusName = 'Cancel';
                 break;
         }

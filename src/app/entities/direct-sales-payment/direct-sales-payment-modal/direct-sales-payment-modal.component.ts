@@ -486,4 +486,8 @@ export class DirectSalesPaymentModalComponent implements OnInit {
     closeForm() {
         this.modalService.dismissAll('refresh');
     }
+
+    loadPageDetailSO() {
+        this.loadDetailSOById(this.objEdit.salesOrderId);
+    }
 }
