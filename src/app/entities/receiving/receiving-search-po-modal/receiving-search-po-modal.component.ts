@@ -80,7 +80,7 @@ export class ReceivingSearchPoModalComponent implements OnInit {
         console.log('===>', purchaseOrder);
         this.receive.receiveDate = this.receiveDate;
         this.receive.receiveNo = '';
-        this.receive.supplierId = this.supplier;
+        this.receive.supplierId = +this.supplier;
         this.receive.poNo = purchaseOrder.purchaseOrderNo;
         // console.log('xx===>', receive);
         this.receivingService.saveByPO(this.receive)

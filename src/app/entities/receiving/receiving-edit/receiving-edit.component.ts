@@ -348,7 +348,7 @@ export class ReceivingEditComponent implements OnInit {
         }
         // ini langsung generate no jika add new
         if (suppOK && WhOk) {
-            this.saveHdr();
+            this.saveHdr("");
         }
     }
 
@@ -476,7 +476,8 @@ export class ReceivingEditComponent implements OnInit {
         // event.preventDefault();
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = 0;
+        // default harga 0 jadi ambil hpp
+        this.priceAdded = event.item.id;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
@@ -781,7 +782,7 @@ export class ReceivingEditComponent implements OnInit {
             );
     }
 
-    saveHdr() {
+    saveHdr(msg) {
         this.receive.supplier = null;
         this.receive.supplierId = +this.supplierSelected;
         this.receive.receiveDate = this.getSelectedDate();
@@ -800,7 +801,11 @@ export class ReceivingEditComponent implements OnInit {
                         this.receive.id = res.body.id;
                         this.receive.receiveNo = res.body.receiveNo;
                         this.receive.status = res.body.status;
-                        Swal.fire('ok', res.body.errDesc, 'success');
+                        var pesan = res.body.errDesc
+                        if (msg !== "") {
+                            pesan = msg
+                        }
+                        Swal.fire('ok', pesan, 'success');
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -942,6 +947,11 @@ export class ReceivingEditComponent implements OnInit {
         }, (reason) => {
             console.log('reason',reason);
             if ( reason === 0 ) {
+                // click outside
+                return;
+            }
+            if ( reason === 1 ) {
+                // click ESC
                 return;
             }
             // console.log(reason.substring(0,2));
@@ -1140,4 +1150,8 @@ export class ReceivingEditComponent implements OnInit {
         return grandTotal;
     }
 
+    onChangeSupp($event, value) {
+        console.log('supplier on change', value)
+        this.saveHdr("Supplier saved !!!")
+    }
 }
