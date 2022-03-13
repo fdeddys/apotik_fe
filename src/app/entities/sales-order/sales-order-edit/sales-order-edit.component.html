@@ -186,7 +186,7 @@
                         </td> -->
                         <td>
                             <!-- <input type="number" readonly> -->
-                            {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
+                            {{  ( (priceAdded*qtyAdded) - (priceAdded*qtyAdded*discAdded/100)  ) | number:'0.0-0' }}
                         </td>
                         <td *ngIf ="salesOrder">
                             <button type="button"  *ngIf="salesOrder.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">

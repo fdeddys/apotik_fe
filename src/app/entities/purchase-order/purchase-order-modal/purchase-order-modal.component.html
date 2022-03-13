@@ -39,17 +39,20 @@
                 <td>Satuan</td>
                 <td>
                     <select [(ngModel)]="uomSelected" class="form-control"
-                        [ngModelOptions]="{standalone: true}">
-                        <option *ngFor="let uom of uoms" [value]="uom.id">
+                        (change)="onChangeSatuan($event)"
+                        >
+                        <option *ngFor="let uom of uoms" [ngValue]="uom">
                             {{uom.name}}
                         </option>
                     </select>
+                    <!-- {{uomSelected | json}} -->
+                    <!-- [ngModelOptions]="{standalone: true}" -->
                 </td>
             </tr>
 
             <tr>
                 <td>Price</td>
-                <td><input type="number" maxlength="100" size="50%" [(ngModel)]=purchaseOrderDetail.poPrice></td>
+                <td><input type="number" maxlength="100" size="50%" [(ngModel)]="currentPrice"></td>
             </tr>
 
            

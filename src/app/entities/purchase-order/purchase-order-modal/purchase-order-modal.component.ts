@@ -15,10 +15,11 @@ export class PurchaseOrderModalComponent implements OnInit {
     @Input() purchaseOrderDetail: PurchaseOrderDetail;
 
     uoms: Lookup[];
-    uomSelected: number;
+    uomSelected: Lookup;
     isFormDirty: Boolean = false;
     smallUom;
     bigUom:Lookup;
+    currentPrice: number =0;
 
     constructor(
         public modalService: NgbModal,
@@ -36,7 +37,13 @@ export class PurchaseOrderModalComponent implements OnInit {
             this.uoms.push(this.purchaseOrderDetail.product.smallUom);
             this.smallUom = this.purchaseOrderDetail.product.smallUom;
         }
-        this.uomSelected = this.purchaseOrderDetail.poUomId;
+
+        if (this.purchaseOrderDetail.poUomId == this.purchaseOrderDetail.product.bigUomId) {
+            this.uomSelected = this.purchaseOrderDetail.product.bigUom;
+        } else {
+            this.uomSelected = this.purchaseOrderDetail.product.smallUom;
+        }
+        this.currentPrice = this.purchaseOrderDetail.poPrice;
     }
 
 
@@ -51,19 +58,21 @@ export class PurchaseOrderModalComponent implements OnInit {
     composePurchaseOrderDetail(): PurchaseOrderDetail {
         let poDetail = new PurchaseOrderDetail();
         poDetail.id = this.purchaseOrderDetail.id;
-        poDetail.poUomId = +this.uomSelected;
+        console.log("compose => ",this.uomSelected.id)
+        poDetail.poUomId = +this.uomSelected.id;
         poDetail.poQty = this.purchaseOrderDetail.poQty;
-        poDetail.poPrice = this.purchaseOrderDetail.poPrice;
-        
+        // poDetail.poPrice = this.purchaseOrderDetail.poPrice;
+        poDetail.poPrice = this.currentPrice;
+
         console.log('PO Price', this.purchaseOrderDetail.poPrice);    
         // satuan kecil dipilih, maka po detail convert ke satuan kecil
         console.log("uom selected [" ,this.uomSelected , "] small uom id[" , this.smallUom.id,"]")
-        if (this.uomSelected == this.smallUom.id) {
+        if (this.uomSelected.id == this.smallUom.id) {
             console.log('small uom selected ')
             poDetail.poUomQty = 1;
             poDetail.qty = this.purchaseOrderDetail.poQty;
-            poDetail.price = this.purchaseOrderDetail.poPrice;
-            poDetail.uomId = +this.uomSelected;
+            poDetail.price = this.currentPrice ;
+            poDetail.uomId = +this.uomSelected.id;
             // this.purchaseOrderDetail.product.smallUom.id;
         } else {
             // convert jadi satuan besar
@@ -71,8 +80,8 @@ export class PurchaseOrderModalComponent implements OnInit {
             // poDetail.poPrice = this.purchaseOrderDetail.poPrice * this.purchaseOrderDetail.product.qtyUom;
             poDetail.poUomQty = this.purchaseOrderDetail.product.qtyUom;
             poDetail.qty = this.purchaseOrderDetail.poQty * this.purchaseOrderDetail.product.qtyUom;
-            poDetail.price = this.purchaseOrderDetail.poPrice / this.purchaseOrderDetail.product.qtyUom;
-            poDetail.uomId = +this.uomSelected; 
+            poDetail.price = this.currentPrice   / this.purchaseOrderDetail.product.qtyUom;
+            poDetail.uomId = +this.uomSelected.id; 
             // this.purchaseOrderDetail.product.bigUom.id;
         }
 
@@ -114,6 +123,25 @@ export class PurchaseOrderModalComponent implements OnInit {
         }
 
         return true;
+
+    }
+
+    onChangeSatuan($event) {
+        // console.log($event.target.value)
+        // harga sama
+        if (this.purchaseOrderDetail.poUomId == this.uomSelected.id) {
+            this.currentPrice = this.purchaseOrderDetail.poPrice
+            return
+        }
+        
+        // harga beda, cek uom big atau uom small
+        if (this.uomSelected.id == this.purchaseOrderDetail.product.bigUomId) {
+            this.currentPrice = this.purchaseOrderDetail.poPrice * this.purchaseOrderDetail.product.qtyUom;
+        } else {
+            this.currentPrice = Math.floor (this.purchaseOrderDetail.poPrice / this.purchaseOrderDetail.product.qtyUom);
+        }
+
+
 
     }
 }
