@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { PaymentSupplierComponent } from './payment-supplier.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +27,8 @@ import { PaymentSupplierModalComponent } from './payment-supplier-modal/payment-
         PaymentSupplierModalComponent
     ],
     providers: [
-        PaymentSupplierService
+        PaymentSupplierService,
+        DatePipe
     ]
 })
 export class PaymentSupplierModule { }

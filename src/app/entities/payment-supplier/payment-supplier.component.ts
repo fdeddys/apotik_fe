@@ -1,3 +1,4 @@
+import { DatePipe, formatDate } from '@angular/common';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -42,6 +43,7 @@ export class PaymentSupplierComponent implements OnInit {
         private paymentSupplierService: PaymentSupplierService,
         private modalService: NgbModal,
         private route: Router,
+        public datepipe: DatePipe
     ) { }
 
     ngOnInit() {
@@ -149,6 +151,20 @@ export class PaymentSupplierComponent implements OnInit {
 
     edit(id) {
         this.route.navigate(['/main/payment-supplier/', id ]);
+    }
+
+    getDate(paymentSupplier : PaymentSupplier) {
+        // var d = new Date(paymentSupplier.paymentDate);
+        return paymentSupplier.paymentDate.substring(0, 10); 
+
+        // console.log ("payment ",paymentSupplier.paymentDate.toString() )
+        // // return formatDate(paymentSupplier.paymentDate,'yyyy-MM-dd',this.locale);
+        // return this.datepipe.transform(paymentSupplier.paymentDate, 'yyyy-MM-dd');
+        // return paymentSupplier.paymentDate
+    }
+
+    loadPage() {
+        this.filterPayment();
     }
 
 }
