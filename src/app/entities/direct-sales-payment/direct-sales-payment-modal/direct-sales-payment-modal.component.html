@@ -202,8 +202,8 @@
                             <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
-                            <!-- <th scope="col" style="width: 10%;" style="text-align: end;">Disc [%]</th> -->
-                            <!-- <th scope="col" style="width: 20%;" style="text-align: end;">Total</th> -->
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc </th>
+                            <th scope="col" style="width: 20%;" style="text-align: end;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -211,9 +211,9 @@
                             <td style="white-space: nowrap;" >{{salesOrderDetail.product.name}}</td>
                             <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
                             <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
-                            <td style="text-align: center;">{{salesOrderDetail.uom.name}}</td>
-                            <!-- <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td> -->
-                            <!-- <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td> -->
+                            <td style="text-align: center;">{{ salesOrderDetail.uom.name}}</td>
+                            <td style="text-align: end;">{{getDisc(salesOrderDetail)  }}</td>
+                            <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
                         </tr>
                     </tbody>
                 </table>

@@ -490,4 +490,19 @@ export class DirectSalesPaymentModalComponent implements OnInit {
     loadPageDetailSO() {
         this.loadDetailSOById(this.objEdit.salesOrderId);
     }
+
+    getDisc(salesOrderDetail :SalesOrderDetail):number {
+        var total : number
+        total = salesOrderDetail.price *  salesOrderDetail.disc1/100
+        return total
+    }
+
+    getTotal(salesOrderDetail :SalesOrderDetail):number {
+        var total : number
+        var disc : number
+        disc = salesOrderDetail.qtyOrder *  salesOrderDetail.price *  salesOrderDetail.disc1/100
+        total = salesOrderDetail.qtyOrder *  salesOrderDetail.price - disc
+        return total
+    }
+
 }
