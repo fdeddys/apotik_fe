@@ -403,6 +403,7 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
 
     approve() {
+        this.saveHdr()
         if (!this.isValidDataApprove()) {
             return;
         }
