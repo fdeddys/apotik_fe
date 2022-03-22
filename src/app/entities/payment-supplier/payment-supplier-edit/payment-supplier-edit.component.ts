@@ -60,9 +60,9 @@ export class PaymentSupplierEditComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
         const isValidParam = isNaN(+id);
         this.loadPaymentType();
-        console.log('Param ==>', id, ' nan=>', isValidParam);
+        // console.log('Param ==>', id, ' nan=>', isValidParam);
         if (isValidParam) {
-            console.log('Invalid parameter ');
+            // console.log('Invalid parameter ');
             this.backToLIst();
             return;
         }
@@ -101,7 +101,7 @@ export class PaymentSupplierEditComponent implements OnInit {
 
     loadData(id: number) {
 
-        console.log('id ==>?', id);
+        // console.log('id ==>?', id);
         if (id === 0) {
             this.loadSupplier();
             this.loadNewData();
@@ -135,7 +135,7 @@ export class PaymentSupplierEditComponent implements OnInit {
 
     setSupplierDefault() {
         this.supplierSelected = this.paymentSupplier.supplier;
-        console.log('set selected supplier =>', this.supplierSelected );
+        // console.log('set selected supplier =>', this.supplierSelected );
         // this.bankInfo = this.supplierSelected.bank.name + " - " + this.supplierSelected.bankAccountNo + " - " + this.supplierSelected.bankAccountName;
     }
     
@@ -216,7 +216,7 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
 
     processPaymnet(result: PaymentSupplier) {
-        console.log('isi payment result', result);
+        // console.log('isi payment result', result);
         this.paymentSupplier = result;
     }
 
@@ -312,7 +312,7 @@ export class PaymentSupplierEditComponent implements OnInit {
         if (res.body.contents.length > 0) {
             
             this.paymentSupplierDetails = res.body.contents;
-            console.log('isi detail ===>', this.paymentSupplierDetails);
+            // console.log('isi detail ===>', this.paymentSupplierDetails);
             this.totalRecord = res.body.totalRow;
             
             // this.fillGridDetail();
@@ -528,7 +528,13 @@ export class PaymentSupplierEditComponent implements OnInit {
         // this.fillGridDetail();
     }
 
-
+    selectedItem(item){
+        console.log("selected item adalah :", item.item);
+        if (this.paymentSupplier.status === 0 || this.paymentSupplier.status === 10) {
+            this.supplierSelected = item.item
+            this.saveHdr() 
+        }
+    }
 
     rejectProccess(){
         this.paymentSupplierService.reject(this.paymentSupplier)
@@ -579,12 +585,12 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
 
     findBankName(idCari: number ): string {
-        console.log('id cari == ', idCari)
+        // console.log('id cari == ', idCari)
         let namaBank = '';
         let findSupp = _.find(this.suppliers, function(dataSupplier){
             return dataSupplier.id == idCari;
         })
-        console.log('find supp == ', findSupp)
+        // console.log('find supp == ', findSupp)
         if (findSupp === undefined) {
             return namaBank
         } 
@@ -593,12 +599,12 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
 
     previewReceive(paymentSupplierDetail: PaymentSupplierDetail) {
-        console.log("preview:",paymentSupplierDetail)
+        // console.log("preview:",paymentSupplierDetail)
         this.receiveService
             .preview(paymentSupplierDetail.receive.id)
             .subscribe(dataBlob => {
 
-                console.log('data blob ==> ', dataBlob);
+                // console.log('data blob ==> ', dataBlob);
                 const newBlob = new Blob([dataBlob], { type: 'application/pdf' });
                 const objBlob = window.URL.createObjectURL(newBlob);
 

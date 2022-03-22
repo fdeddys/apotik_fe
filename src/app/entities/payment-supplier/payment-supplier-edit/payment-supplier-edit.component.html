@@ -61,8 +61,10 @@
                                 [(ngModel)]="supplierSelected"
                                 [ngbTypeahead]="searchSupplier" 
                                 [resultFormatter]="formatter"
-                                [inputFormatter]="formatter" />
-                                <!-- [ {{supplierSelected.id}} ]  -->
+                                [inputFormatter]="formatter" 
+                                (selectItem)="selectedItem($event)"
+                                />
+                                <!-- [ {{supplierSelected | json}} ]  -->
                                 <!-- {{paymentSupplier.poNo}} -->
                         </td>
                         <td>Note</td>
