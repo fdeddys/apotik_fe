@@ -22,6 +22,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { async } from '@angular/core/testing';
+import { PurchaseOrderService } from '../../purchase-order/purchase-order.service';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -82,6 +83,7 @@ export class ReceivingEditComponent implements OnInit {
         private warehouseService: WarehouseService,
         private spinner: NgxSpinnerService,
         private localStorage: LocalStorageService,
+        private purchaseOrderService: PurchaseOrderService,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -477,12 +479,26 @@ export class ReceivingEditComponent implements OnInit {
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
         // default harga 0 jadi ambil hpp
-        this.priceAdded = event.item.id;
+        this.priceAdded = event.item.hpp;
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
         this.uomBoxAddedName = event.item.bigUom.name;
         this.uomQty = event.item.qtyUom;
+
+        this.purchaseOrderService.findLastPrice(event.item.id).toPromise().then(
+            res => {
+                console.log("hasil cek harga ",res)
+                if (res.errCode == "00") {
+                    if (res.price == 0 ) {
+                        this.priceAdded = res.hpp;
+                    } else {
+                        this.priceAdded = res.price;
+                    }
+                    this.discAdded = res.disc1;
+                } 
+            }
+        )
     }
 
 

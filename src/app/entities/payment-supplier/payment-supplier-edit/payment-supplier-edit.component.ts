@@ -18,6 +18,7 @@ import { PaymentSupplier, PaymentSupplierDetail, PaymentSupplierDetailPageDto } 
 import { PaymentSupplierService } from '../payment-supplier.service';
 import * as _ from 'lodash';
 import { ReceivingService } from '../../receiving/receiving.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'op-payment-supplier-edit',
@@ -218,6 +219,16 @@ export class PaymentSupplierEditComponent implements OnInit {
     processPaymnet(result: PaymentSupplier) {
         // console.log('isi payment result', result);
         this.paymentSupplier = result;
+
+        let curDates = moment(this.paymentSupplier.paymentDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
+        };
+
+        // this.selectedDate = curDates;
     }
 
     calculateTotal() {

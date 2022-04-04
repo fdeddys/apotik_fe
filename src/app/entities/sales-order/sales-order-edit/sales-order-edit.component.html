@@ -207,7 +207,7 @@
                             <th scope="col" style="width: 25%;">Product</th>
                             <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
-                            <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th>
+                            <!-- <th  *ngIf="salesOrder.status === 20" scope="col" style="width: 10%;">Qty Recv</th> -->
                             <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
                             <th scope="col" style="width: 10%;" style="text-align: end;">Disc [%]</th>
                             <!-- <th scope="col" style="width: 10%;" style="text-align: end;">Disc 2[%]</th> -->
@@ -227,10 +227,9 @@
                             <td style="white-space: nowrap;" >{{salesOrderDetail.product.name}}</td>
                             <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
                             <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
-                            <td *ngIf="salesOrder.status === 20" >
+                            <!-- <td *ngIf="salesOrder.status === 20" >
                                 <input type="number" [(ngModel)]="salesOrderDetail.qtyReceive " placeholder="input disc" >
-                                <!-- {{salesOrderDetail.qtyReceive | number:'0.0-0' }} -->
-                            </td>
+                            </td> -->
                             <td style="text-align: center;">{{salesOrderDetail.uom.name}}</td>
                             <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td>
                             <!-- <td style="text-align: end;">{{salesOrderDetail.disc2  }}</td> -->

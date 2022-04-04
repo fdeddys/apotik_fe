@@ -63,6 +63,7 @@
                                 [resultFormatter]="formatter"
                                 [inputFormatter]="formatter" 
                                 (selectItem)="selectedItem($event)"
+                                [disabled]="!(paymentSupplier.status === 0 || paymentSupplier.status === 10)"
                                 />
                                 <!-- [ {{supplierSelected | json}} ]  -->
                                 <!-- {{paymentSupplier.poNo}} -->

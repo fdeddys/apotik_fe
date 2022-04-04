@@ -153,11 +153,14 @@ export class DirectSalesPaymentComponent implements OnInit {
         modalRef.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
             console.log(this.closeResult);
-            this.onFilter();
+            // this.onFilter();
+            this.filterSales();
         }, (reason) => {
             console.log(reason);
             console.log(this.closeResult);
-            this.onFilter();
+            // this.onFilter();
+            this.filterSales();
+
         });
     }
 
