@@ -37,7 +37,7 @@ export class AdjustmentService {
         return this.http.post<AdjustmentPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
-    findById(id: number): Observable<any> {
+    findById(id: number, totalRec: number): Observable<any> {
 
         const pathAdjustmentDetailUrl = SERVER_PATH + 'adjustment-detail';
 
@@ -51,11 +51,15 @@ export class AdjustmentService {
                             adjustmentId : adjustment.id,
                         };
                         return this.http
-                            .post<AdjustmentDetailPageDto>(`${pathAdjustmentDetailUrl}/page/1/count/1000`, filter, { observe: 'response' })
+                            .post<AdjustmentDetailPageDto>(`${pathAdjustmentDetailUrl}/page/1/count/${totalRec}`, filter, { observe: 'response' })
                             .pipe(
                                 map( (resDetail) => {
+                                    // const details = resDetail.body.contents;
+                                    // adjustment.detail = details;
+                                    // return adjustment;
                                     const details = resDetail.body.contents;
                                     adjustment.detail = details;
+                                    adjustment.totalRow = resDetail.body.totalRow
                                     return adjustment;
                                 })
                             );

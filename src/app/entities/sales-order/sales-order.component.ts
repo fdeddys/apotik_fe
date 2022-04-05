@@ -6,6 +6,7 @@ import { SalesOrderService } from './sales-order.service';
 import { SalesOrder, SalesOrderPageDto } from './sales-order.model';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from "ngx-spinner";
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'op-sales-order',
@@ -22,12 +23,16 @@ export class SalesOrderComponent implements OnInit {
         code: '',
         name: '',
         description : '',
-        isCash: false
+        isCash: false,
+        startDate:'',
+        endDate:'',
     };
     moduleTitle: string = "";
     isCash: boolean = false;
     closeResult: string;
-
+    startDate: NgbDateStruct;
+    endDate : NgbDateStruct;
+    
     constructor(
         private route: Router,
         private router: ActivatedRoute,
@@ -36,8 +41,23 @@ export class SalesOrderComponent implements OnInit {
         private spinner: NgxSpinnerService,
     ) { }
 
+    setToday() {
+        const today = new Date();
+        this.startDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+        this.endDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+    }
+
     ngOnInit() {
 
+        this.setToday();
         this.router.data.subscribe(
             data => {
                 console.log("data===>",data.cash);
@@ -56,8 +76,35 @@ export class SalesOrderComponent implements OnInit {
         this.loadAll(this.curPage);
     }
 
+    getStartDate(): string{
+
+        const month = ('0' + this.startDate.month).slice(-2);
+        const day = ('0' + this.startDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.startDate.year + '-' + month + '-' + day + tz;
+    }
+
+    getEndDate(): string{
+
+        const month = ('0' + this.endDate.month).slice(-2);
+        const day = ('0' + this.endDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.endDate.year + '-' + month + '-' + day + tz;
+    }
+    
     loadAll(page) {
         this.spinner.show();
+        this.searchTerm.startDate = '';
+        if (this.startDate !== null) {
+            this.searchTerm.startDate = this.getStartDate();
+        } 
+        this.searchTerm.endDate = '';
+        if (this.endDate !== null) {
+            this.searchTerm.endDate = this.getEndDate();
+        } 
+
         this.searchTerm.isCash = this.isCash;
         this.salesOrderService.filter({
             filter: this.searchTerm,
@@ -120,6 +167,8 @@ export class SalesOrderComponent implements OnInit {
             name: '',
             description : '',
             isCash: false,
+            startDate:'',
+            endDate:'',
         };
         this.loadAll(1);
     }

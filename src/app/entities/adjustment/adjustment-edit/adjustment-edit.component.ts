@@ -8,7 +8,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { AdjustmentService } from '../adjustment.service';
 import { AdjustmentDetailService } from '../adjustment-detail.service';
 import { debounceTime, distinctUntilChanged, switchMap, catchError, map } from 'rxjs/operators';
-import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
+import { SERVER_PATH, TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
 import Swal from 'sweetalert2';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import { WarehouseService } from '../../warehouse/warehouse.service';
@@ -27,9 +27,10 @@ export class AdjustmentEditComponent implements OnInit {
     selectedDate: NgbDateStruct;
     adjustment: Adjustment;
     adjustmentDetails: AdjustmentDetail[];
-
+    totalData = 0;
     total: number;
-
+    totalRecord = TOTAL_RECORD_PER_PAGE;
+    curPage = 1;
     /* Untuk search product
      * http
      */
@@ -146,7 +147,7 @@ export class AdjustmentEditComponent implements OnInit {
 
     loadDataByOrderId(orderId: number) {
 
-        let adjustmentReq = this.adjustmentService.findById(orderId);
+        let adjustmentReq = this.adjustmentService.findById(orderId, this.totalRecord);
         let warehouseReq = this.warehouseService.getWarehouse();
 
 
@@ -163,12 +164,13 @@ export class AdjustmentEditComponent implements OnInit {
 
     processAdjustment(result: Adjustment) {
         console.log('isi adjustment result', result);
+        this.totalData = result.totalRow;
         this.adjustment = result;
-
         this.adjustmentDetails = result.detail;
+
         console.log('isi adjustment detauil', this.adjustmentDetails);
         this.calculateTotal();
-
+        this.curPage=0;
         this.adjustment.detail = null;
     }
 
@@ -357,10 +359,11 @@ export class AdjustmentEditComponent implements OnInit {
     }
 
     reloadDetail(id: number) {
+        console.log("Total record : ", this.totalRecord)
         this.adjustmentDetailService
             .findByAdjustmentId({
-                count: 10,
-                page: 1,
+                count: this.totalRecord,
+                page: this.curPage,
                 filter : {
                     adjustmentId: id,
                 }
@@ -376,6 +379,7 @@ export class AdjustmentEditComponent implements OnInit {
         if (res.body.contents.length > 0) {
 
             this.adjustmentDetails = res.body.contents;
+            this.totalData = res.body.totalRow;
             this.calculateTotal();
             this.clearDataAdded();
         }
@@ -519,6 +523,10 @@ export class AdjustmentEditComponent implements OnInit {
                 break;
         }
         return statusName;
+    }
+
+    loadPage(){
+        this.reloadDetail(this.adjustment.id);
     }
 
 }

@@ -15,6 +15,7 @@ export class Adjustment {
         public detail?: AdjustmentDetail[],
         public errCode?: string,
         public errDesc?: string,
+        public totalRow?: number
     ) {
         this.id = 0;
         this.total = 0;

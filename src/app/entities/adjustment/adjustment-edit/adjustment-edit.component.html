@@ -158,7 +158,10 @@
             <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
                 (pageChange)="loadPage()" [boundaryLinks]="true">
             </ngb-pagination>
+            <div>
 
+                total data : {{totalData}} / {{totalRecord}}
+            </div>
         </div>
 
 

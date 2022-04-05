@@ -22,6 +22,29 @@
                             placeholder="Enter Description">
                     </div>
                 </div>
+                <div class="row">
+                    
+                    <div class="col-md-2 mb-2">
+                        <label for="startDate">Start Date</label>
+                        <div>
+                            <input type="text" name="startDate" style="width: 80%;" ngbDatepicker #d1="ngbDatepicker"  [(ngModel)]="startDate" />
+                            <button (click)="d1.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="endDate">End Date</label>
+                        <div>
+                            <input type="text" name="endDate" style="width: 80%;" ngbDatepicker #d2="ngbDatepicker"  [(ngModel)]="endDate" />
+                            <button (click)="d2.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+
                 <div class="btn-group" role="group">
                     <button type="button" (click)="onFilter()" class="btn mr-2 btn-outline-success btn-sm">Refresh <i
                             class="fa fa-search fa-lg"></i></button>
