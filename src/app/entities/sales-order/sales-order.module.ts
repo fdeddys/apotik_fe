@@ -6,9 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { SalesOrderService } from './sales-order.service';
 import { SalesOrderEditComponent } from './sales-order-edit/sales-order-edit.component';
 import { SalesOrderDetailService } from './sales-order-detail.service';
+import { SalesOrderModalComponent } from './sales-order-modal/sales-order-modal.component';
 
 @NgModule({
-    declarations: [SalesOrderComponent, SalesOrderEditComponent],
+    declarations: [SalesOrderComponent, SalesOrderEditComponent, SalesOrderModalComponent],
     imports: [
         CommonModule,
         NgbModule,
@@ -17,6 +18,7 @@ import { SalesOrderDetailService } from './sales-order-detail.service';
     entryComponents: [
         SalesOrderComponent,
         SalesOrderEditComponent,
+        SalesOrderModalComponent,
     ],
     providers: [
         SalesOrderService,

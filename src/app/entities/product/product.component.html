@@ -48,13 +48,16 @@
                     <tr>
                         <th></th>
                         <th scope="col">Code</th>
-                        <th scope="col">Group</th>
-                        <th scope="col">Brand</th>
+                        <!-- <th scope="col">Group</th> -->
+                        <!-- <th scope="col">Brand</th> -->
                         <th scope="col">Name</th>
+                        <th scope="col">Composition</th>
                         <th scope="col">PLU</th>
                         <!-- <th scope="col">Stock</th> -->
                         <th scope="col">UOM</th>
                         <th scope="col">Status</th>
+                        <th scope="col" class='centerText'>Update by</th>
+                        <th scope="col" class='rightText' >Last Update</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,12 +68,16 @@
                             </button>
                         </td>
                         <td>{{product.code}}</td>
-                        <td>{{product.ProductGroup.name}}</td>
-                        <td>{{product.Brand.name}}</td>
+                        <!-- <td>{{product.ProductGroup.name}}</td> -->
+                        <!-- <td>{{product.Brand.name}}</td> -->
                         <td>{{product.name}}</td>
+                        <td>{{product.composition}}</td>
                         <td>{{product.plu}}</td>
                         <td>{{product.smallUom.name}}</td>
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
+                        <!-- <td>{{product.name}}</td> -->
+                        <td class='rightText'>{{product.lastUpdateBy  }}</td>
+                        <td class='rightText'>{{product.lastUpdate | date:'dd-MMM-yyyy' }}</td>
                     </tr>
                 </tbody>
             </table>

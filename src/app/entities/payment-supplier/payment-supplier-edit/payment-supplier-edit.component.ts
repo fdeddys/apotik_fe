@@ -32,8 +32,9 @@ export class PaymentSupplierEditComponent implements OnInit {
     paymentSupplierDetails: PaymentSupplierDetail[];
     // paymentSupplierDetailShow: PaymentSupplierDetail[];
 
-    suppliers: Supplier[];
-    supplierSelected: Supplier;
+    suppliers: Supplier[]=[];
+    // supplierSelected: Supplier;
+    supplierSelected: number;
     total: number;
 
     paymentTypes: Lookup[];
@@ -60,6 +61,11 @@ export class PaymentSupplierEditComponent implements OnInit {
     ngOnInit() {
         const id = this.route.snapshot.paramMap.get('id');
         const isValidParam = isNaN(+id);
+        this.suppliers.push({
+            id:0,
+            name: "PLEASE SELECT SUPPLIER",
+            code:"",
+        })
         this.loadPaymentType();
         // console.log('Param ==>', id, ' nan=>', isValidParam);
         if (isValidParam) {
@@ -69,6 +75,28 @@ export class PaymentSupplierEditComponent implements OnInit {
         }
         this.loadData(+id);
         this.setToday();
+    }
+
+    loadSupplier() {
+        this.supplierService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                code: '',
+                name: '',
+            },
+        }).subscribe(
+            (response: HttpResponse<SupplierPageDto>) => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get supplier data !', 'error');
+                    return;
+                }
+                this.suppliers= this.suppliers.concat(response.body.contents);
+                if (this.paymentSupplier.id === 0) {
+                    this.paymentSupplier.supplier = this.suppliers[0];
+                    this.setSupplierDefault();
+                }
+            });
     }
 
     backToLIst() {
@@ -112,30 +140,30 @@ export class PaymentSupplierEditComponent implements OnInit {
         this.loadDataById(id);
     }
 
-    loadSupplier() {
-        this.supplierService.filter({
-            page: 1,
-            count: 10000,
-            filter: {
-                code: '',
-                name: '',
-            },
-        }).subscribe(
-            (response: HttpResponse<SupplierPageDto>) => {
-                if (response.body.contents.length <= 0) {
-                    Swal.fire('error', 'failed get supplier data !', 'error');
-                    return;
-                }
-                this.suppliers = response.body.contents;
-                if (this.paymentSupplier.id === 0) {
-                    this.paymentSupplier.supplier = this.suppliers[0];
-                    this.setSupplierDefault();
-                }
-            });
-    }
+    // loadSupplier() {
+    //     this.supplierService.filter({
+    //         page: 1,
+    //         count: 10000,
+    //         filter: {
+    //             code: '',
+    //             name: '',
+    //         },
+    //     }).subscribe(
+    //         (response: HttpResponse<SupplierPageDto>) => {
+    //             if (response.body.contents.length <= 0) {
+    //                 Swal.fire('error', 'failed get supplier data !', 'error');
+    //                 return;
+    //             }
+    //             this.suppliers = response.body.contents;
+    //             if (this.paymentSupplier.id === 0) {
+    //                 this.paymentSupplier.supplier = this.suppliers[0];
+    //                 this.setSupplierDefault();
+    //             }
+    //         });
+    // }
 
     setSupplierDefault() {
-        this.supplierSelected = this.paymentSupplier.supplier;
+        this.supplierSelected = this.paymentSupplier.supplier.id;
         // console.log('set selected supplier =>', this.supplierSelected );
         // this.bankInfo = this.supplierSelected.bank.name + " - " + this.supplierSelected.bankAccountNo + " - " + this.supplierSelected.bankAccountName;
     }
@@ -246,7 +274,8 @@ export class PaymentSupplierEditComponent implements OnInit {
         if (result.body.contents.length < 0) {
             return;
         }
-        this.suppliers = result.body.contents;
+        // this.suppliers = result.body.contents;
+        this.suppliers= this.suppliers.concat(result.body.contents);
     }
 
     prosesLookup(result: HttpResponse<LookupPageDto>) {
@@ -384,9 +413,10 @@ export class PaymentSupplierEditComponent implements OnInit {
             );
     }
 
-    saveHdr() {
+    saveHdr(msg : string) {
         this.paymentSupplier.supplier = null;
-        this.paymentSupplier.supplierId = this.supplierSelected.id;
+        // this.paymentSupplier.supplierId = this.supplierSelected.id;
+        this.paymentSupplier.supplierId = +this.supplierSelected;
         this.paymentSupplier.paymentTypeId = +this.paymentTypeSelected;
         this.paymentSupplier.paymentDate = this.getSelectedDate();
         this.paymentSupplierService
@@ -397,6 +427,11 @@ export class PaymentSupplierEditComponent implements OnInit {
                         this.paymentSupplier.id = res.body.id;
                         this.paymentSupplier.paymentNo = res.body.paymentNo;
                         this.paymentSupplier.status = res.body.status;
+                        var pesan = res.body.errDesc
+                        if (msg !== "") {
+                            pesan = msg
+                        }
+                        Swal.fire('ok', pesan, 'success');
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -414,7 +449,9 @@ export class PaymentSupplierEditComponent implements OnInit {
     }
 
     approve() {
-        this.saveHdr()
+
+        this.paymentSupplier.supplierId = +this.supplierSelected;
+        this.saveHdr("")
         if (!this.isValidDataApprove()) {
             return;
         }
@@ -543,7 +580,7 @@ export class PaymentSupplierEditComponent implements OnInit {
         console.log("selected item adalah :", item.item);
         if (this.paymentSupplier.status === 0 || this.paymentSupplier.status === 10) {
             this.supplierSelected = item.item
-            this.saveHdr() 
+            this.saveHdr("") 
         }
     }
 
@@ -621,6 +658,11 @@ export class PaymentSupplierEditComponent implements OnInit {
 
                 window.open(objBlob);
         });
+    }
+
+    onChangeSupp($event, value) {
+        console.log('supplier on change', value)
+        this.saveHdr("Supplier saved !!!")
     }
 
 }

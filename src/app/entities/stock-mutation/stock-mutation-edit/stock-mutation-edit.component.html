@@ -126,8 +126,8 @@
                             <input type="number" [(ngModel)]="qty" placeholder="input qty" >
                         </td>
                         <td>
-                            {{model | json}}                       
-                            <!-- {{model.SmallUom.name}} -->
+                            <!-- {{model | json}}                        -->
+                            <!-- {{model.smallUom.name}} -->
                         </td>
                         <td *ngIf ="stockMutation">
                             <button type="button"  *ngIf="stockMutation.status === 0 || stockMutation.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">

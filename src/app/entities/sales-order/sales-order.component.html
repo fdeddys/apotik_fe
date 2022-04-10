@@ -70,6 +70,7 @@
                         <th scope="col" class='centerText' >Type</th>
                         <th scope="col" class='rightText' >Total</th>
                         <th scope="col" class='centerText'>Update by</th>
+                        <th scope="col" class='rightText' >Last Update</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,6 +87,8 @@
                         <td class='centerText' >{{salesOrder.isCash === true ? 'Cash' : 'Non Cash'}}</td>
                         <td class='rightText'>{{salesOrder.grandTotal | number:'0.0-0' }}</td>
                         <td class='centerText'>{{salesOrder.lastUpdateBy}}</td>
+                        <td class='rightText'>{{salesOrder.lastUpdate | date:'dd-MMM-yyyy' }}</td>
+
                     </tr>
                 </tbody>
             </table>

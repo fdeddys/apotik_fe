@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { switchMap, debounceTime, distinctUntilChanged, map, tap, catchError, flatMap } from 'rxjs/operators';
 import { Observable, Subject, of, concat, forkJoin, empty, pipe } from 'rxjs';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDismissReasons, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from '../sales-order.model';
 import { Customer, CustomerPageDto } from '../../customer/customer.model';
 import { CustomerService } from '../../customer/customer.service';
@@ -21,6 +21,7 @@ import * as moment from 'moment';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { isNumber } from 'lodash';
+import { SalesOrderModalComponent } from '../sales-order-modal/sales-order-modal.component';
 
 
 @Component({
@@ -70,6 +71,8 @@ export class SalesOrderEditComponent implements OnInit {
 
     curPage =1;
     totalData =0;
+    // modal
+    closeResult: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -82,6 +85,7 @@ export class SalesOrderEditComponent implements OnInit {
         private salesmanService: SalesmanService,
         private warehouseService: WarehouseService,
         private localStorage: LocalStorageService,
+        private modalService: NgbModal,
     ) {
         this.total = 0;
         this.grandTotal = 0;
@@ -950,4 +954,34 @@ export class SalesOrderEditComponent implements OnInit {
         this.reloadDetail(this.salesOrder.id);
     }
 
+
+    openEdit(obj) {
+        console.log( obj);
+
+        const modalRef = this.modalService.open(SalesOrderModalComponent, { size: 'lg' });
+        modalRef.componentInstance.salesOrderDetail = obj;
+
+        modalRef.result.then((result) => {
+            this.closeResult = `Closed with: ${result}`;
+            console.log(this.closeResult);
+            this.curPage = 1;
+            this.reloadDetail(this.salesOrder.id);
+        }, (reason) => {
+            console.log(reason);
+            this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+            console.log(this.closeResult);
+            this.reloadDetail(this.salesOrder.id);
+        });
+    }
+
+    private getDismissReason(reason: any): string {
+        if (reason === ModalDismissReasons.ESC) {
+            return 'by pressing ESC';
+        } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+            return 'by clicking on a backdrop';
+        } else {
+            return `with: ${reason}`;
+        }
+    }
+    
 }

@@ -29,7 +29,7 @@
                 <tbody style="color: cornflowerblue;">
                     <tr>
                         <td>payment No</td>
-                        <td><input type="text" disabled readonly size="50%" [(ngModel)]="paymentSupplier.paymentNo">
+                        <td><input type="text" disabled readonly  [(ngModel)]="paymentSupplier.paymentNo">
                             [{{paymentSupplier.id}}]
                         </td>
                         <!-- < -->
@@ -56,7 +56,19 @@
                     <tr>
                         <td>Supplier</td>
                         <td *ngIf="suppliers">
-                            <input id="typeahead-basic" type="text"
+                            <select [(ngModel)]="supplierSelected" 
+                                style="width: 40%;"  
+                                #supp
+                                class="form-control" 
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="onChangeSupp($event, supp.value)"
+                                [disabled]="!(paymentSupplier.status === 0 || paymentSupplier.status === 10)"
+                                >
+                                <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+                                    {{supplier.name}}
+                                </option>
+                            </select>
+                            <!-- <input id="typeahead-basic" type="text"
                                 size="50%" 
                                 [(ngModel)]="supplierSelected"
                                 [ngbTypeahead]="searchSupplier" 
@@ -64,7 +76,7 @@
                                 [inputFormatter]="formatter" 
                                 (selectItem)="selectedItem($event)"
                                 [disabled]="!(paymentSupplier.status === 0 || paymentSupplier.status === 10)"
-                                />
+                                /> -->
                                 <!-- [ {{supplierSelected | json}} ]  -->
                                 <!-- {{paymentSupplier.poNo}} -->
                         </td>

@@ -258,10 +258,10 @@ export class StockMutationEditComponent implements OnInit {
     addNewItem() {
         console.log('isisisiisis ', this.productIdAdded );
 
-        if (this.checkInputProductValid() === false ) {
-            Swal.fire('Error', 'Product belum terpilih ! ', 'error');
-            return ;
-        }
+        // if (this.checkInputProductValid() === false ) {
+        //     Swal.fire('Error', 'Product belum terpilih ! ', 'error');
+        //     return ;
+        // }
 
         if (this.checkInputNumberValid() === false ) {
             Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0, disc max 100% ! ', 'error');
@@ -332,16 +332,16 @@ export class StockMutationEditComponent implements OnInit {
                 console.log('type [', typeof(product), '] ');
                 const typeObj = typeof(product);
                 if (typeObj == 'object') {
-                    result = true;
                 }
+                result = true;
 
-                console.log(typeof(product) , '] [', typeof('product'))
-                if (typeof(product) == typeof('product')) {
-                    // console.log('masok pakeo 2');
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                    result = false;
-                    return result;
-                }
+                // console.log(typeof(product) , '] [', typeof('product'))
+                // if (typeof(product) == typeof('product')) {
+                //     // console.log('masok pakeo 2');
+                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
+                //     result = false;
+                //     return result;
+                // }
             }
         );
         // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');

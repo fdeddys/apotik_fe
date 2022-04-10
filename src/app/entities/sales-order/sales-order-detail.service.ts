@@ -52,6 +52,16 @@ export class SalesOrderDetailService {
         return this.http.post<SalesOrderDetail>(newresourceUrl, copy, { observe: 'response'});
     }
 
+    updateQtyDetailByID(idDetail: number, qtyOrder: number): Observable<HttpResponse<SalesOrderDetail>> {
+
+        let newresourceUrl = this.serverUrl + `/updateQtyOrder`;
+        let copy = {
+            "orderDetailId":idDetail,
+            "qtyOrder":qtyOrder,
+        }
+        return this.http.post<SalesOrderDetail>(newresourceUrl, copy, { observe: 'response'});
+    }
+
     deleteById(id: number): Observable<SalesOrderDetail> {
 
         const newresourceUrl = this.serverUrl + `/${id}`;

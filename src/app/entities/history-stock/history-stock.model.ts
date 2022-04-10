@@ -19,7 +19,7 @@ export class HistoryStock {
         public total?: number,      
         public errCode?: string,
         public errDesc?: string,
-        
+        public satuan?: string,
     ) {
     }
 }

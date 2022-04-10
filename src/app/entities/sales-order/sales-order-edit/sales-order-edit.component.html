@@ -103,7 +103,6 @@
                         <td rowspan="2"><textarea rows="3" size="100%" style="min-width: 90%" [(ngModel)]="salesOrder.note" ></textarea>
                     </tr>
                    
-                    
                     <tr>
                         <td>Warehouse  </td>
                         <td >
@@ -220,9 +219,12 @@
                                 <button type="button" *ngIf="salesOrder.status === 10"  (click)="confirmDelItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
                                 </button>
-                                <button type="button" *ngIf="salesOrder.status === 20"  (click)="confirmUpdateItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
-                                    <i class="fa fa-check fa-lg"></i>
+                                <button type="button" *ngIf="salesOrder.status === 10"  (click)="openEdit(salesOrderDetail)" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-pencil fa-lg"></i>
                                 </button>
+                                <!-- <button type="button" *ngIf="salesOrder.status === 20"  (click)="confirmUpdateItem(salesOrderDetail)" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-check fa-lg"></i>
+                                </button> -->
                             </td>
                             <td style="white-space: nowrap;" >{{salesOrderDetail.product.name}}</td>
                             <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>

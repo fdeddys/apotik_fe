@@ -42,9 +42,10 @@
                     <tr>
                         <th></th>
                         <th scope="col">Code</th>
-                        <th scope="col">Group</th>
-                        <th scope="col">Brand</th>
+                        <!-- <th scope="col">Group</th> -->
+                        <!-- <th scope="col">Brand</th> -->
                         <th scope="col">Name</th>
+                        <th scope="col">Composition</th>
                         <!-- <th scope="col">UOM</th>
                         <th scope="col">SellPrice</th> -->
                         <th scope="col">Status</th>
@@ -58,9 +59,10 @@
                             </button>
                         </td>
                         <td>{{product.code}}</td>
-                        <td>{{product.ProductGroup.name}}</td>
-                        <td>{{product.Brand.name}}</td>
+                        <!-- <td>{{product.ProductGroup.name}}</td> -->
+                        <!-- <td>{{product.Brand.name}}</td> -->
                         <td>{{product.name}}</td>
+                        <td>{{product.composition}}</td>
                         <!-- <td>{{product.smallUom.name}}</td> -->
                         <!-- <td>{{getSellPrice(product) |  number:'0.0-0'}}</td> -->
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>

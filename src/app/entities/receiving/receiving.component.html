@@ -85,6 +85,8 @@
                       <th scope="col">Supplier</th>
                       <th scope="col" class='centerText' >Status</th>
                       <th scope="col" class='rightText' >Total</th>
+                      <th scope="col" class='centerText'>Update by</th>
+                      <th scope="col" class='rightText' >Last Update</th>
                   </tr>
               </thead>
               <tbody>
@@ -104,6 +106,8 @@
                       <td>{{receive.supplier.name }}</td>
                       <td class='centerText' >{{getStatus(receive.status)}} </td>
                       <td class='rightText'>{{receive.grandTotal | number:'0.0-0' }}</td>
+                      <td class='rightText'>{{receive.lastUpdateBy  }}</td>
+                      <td class='rightText'>{{receive.lastUpdate | date:'dd-MMM-yyyy' }}</td>
                   </tr>
               </tbody>
           </table>
