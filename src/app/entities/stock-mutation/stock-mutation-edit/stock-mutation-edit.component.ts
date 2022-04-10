@@ -112,8 +112,8 @@ export class StockMutationEditComponent implements OnInit {
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
         this.productNameAdded = event.item.name;
-        // this.uomAdded = event.item.smallUomId;
-        // this.uomAddedName = event.item.SmallUom.name;
+        this.uomAdded = event.item.smallUomId;
+        this.uomAddedName = event.item.smallUom.name;
     }
 
     loadDataByStockMutationId(stockMutationId: number) {
