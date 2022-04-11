@@ -451,7 +451,7 @@ export class PaymentSupplierEditComponent implements OnInit {
     approve() {
 
         this.paymentSupplier.supplierId = +this.supplierSelected;
-        this.saveHdr("")
+        // this.saveHdr("")
         if (!this.isValidDataApprove()) {
             return;
         }
