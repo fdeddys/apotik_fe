@@ -88,7 +88,11 @@
                             Supplier Info
                         </td>
                         <td >
-                            {{getBankInfo(supplierSelected)}}
+                            <div *ngIf="supplierOnSelect" >
+                                {{supplierOnSelect.bank.name }} - {{supplierOnSelect.bankAccountName }} - {{supplierOnSelect.bankAccountNo }} 
+
+                            </div>
+                            <!-- {{getBankInfo(supplierSelected)}} -->
                             <!-- <div *ngIf="supplierSelected" >
                                 <div *ngIf="supplierSelected.bank.id !== 0" >
                                     {{supplierSelected.bank.name | json }} |

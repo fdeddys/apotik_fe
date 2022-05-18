@@ -44,6 +44,12 @@ export class PaymentSupplierEditComponent implements OnInit {
     curPage =1;
     totalRecord =10;
     // bankInfo: string = '';
+
+    namaBank =''
+    bankAccountNo=''
+    bankAccountName=''
+    supplierOnSelect;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -179,6 +185,9 @@ export class PaymentSupplierEditComponent implements OnInit {
         this.paymentSupplier.id = 0;
         this.paymentSupplier.status = 0;
         this.paymentSupplierDetails = [];
+        this.supplierOnSelect.bank.name =''
+        this.supplierOnSelect.bankAccountName =''
+        this.supplierOnSelect.bankAccountNo =''
         this.setToday() ;
         if (this.suppliers !== undefined) {
             this.paymentSupplier.supplier = this.suppliers[0];
@@ -255,7 +264,7 @@ export class PaymentSupplierEditComponent implements OnInit {
             day: curDates.getDate(),
             month: curDates.getMonth() + 1,
         };
-
+        this.loadSupplierToLocal(this.paymentSupplier.supplierId)
         // this.selectedDate = curDates;
     }
 
@@ -539,10 +548,11 @@ export class PaymentSupplierEditComponent implements OnInit {
                 return
             }
         }
-
+        console.log('supplier = ',this.supplierSelected)
         const modalRef = this.modalService.open(PaymentSupplierSearchReceiveModalComponent, { size: 'lg' });
         modalRef.componentInstance.paymentSupplier = this.paymentSupplier;
-        modalRef.componentInstance.supplier = this.supplierSelected;
+        modalRef.componentInstance.supplier = this.supplierOnSelect
+        //this.supplierSelected;
         modalRef.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
             this.reloadDetail(this.paymentSupplier.id);
@@ -619,7 +629,7 @@ export class PaymentSupplierEditComponent implements OnInit {
 
     getBankInfo(data: Supplier) {
         if (typeof(data) === 'object') {
-            // console.log('data->', data)
+            console.log('data get bank->', data)
             var namaBank= ""
             if (data.bank.id === 0) {
                 // ini di cari karena default awal nya, data supplier dari payment tidak ke preload
@@ -663,6 +673,21 @@ export class PaymentSupplierEditComponent implements OnInit {
     onChangeSupp($event, value) {
         console.log('supplier on change', value)
         this.saveHdr("Supplier saved !!!")
+        this.loadSupplierToLocal(value)
+    }
+
+    loadSupplierToLocal(id) {
+        this.supplierService
+        .findById(id)
+        .subscribe(
+            (res => {
+                if (res.body.errCode === '00') {
+                    this.supplierOnSelect = res.body.contents;
+                } else {
+                    this.supplierOnSelect = new Supplier    
+                }
+            })
+        );
     }
 
 }

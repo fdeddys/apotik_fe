@@ -25,6 +25,15 @@ export class Supplier {
     }
 }
 
+
+export class SupplierResult{
+    constructor(
+        public errCode?: string,
+        public errDesc?: string,
+        public contents?: Supplier,
+    ){}
+}
+
 export class SupplierPageDto {
     constructor(
         public totalRow?: number,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SupplierPageDto, Supplier } from './supplier.model';
+import { SupplierPageDto, Supplier, SupplierResult } from './supplier.model';
 import { Observable } from 'rxjs';
 import { EntityResponseType } from '../user/user.service';
 import { map } from 'rxjs/operators';
@@ -31,6 +31,15 @@ export class SupplierService {
         newresourceUrl = this.serverUrl + `/page/${pageNumber}/count/${pageCount}`;
 
         return this.http.post<SupplierPageDto>(newresourceUrl, req['filter'], { observe: 'response' });
+    }
+
+    findById(idSupp?: any): Observable<HttpResponse<SupplierResult>> {
+ 
+        let newresourceUrl = null;
+
+        newresourceUrl = this.serverUrl + `/id/${idSupp}`;
+
+        return this.http.get<SupplierResult>(newresourceUrl, { observe: 'response' });
     }
 
     save(supplier: Supplier): Observable<EntityResponseType> {
