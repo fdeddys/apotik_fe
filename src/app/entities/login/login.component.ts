@@ -74,24 +74,38 @@ export class LoginComponent implements OnInit {
             // grecaptcha.reset();
             this.router.navigate(['main']);
             this.parameterService.findByName("total_record_product")
-              .subscribe(
-                (res => {
-                  if (res.body.value !== '0') {
-                    let resBody = res.body.value;
-                    let total = Number(resBody);
-                    // if (  isNumber(resBody)){
-                    //   total = Number(resBody)
-                    // } else {
-                    //   console.log('not number ' + resBody + ' -- ' + isNumber(resBody));
-                    // };
-                    GlobalComponent.maxRecord = total;
-                    this.localStorage.store('max_search_product', total);
-                  } 
-                }),
-                (err => {
-                    console.log("Failed get param")
-                })
-              )
+                .subscribe(
+                    (res => {
+                    if (res.body.value !== '0') {
+                        let resBody = res.body.value;
+                        let total = Number(resBody);
+                        // if (  isNumber(resBody)){
+                        //   total = Number(resBody)
+                        // } else {
+                        //   console.log('not number ' + resBody + ' -- ' + isNumber(resBody));
+                        // };
+                        GlobalComponent.maxRecord = total;
+                        this.localStorage.store('max_search_product', total);
+                    } 
+                    }),
+                    (err => {
+                        console.log("Failed get param : max_search_product" )
+                    })
+                )
+            this.parameterService.findByName("tax")
+                .subscribe(
+                    (res => {
+                    if (res.body.value !== '0') {
+                        let resBody = res.body.value;
+                        let tax = Number(resBody);
+                        GlobalComponent.tax = tax;
+                        this.localStorage.store('tax', tax);
+                    } 
+                    }),
+                    (err => {
+                        console.log("Failed get param : TAX")
+                    })
+                )
             return null;
           } else {
             console.log('isi data --> ', data);

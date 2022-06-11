@@ -73,6 +73,7 @@ export class SalesOrderEditComponent implements OnInit {
     totalData =0;
     // modal
     closeResult: string;
+    taxPercent = 0;
 
     constructor(
         private route: ActivatedRoute,
@@ -110,7 +111,6 @@ export class SalesOrderEditComponent implements OnInit {
         if ( isNumber(total)) {
             this.totalRecordProduct = total;
         }
-        
         this.route.data.subscribe(
             data => {
                 console.log("data===>",data.cash);
@@ -119,6 +119,8 @@ export class SalesOrderEditComponent implements OnInit {
                 this.loadData(+id);
             }
         );
+        this.taxPercent = GlobalComponent.tax
+
     }
 
     // checkIsNumber(numb): any {
@@ -184,6 +186,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
+
+
     }
 
     loadDataByOrderId(orderId: number) {
@@ -225,6 +229,7 @@ export class SalesOrderEditComponent implements OnInit {
         console.log('isi sales order result', result);
         this.salesOrder = result;
         this.setSelectedDate(this.salesOrder.orderDate);
+        this.isTax = result.tax > 0 ? true: false;
 
         // this.salesOrderDetails = result.detail;
         // console.log('isi sales order detauil', this.salesOrderDetails);
@@ -242,7 +247,7 @@ export class SalesOrderEditComponent implements OnInit {
             this.total += this.getTotal(salesOrderDetail)
         });
 
-        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.taxAmount = this.isTax === true ? Math.floor(this.total * this.taxPercent /100) : 0;
         this.grandTotal = this.total + this.taxAmount;
     }
 
@@ -731,6 +736,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.salesOrder.deliveryDate = this.formatDate().toString();
         this.salesOrder.salesmanId = +this.salesmanSelected;
         this.salesOrder.isCash = this.isCash ;
+        this.salesOrder.tax  = this.isTax == true ? this.taxPercent: 0;
         // ==true ? 1 : 0;
         this.orderService
             .save(this.salesOrder)
@@ -808,6 +814,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
         this.salesOrder.salesmanId = +this.salesmanSelected;
+        this.salesOrder.tax  = this.isTax == true ? this.taxPercent: 0;
         this.orderService.approve(this.salesOrder)
             .subscribe(
                 (res) => {

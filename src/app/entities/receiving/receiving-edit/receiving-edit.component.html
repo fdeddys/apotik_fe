@@ -137,10 +137,11 @@
                             <td style="width: 5%;">Qty Big</td>
                             <td style="width: 5%;">Unit Big</td>
                             <td style="width: 5%;">Disc</td>
+                            <td style="width: 5%;">Disc 2</td>
                             <td style="width: 10%;">Batch no</td>
                             <td style="width: 5%; ">Expired</td>
-                            <td style="width: 10%;">Total</td>
-                            <td style="width: 5%; ">#</td>
+                            <td style="width: 7%;">Total</td>
+                            <td style="width: 2%; ">#</td>
                         </tr>
                         <tr>
                             <td >
@@ -179,6 +180,9 @@
                                 <input type="number" style="width: 100%;"[(ngModel)]="discAdded " placeholder="input disc" >
                             </td>
                             <td>
+                                <input type="number" style="width: 100%;"[(ngModel)]="disc2Added " placeholder="input disc" >
+                            </td>
+                            <td>
                                 <input type="text" style="width: 100%;" [(ngModel)]="batchNo" placeholder="input batch" >
                             </td>
                             <td>
@@ -201,7 +205,8 @@
                                     </td>-->
                             </td>
                             <td>
-                                {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
+                                <!-- {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }} -->
+                                {{ getSubTotal( priceAdded, qtyAdded, discAdded, disc2Added) | number:'0.0-0' }}
                             </td>
                             <td *ngIf ="receive">
                                 <button type="button"  *ngIf="receive.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
@@ -230,6 +235,7 @@
                                 <th scope="col">Unit Small</th>
 
                                 <th scope="col">Disc [%]</th>
+                                <th scope="col">Disc 2 [%]</th>
                                 <th scope="col">Batch no</th>
                                 <th scope="col">Expired Date</th>
                                 <th scope="col">Total</th>
@@ -264,6 +270,10 @@
                                     {{receiveDetail.smallUom.name}}</td>
                                 <td>
                                     <input type="number" style="width: 75px;" [(ngModel)]="receiveDetail.disc1 "  >
+                                    <!-- {{receiveDetail.disc1  }} -->
+                                </td>
+                                <td>
+                                    <input type="number" style="width: 75px;" [(ngModel)]="receiveDetail.disc2 "  >
                                     <!-- {{receiveDetail.disc1  }} -->
                                 </td>
                                 <td>

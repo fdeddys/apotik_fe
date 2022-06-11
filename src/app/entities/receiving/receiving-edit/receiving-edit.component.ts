@@ -60,6 +60,7 @@ export class ReceivingEditComponent implements OnInit {
     productNameAdded = '';
     priceAdded = 0;
     discAdded = 0;
+    disc2Added = 0;
     qtyAdded = 0;
     qtyBoxAdded = 0;
     uomAdded = 0;
@@ -72,6 +73,8 @@ export class ReceivingEditComponent implements OnInit {
     closeResult: string;
     curPage =1;
     totalRecord =0;
+    taxPercent = 0;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -105,7 +108,7 @@ export class ReceivingEditComponent implements OnInit {
         if ( isNumber(total)) {
             this.totalRecordProduct = total;
         }
-
+        this.taxPercent = GlobalComponent.tax / 100
         this.loadData(+id);
         this.setToday();
         // this.setTodayED();
@@ -287,9 +290,6 @@ export class ReceivingEditComponent implements OnInit {
         //         }
         //     )
     }
-            
-    
-
 
 
     loadWarehouse() {
@@ -429,6 +429,11 @@ export class ReceivingEditComponent implements OnInit {
     processReceive(result: Receive) {
         console.log('isi receive result', result);
         this.receive = result;
+        if (this.receive.tax >0) {
+            this.isTax = true
+        } else {
+            this.isTax = false
+        }
 
         // this.receiveDetails = result.detail;
         // console.log('isi receive detauil', this.receiveDetails);
@@ -442,20 +447,23 @@ export class ReceivingEditComponent implements OnInit {
 
         var subtotal = 0 ;
         var disc = 0;
+        var disc2 = 0;
         this.receiveDetails.forEach(receiveDetail => {
             subtotal = (receiveDetail.price * receiveDetail.qty);
             disc = (receiveDetail.disc1  * subtotal) /100
             subtotal -=disc;
+            disc2 = (receiveDetail.disc2  * subtotal) /100
+            subtotal -=disc2    
             this.total += subtotal ;
         });
 
-        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.taxAmount = this.isTax === true ? Math.floor(this.total * this.taxPercent  ) : 0;
         this.grandTotal = this.total + this.taxAmount;
     }
 
 
     checkTax() {
-        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        this.taxAmount = this.isTax === true ? Math.floor(this.total * this.taxPercent ) : 0;
         this.grandTotal = this.total + this.taxAmount;
     }
 
@@ -496,6 +504,7 @@ export class ReceivingEditComponent implements OnInit {
                         this.priceAdded = res.price;
                     }
                     this.discAdded = res.disc1;
+                    this.disc2Added = res.disc2;
                 } 
             }
         )
@@ -673,6 +682,18 @@ export class ReceivingEditComponent implements OnInit {
             return false;
         }
 
+        if ((isNaN(this.disc2Added)) || (this.disc2Added === null) ) {
+            // result = false;
+            return false;
+        }
+
+        
+        if ( this.disc2Added < 0 ) {
+            // this.priceAdded <= 0 ||
+            // result = false;
+            return false;
+        }
+
         if (this.qtyAdded <= 0 && this.qtyBoxAdded <= 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
@@ -693,6 +714,7 @@ export class ReceivingEditComponent implements OnInit {
         let receiveDetail = new ReceivingDetail();
         receiveDetail.receiveId = this.receive.id;
         receiveDetail.disc1 = this.discAdded;
+        receiveDetail.disc2 = this.disc2Added;
         receiveDetail.price = this.priceAdded;
         receiveDetail.productId = this.productIdAdded;
         receiveDetail.qty = this.qtyAdded + (this.qtyBoxAdded * this.uomQty);
@@ -804,7 +826,7 @@ export class ReceivingEditComponent implements OnInit {
         this.receive.receiveDate = this.getSelectedDate();
         this.receive.warehouseId = this.warehouseSelected.id;
         if (this.isTax === true) {
-            this.receive.tax = 10;
+            this.receive.tax = this.taxPercent * 100;
         } else {
             this.receive.tax = 0;
         }
@@ -872,7 +894,7 @@ export class ReceivingEditComponent implements OnInit {
 
     approveProccess() {
         if (this.isTax === true) {
-            this.receive.tax = 10;
+            this.receive.tax = this.taxPercent * 100;
         } else {
             this.receive.tax = 0;
         }
@@ -1162,6 +1184,16 @@ export class ReceivingEditComponent implements OnInit {
         let price = detail.price;
         let total = price * (( detail.qtyUomBig * detail.product.qtyUom) + (detail.qtyUomSmall));
         let disc = total * detail.disc1 / 100;
+        let totalDisc = total - disc
+        let disc2 = totalDisc * detail.disc2 / 100;
+        let totalDisc2 = totalDisc - disc2
+        return totalDisc2;
+    }
+
+    getDetailTotalPerRow2(detail: ReceivingDetail){
+        let price = detail.price;
+        let total = price * (( detail.qtyUomBig * detail.product.qtyUom) + (detail.qtyUomSmall));
+        let disc = total * detail.disc1 / 100;
         let grandTotal = total - disc
         return grandTotal;
     }
@@ -1169,5 +1201,19 @@ export class ReceivingEditComponent implements OnInit {
     onChangeSupp($event, value) {
         console.log('supplier on change', value)
         this.saveHdr("Supplier saved !!!")
+    }
+
+    getSubTotal(price: number, qty:number, disc1:number, disc2: number) {
+        // disc 1 : 10%
+        // disc 2 : 5%
+        // ppn : 11%
+        // 100rb - 10% = 90rb
+        // 90rb- 5% = 85500
+        // 85500+11% (ppn) = 94905
+        // console.log(price + ':' + qty + ':' + disc1 + ':' + disc2)
+        let subtotal = price * qty
+        let totalDisc1 = subtotal - (subtotal * disc1 / 100)
+        let totalDisc2 = totalDisc1 - ( totalDisc1 * disc2 / 100) 
+        return totalDisc2;
     }
 }
