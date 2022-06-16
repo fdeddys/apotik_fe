@@ -327,7 +327,10 @@ export class PurchaseOrderEditComponent implements OnInit {
                     } else {
                         this.priceAdded = res.price;
                     }
-                    this.discAdded = res.disc1;
+                    // disc nya ga di ambil 
+                    // 16 JUNI
+                    // this.discAdded = res.disc1;
+                    this.discAdded =0
                 } 
             }
         )
