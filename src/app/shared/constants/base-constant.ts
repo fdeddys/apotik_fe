@@ -111,5 +111,5 @@ export const WILAYAH_KELURAHAN  = 'kelurahan';
 // 
 export const CUSTOMER_CASH_ID = 99999999;
 export const APPNAME = 'APOTEK KURNIA SEHAT';
-export const APP_VERSION = 'F06062022';
+export const APP_VERSION = 'F18062022';
 export const APP_DATE = '281021';

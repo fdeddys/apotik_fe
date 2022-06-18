@@ -950,6 +950,9 @@ export class ReceivingEditComponent implements OnInit {
             case 30:
                 statusName = 'Rejected';
                 break;
+            case 50:
+                statusName = 'PAID';
+                break;
         }
         return statusName;
     }

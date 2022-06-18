@@ -78,7 +78,7 @@ export class PaymentSupplierSearchReceiveModalComponent implements OnInit {
     save(receive: Receive): void {
         var paymentSupplierDetail: PaymentSupplierDetail = new PaymentSupplierDetail();
         paymentSupplierDetail.receiveId = receive.id;
-        paymentSupplierDetail.total = receive.total;
+        paymentSupplierDetail.total = receive.grandTotal;
         paymentSupplierDetail.paymentSupplierId = this.paymentSupplier.id;
         this.paymentSupplierDetailService.save(paymentSupplierDetail)
             .subscribe(
