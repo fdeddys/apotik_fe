@@ -663,27 +663,32 @@ export class ReceivingEditComponent implements OnInit {
 
         if ( (isNaN(this.qtyAdded)) || (this.qtyAdded === null) ) {
             // result = false;
+            console.log("isNaN(this.qtyAdded)")
             return false;
         }
 
         if ( (isNaN(this.priceAdded)) || (this.priceAdded === null) ) {
             // result = false;
+            console.log("isNaN(this.priceAdded)")
             return false;
         }
 
         if ((isNaN(this.discAdded)) || (this.discAdded === null) ) {
             // result = false;
+            console.log("(isNaN(this.discAdded)")
             return false;
         }
 
         if ( this.discAdded < 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
+            console.log("(this.discAdded ")
             return false;
         }
 
         if ((isNaN(this.disc2Added)) || (this.disc2Added === null) ) {
             // result = false;
+            console.log("(isNaN(this.disc2Added)")
             return false;
         }
 
@@ -691,21 +696,24 @@ export class ReceivingEditComponent implements OnInit {
         if ( this.disc2Added < 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
+            console.log("(this.disc2Added ")
             return false;
         }
 
         if (this.qtyAdded <= 0 && this.qtyBoxAdded <= 0 ) {
             // this.priceAdded <= 0 ||
             // result = false;
+            console.log("(this.qtyAdded <= 0 && this.qtyBoxAdded")
             return false;
         }
 
 
 
-        if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
-            // result = false;
-            return false;
-        }
+        // if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
+        //     // result = false;
+        //     console.log("this.priceAdded * this.qtyAdded ) < this.discAdded ")
+        //     return false;
+        // }
 
         return true;
     }
