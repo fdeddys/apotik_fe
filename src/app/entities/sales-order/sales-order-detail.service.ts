@@ -62,6 +62,7 @@ export class SalesOrderDetailService {
         return this.http.post<SalesOrderDetail>(newresourceUrl, copy, { observe: 'response'});
     }
 
+
     deleteById(id: number): Observable<SalesOrderDetail> {
 
         const newresourceUrl = this.serverUrl + `/${id}`;

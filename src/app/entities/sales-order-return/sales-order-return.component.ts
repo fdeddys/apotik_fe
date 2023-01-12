@@ -31,6 +31,14 @@ export class SalesOrderReturnComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        let name = sessionStorage.getItem("return-so:name")
+        if (name!==null) {
+            this.searchTerm.name = name
+        }
+        let no = sessionStorage.getItem("return-so:no")
+        if (no!==null) {
+            this.searchTerm.no = no
+        }
         this.loadAll(this.curPage);
     }
 
@@ -39,6 +47,8 @@ export class SalesOrderReturnComponent implements OnInit {
     }
 
     loadAll(page) {
+        sessionStorage.setItem("return-so:name",this.searchTerm.name)
+        sessionStorage.setItem("return-so:no",this.searchTerm.no)
         this.spinner.show();
         this.salesOrderReturnService.filter({
             filter: this.searchTerm,

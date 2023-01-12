@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
-import { ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto, ReturnReceivePageDto } from './return-receiving.model';
+import { LastPriceDto, ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto, ReturnReceivePageDto } from './return-receiving.model';
 
 export type EntityResponseType = HttpResponse<ReturnReceive>;
 
@@ -52,7 +52,9 @@ export class ReturnReceivingService {
                             .pipe(
                                 map( (resDetail) => {
                                     let details = resDetail.body.contents;
+                                    
                                     returnReceive.detail = details;
+                                    returnReceive.totalRow = resDetail.body.totalRow
                                     return returnReceive;
                                 })
                             );
@@ -107,4 +109,13 @@ export class ReturnReceivingService {
         const copyOb: ReturnReceive = Object.assign({}, returnReceive);
         return copyOb;
     }
+
+    findLastPrice(productid: number): Observable<any> {
+
+        // const pathOrderDetailUrl = SERVER_PATH + 'purchase-order-detail/last-price';
+        const pathOrderDetailUrl = SERVER_PATH + 'receive-detail/last-price';
+
+        return this.http.get<LastPriceDto>(`${pathOrderDetailUrl}/${productid}`)
+    }
+
 }

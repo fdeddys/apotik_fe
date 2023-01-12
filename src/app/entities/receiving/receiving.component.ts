@@ -45,7 +45,13 @@ export class ReceivingComponent implements OnInit {
         this.listStatuses.push(status2);
         this.listStatuses.push(status3);
         
-        this.statusSelected = -1;
+        // this.statusSelected = -1;
+        let postatus = sessionStorage.getItem("receive:status")
+        if (postatus==null) {
+            this.statusSelected = -1;
+        } else{
+            this.statusSelected = Number(postatus)
+        }
     }   
 
     
@@ -68,16 +74,57 @@ export class ReceivingComponent implements OnInit {
 
     setToday() {
         const today = new Date();
-        this.startDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
-        this.endDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
+        // this.startDate = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        // this.endDate = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        let startdate = sessionStorage.getItem("receive:startDate")
+        if (startdate == null) {
+            this.startDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.startDate = {
+                year: Number (startdate.substring(0,4)),
+                month: Number (startdate.substring(5,7)),
+                day: Number (startdate.substring(8,10)),
+            };
+        }
+
+        let enddate = sessionStorage.getItem("receive:endDate")
+        if (enddate == null) {
+            this.endDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.endDate = {
+                year: Number (enddate.substring(0,4)),
+                month: Number (enddate.substring(5,7)),
+                day: Number (enddate.substring(8,10)), 
+            }
+        }
+        let postatus = sessionStorage.getItem("receive:status")
+        if (postatus!==null) {
+            this.statusSelected = Number(postatus)
+        }
+        let receiveNumber = sessionStorage.getItem("receive:receiveNumber")
+        if (receiveNumber!==null) {
+            this.searchTerm.receiveNumber = receiveNumber
+        }
+        let supplierName = sessionStorage.getItem("receive:supplierName")
+        if (supplierName!==null) {
+            this.searchTerm.supplierName = supplierName
+        }
     }
 
     getStartDate(): string{
@@ -111,6 +158,13 @@ export class ReceivingComponent implements OnInit {
         // if (this.statusSelected.id != -1 ) {
         this.searchTerm.status = +this.statusSelected;
         // }
+
+        sessionStorage.setItem("receive:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("receive:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("receive:status",this.statusSelected.toString())
+        sessionStorage.setItem("receive:receiveNumber",this.searchTerm.receiveNumber)
+        sessionStorage.setItem("receive:supplierName",this.searchTerm.supplierName)
+
 
         this.receiveService.filter({
             filter: this.searchTerm,

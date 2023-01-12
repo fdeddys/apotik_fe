@@ -29,6 +29,7 @@ export class ReturnReceive {
 
         public errCode?: string,
         public errDesc?: string,
+        public totalRow?: number,
     ) {
         this.id = 0;
         this.tax = 0;
@@ -79,4 +80,14 @@ export class ReturnReceiveDetailPageDto {
         public contents?: ReturnReceiveDetail[],
         public error?: string,
     ) {}
+}
+
+
+export class LastPriceDto {
+    constructor(
+        public price?: number,
+
+    ) {
+        this.price = 0;
+    }
 }

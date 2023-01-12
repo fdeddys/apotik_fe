@@ -47,23 +47,57 @@ export class PaymentSupplierComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.statusSelected = this.statuses[0].code;
+        let postatus = sessionStorage.getItem("payment-supp:status")
+        if (postatus==null) {
+            this.statusSelected = this.statuses[0].code;
+        } else{
+            this.statusSelected = Number(postatus)
+        }
         this.setToday();
         this.filterPayment();
     }
 
     setToday() {
         const today = new Date();
-        this.dateStart = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
-        this.dateEnd = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
+        // this.dateStart = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        // this.dateEnd = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        let startdate = sessionStorage.getItem("payment-supp:startDate")
+        if (startdate == null) {
+            this.dateStart = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.dateStart = {
+                year: Number (startdate.substring(0,4)),
+                month: Number (startdate.substring(5,7)),
+                day: Number (startdate.substring(8,10)),
+            };
+        }
+
+        let enddate = sessionStorage.getItem("payment-supp:endDate")
+        if (enddate == null) {
+            this.dateEnd = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.dateEnd = {
+                year: Number (enddate.substring(0,4)),
+                month: Number (enddate.substring(5,7)),
+                day: Number (enddate.substring(8,10)), 
+            }
+        }
     }
 
     onFilter() {
@@ -95,6 +129,11 @@ export class PaymentSupplierComponent implements OnInit {
         this.searchTerm.startDate = this.getSelectedDateStart() + " 00:00:00.000";
         this.searchTerm.endDate = this.getSelectedDateEnd() + " 23:59:59.999";
         this.searchTerm.paymentStatus =+this.statusSelected;
+
+        sessionStorage.setItem("payment-supp:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("payment-supp:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("payment-supp:status",this.statusSelected.toString())
+
         this.paymentSupplierService.filter({
             filter: this.searchTerm,
             page: this.curPage,

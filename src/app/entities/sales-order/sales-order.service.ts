@@ -52,6 +52,13 @@ export class SalesOrderService {
     }
 
 
+    getTotalByID(orderId: number): Observable<HttpResponse<number>> {
+
+        let newresourceUrl = this.serverUrl + `/${orderId}/total`;
+        return this.http.get<number>(newresourceUrl,{ observe: 'response'});
+    }
+
+    
     findById(id: number): Observable<any> {
 
         const pathOrderDetailUrl = SERVER_PATH + 'sales-order-detail';

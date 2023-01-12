@@ -239,7 +239,7 @@ export class SalesOrderEditComponent implements OnInit {
         this.reloadDetail(this.salesOrder.id) 
     }
 
-    calculateTotal() {
+    calculateTotal2() {
         this.total = 0;
 
         this.salesOrderDetails.forEach(salesOrderDetail => {
@@ -249,6 +249,21 @@ export class SalesOrderEditComponent implements OnInit {
 
         this.taxAmount = this.isTax === true ? Math.floor(this.total * this.taxPercent /100) : 0;
         this.grandTotal = this.total + this.taxAmount;
+    }
+
+    calculateTotal(){
+
+        let total = 0
+        this.orderService
+            .getTotalByID(this.salesOrder.id)
+            .subscribe(res=>{
+                total = res.body;
+                
+                this.total = total;
+                this.taxAmount = this.isTax === true ? Math.floor(this.total * this.taxPercent /100) : 0;
+                this.grandTotal = this.total + this.taxAmount;
+            })
+
     }
 
     processCustomer(result: HttpResponse<CustomerPageDto>) {

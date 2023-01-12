@@ -50,16 +50,59 @@ export class DirectSalesPaymentComponent implements OnInit {
 
     setToday() {
         const today = new Date();
-        this.dateStart = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
-        this.dateEnd = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
+        // this.dateStart = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        // this.dateEnd = {
+        //     year: today.getFullYear(),
+        //     day: today.getDate(),
+        //     month: today.getMonth() + 1,
+        // };
+        let startdate = sessionStorage.getItem("payment:startDate")
+        if (startdate == null) {
+            this.dateStart = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.dateStart = {
+                year: Number (startdate.substring(0,4)),
+                month: Number (startdate.substring(5,7)),
+                day: Number (startdate.substring(8,10)),
+            };
+        }
+
+        let enddate = sessionStorage.getItem("payment:endDate")
+        if (enddate == null) {
+            this.dateEnd = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.dateEnd = {
+                year: Number (enddate.substring(0,4)),
+                month: Number (enddate.substring(5,7)),
+                day: Number (enddate.substring(8,10)), 
+            }
+        }
+        
+        let paystatus = sessionStorage.getItem("payment:status")
+        if (paystatus!==null) {
+            this.statusSelected = Number(paystatus)
+        }
+
+        let paymentNo = sessionStorage.getItem("payment:paymentNo")
+        if (paymentNo!==null) {
+            this.searchTerm.paymentNo = paymentNo
+        }
+        let sono = sessionStorage.getItem("payment:sono")
+        if (sono!==null) {
+            this.searchTerm.salesOrderNo = sono
+        }
     }
 
     onFilter() {
@@ -91,6 +134,14 @@ export class DirectSalesPaymentComponent implements OnInit {
         this.searchTerm.startDate = this.getSelectedDateStart();
         this.searchTerm.endDate = this.getSelectedDateEnd();
         this.searchTerm.paymentStatus =+this.statusSelected;
+
+        sessionStorage.setItem("payment:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("payment:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("payment:status",this.statusSelected.toString())
+        sessionStorage.setItem("payment:paymentNo",this.searchTerm.paymentNo)
+        sessionStorage.setItem("payment:sono",this.searchTerm.salesOrderNo)
+
+
         this.directSalesPaymentService.filter({
             filter: this.searchTerm,
             page: this.curPage,

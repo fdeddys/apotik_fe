@@ -198,11 +198,12 @@
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 25%;">Product</th>
+                            <th scope="col" style="width: 30%;">Product</th>
                             <th scope="col" style="width: 10%;" style="text-align: end;">Price</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Qty</th>
                             <th scope="col" style="width: 10%;" style="text-align: center;">Unit</th>
-                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc </th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc[%] </th>
+                            <th scope="col" style="width: 10%;" style="text-align: end;">Disc[Rp] </th>
                             <th scope="col" style="width: 20%;" style="text-align: end;">Total</th>
                         </tr>
                     </thead>
@@ -212,6 +213,7 @@
                             <td style="text-align: end;" >{{salesOrderDetail.price | number:'0.0-0' }}</td>
                             <td style="text-align: center;">{{salesOrderDetail.qtyOrder | number:'0.0-0' }}</td>
                             <td style="text-align: center;">{{ salesOrderDetail.uom.name}}</td>
+                            <td style="text-align: end;">{{salesOrderDetail.disc1  }}</td>
                             <td style="text-align: end;">{{getDisc(salesOrderDetail)  }}</td>
                             <td style="text-align: end;">{{ getTotal(salesOrderDetail) | number:'0.0-0' }}  </td>
                         </tr>

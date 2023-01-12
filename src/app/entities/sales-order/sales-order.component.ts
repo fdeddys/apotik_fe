@@ -42,17 +42,44 @@ export class SalesOrderComponent implements OnInit {
     ) { }
 
     setToday() {
+
         const today = new Date();
-        this.startDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
-        this.endDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
+        
+        let startdate = sessionStorage.getItem("sales-order:startDate")
+        if (startdate == null) {
+            this.startDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.startDate = {
+                // 2022-09-06T00:00:00+07:00
+                year: Number (startdate.substring(0,4)),
+                month: Number (startdate.substring(5,7)),
+                day: Number (startdate.substring(8,10)),
+            };
+        }
+
+        let enddate = sessionStorage.getItem("sales-order:endDate")
+        if (enddate == null) {
+            this.endDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.endDate = {
+                year: Number (enddate.substring(0,4)),
+                month: Number (enddate.substring(5,7)),
+                day: Number (enddate.substring(8,10)), 
+            }
+        }
+        let page = sessionStorage.getItem("sales-order:page")
+        console.log("get session page ===", page)
+        // if (page!==null) {
+        //     this.curPage = Number(page)
+        // } 
     }
 
     ngOnInit() {
@@ -106,6 +133,11 @@ export class SalesOrderComponent implements OnInit {
         } 
 
         this.searchTerm.isCash = this.isCash;
+
+        sessionStorage.setItem("sales-order:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("sales-order:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("sales-order:page",page)
+
         this.salesOrderService.filter({
             filter: this.searchTerm,
             page: page,

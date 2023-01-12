@@ -31,6 +31,17 @@ export class ReturnReceivingComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        let name = sessionStorage.getItem("return-receive:name")
+        if (name!==null) {
+            this.searchTerm.name = name
+        }
+
+        let no = sessionStorage.getItem("return-receive:no")
+        if (no!==null) {
+            this.searchTerm.no = no
+        }
+
+
         this.loadAll(this.curPage);
     }
 
@@ -40,6 +51,8 @@ export class ReturnReceivingComponent implements OnInit {
 
     loadAll(page) {
         this.spinner.show();
+        sessionStorage.setItem("return-receive:name",this.searchTerm.name)
+        sessionStorage.setItem("return-receive:no",this.searchTerm.no)
         this.returnReceiveService.filter({
             filter: this.searchTerm,
             page: page,
@@ -69,6 +82,7 @@ export class ReturnReceivingComponent implements OnInit {
         }
         this.returnReceives = data.contents;
         this.totalData = data.totalRow;
+        console.log("total row " + data.totalRow);
     }
 
     private onError(error) {

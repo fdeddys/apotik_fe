@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LocalStorageService } from 'ngx-webstorage';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
+import { SERVER_PATH, TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import Swal from 'sweetalert2';
 import { Product, ProductPageDto } from '../../product/product.model';
@@ -16,7 +16,7 @@ import { SupplierService } from '../../supplier/supplier.service';
 import { Warehouse, WarehouseDto } from '../../warehouse/warehouse.model';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { ReturnReceivingDetailService } from '../return-receiving-detail.service';
-import { ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto } from '../return-receiving.model';
+import { LastPriceDto, ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto } from '../return-receiving.model';
 import { ReturnReceivingService } from '../return-receiving.service';
 
 @Component({
@@ -63,6 +63,9 @@ export class ReturnReceivingModalComponent implements OnInit {
     loadedSalesman =false;
     loadedSupplier =false;
 
+    totalData = 0;
+    totalRecord = TOTAL_RECORD_PER_PAGE;
+    curPage = 1;
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -131,13 +134,32 @@ export class ReturnReceivingModalComponent implements OnInit {
 
     getItem(event: any) {
         // event.preventDefault();
+
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
-        this.priceAdded = event.item.sellPrice;
+        this.priceAdded = 0
+        //
+        this.returnReceiveService
+            .findLastPrice(event.item.id)
+            .subscribe(
+                (response: HttpResponse<LastPriceDto>) => {
+                    // console.log("resp last price ",response)
+                    // this.priceAdded=response.body.price;
+                    this.onSuccess(response)
+                }
+            );
+
         this.productNameAdded = event.item.name;
         this.uomAdded = event.item.smallUomId;
         this.uomAddedName = event.item.smallUom.name;
     }
+
+    private onSuccess(data) {
+        
+        console.log("resp last price ",data)
+        this.priceAdded=data.price;
+    }
+    
 
     loadDataByReturnId(returnId: number) {
 
@@ -187,6 +209,7 @@ export class ReturnReceivingModalComponent implements OnInit {
         this.returnReceive = result;
 
         this.returnReceiveDetails = result.detail;
+        this.totalData = result.totalRow;
         console.log('isi return detail', this.returnReceiveDetails);
         this.calculateTotal();
 
@@ -457,12 +480,16 @@ export class ReturnReceivingModalComponent implements OnInit {
         // return result;
     }
 
+    loadPage(){
+        this.reloadDetail(this.returnReceive.id)
+    }
+
     reloadDetail(orderReturnId: number) {
         this.spinner.show();
         this.returnReceiveDetailService
             .findByReturnReceiveId({
                 count: 10,
-                page: 1,
+                page: this.curPage ,
                 filter : {
                     returnId: orderReturnId,
                 }
@@ -482,7 +509,9 @@ export class ReturnReceivingModalComponent implements OnInit {
     fillDetail(res: HttpResponse<ReturnReceiveDetailPageDto>) {
         this.returnReceiveDetails = [];
         if (res.body.contents.length > 0) {
+            console.log("isi detail ", res)
             this.returnReceiveDetails = res.body.contents;
+            // this.totalData = res.body.totalRow;
             this.calculateTotal();
             this.clearDataAdded();
         }

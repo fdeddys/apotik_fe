@@ -17,7 +17,7 @@ import { LookupTemplate } from '../lookup/lookup.model';
 export class PurchaseOrderComponent implements OnInit {
 
     purchaseOrders: PurchaseOrder[];
-    curPage = 1;
+    curPage;
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
@@ -57,7 +57,12 @@ export class PurchaseOrderComponent implements OnInit {
         this.listStatuses.push(status2);
         this.listStatuses.push(status3);
         this.listStatuses.push(status4);
-        this.statusSelected = -1;
+        let postatus = sessionStorage.getItem("po:status")
+        if (postatus==null) {
+            this.statusSelected = -1;
+        } else{
+            this.statusSelected = Number(postatus)
+        }
         // console.log('all status ', this.listStatuses)
     }   
 
@@ -96,18 +101,64 @@ export class PurchaseOrderComponent implements OnInit {
         );
     }
 
+    // sessionStorage.setItem("po:startDate",this.searchTerm.startDate )
+    // sessionStorage.setItem("po:endDate",this.searchTerm.endDate)
+    // sessionStorage.setItem("po:status",this.statusSelected.toString())
+    // sessionStorage.setItem("po:pono",this.searchTerm.pono)
+    // sessionStorage.setItem("po:supplierName",this.searchTerm.supplierName)
+
     setToday() {
         const today = new Date();
-        this.startDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
-        this.endDate = {
-            year: today.getFullYear(),
-            day: today.getDate(),
-            month: today.getMonth() + 1,
-        };
+
+        let startdate = sessionStorage.getItem("po:startDate")
+        if (startdate == null) {
+            this.startDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.startDate = {
+                year: Number (startdate.substring(0,4)),
+                month: Number (startdate.substring(5,7)),
+                day: Number (startdate.substring(8,10)),
+            };
+        }
+
+        let enddate = sessionStorage.getItem("po:endDate")
+        if (enddate == null) {
+            this.endDate = {
+                year: today.getFullYear(),
+                day: today.getDate(),
+                month: today.getMonth() + 1,
+            };
+        } else {
+            this.endDate = {
+                year: Number (enddate.substring(0,4)),
+                month: Number (enddate.substring(5,7)),
+                day: Number (enddate.substring(8,10)), 
+            }
+        }
+        let postatus = sessionStorage.getItem("po:status")
+        if (postatus!==null) {
+            this.statusSelected = Number(postatus)
+        }
+        let pono = sessionStorage.getItem("po:pono")
+        if (pono!==null) {
+            this.searchTerm.pono = pono
+        }
+        let supplierName = sessionStorage.getItem("po:supplierName")
+        if (supplierName!==null) {
+            this.searchTerm.supplierName = supplierName
+        }
+        let page = sessionStorage.getItem("po:page")
+        console.log("get session page ===", page)
+        if (page!==null) {
+            this.curPage = Number(page)
+        } else {
+            this.curPage =1;
+        }
+
     }
 
     loadAll(page) {
@@ -123,6 +174,15 @@ export class PurchaseOrderComponent implements OnInit {
         // if (this.statusSelected.id != -1 ) {
         this.searchTerm.status = +this.statusSelected;
         // }
+
+        sessionStorage.setItem("po:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("po:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("po:status",this.statusSelected.toString())
+        sessionStorage.setItem("po:pono",this.searchTerm.pono)
+        sessionStorage.setItem("po:supplierName",this.searchTerm.supplierName)
+        sessionStorage.setItem("po:page",page)
+
+
         this.spinner.show();
         this.purchaseOrderService.filter({
             filter: this.searchTerm,
@@ -174,6 +234,7 @@ export class PurchaseOrderComponent implements OnInit {
     }
 
     loadPage() {
+        console.log("load page : ", this.curPage)
         this.loadAll(this.curPage);
     }
 

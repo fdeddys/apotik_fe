@@ -168,6 +168,9 @@ export class HistoryStockComponent implements OnInit {
     }
 
     loadPage(page) {
+        
+      
+
         let filter = {
             startDate : this.getSelectedDate(this.selectedDateStart),
             endDate: this.getSelectedDate(this.selectedDateEnd),

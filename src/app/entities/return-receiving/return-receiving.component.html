@@ -60,9 +60,15 @@
                 </tbody>
             </table>
         </div>
+        <!-- <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="5"
+            (pageChange)="loadPage()" [boundaryLinks]="true">
+        </ngb-pagination> -->
         <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [maxSize]="totalRecord"
             (pageChange)="loadPage()" [boundaryLinks]="true">
         </ngb-pagination>
+        <!-- totaldata ==> {{totalData}}
+        curPage ==> {{curPage}}
+        totalRecord ==> {{totalRecord}} -->
     </div>
 
 </div>
