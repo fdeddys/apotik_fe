@@ -9,12 +9,17 @@ import * as sha256 from 'js-sha256';
 
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { JwtPayload } from './login.model';
 
 @Injectable({
   providedIn: 'root'
 })
+
+
+
 export class LoginService {
 
+  
   constructor(private http: HttpClient,
     private localStorage: LocalStorageService,
     private router: Router, ) { }
@@ -46,6 +51,10 @@ export class LoginService {
             this.localStorage.store('token', jwt);
             this.localStorage.store('err_login', resp.body.err);
             console.log(resp.body.err);
+            let payload = atob(jwt.split('.')[1]);
+            let payLoadObj = JSON.parse(payload) as JwtPayload;
+            console.log('user : ' , payLoadObj.user )
+            this.localStorage.store('user-login', payLoadObj.user)
           // Swal.fire('Failed', resp.body.err  , 'error');
             return jwt;
         }

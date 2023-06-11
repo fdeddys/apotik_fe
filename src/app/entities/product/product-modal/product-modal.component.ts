@@ -11,6 +11,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Brand, BrandPageDto } from '../../brand/brand.model';
 import { ProductGroupService } from '../../product-group/product-group.service';
 import { ProductGroupPageDto, ProductGroup } from '../../product-group/product-group.model';
+import { LocalStorageService } from 'ngx-webstorage';
 
 @Component({
     selector: 'op-product-modal',
@@ -42,6 +43,7 @@ export class ProductModalComponent implements OnInit {
     brandSelected: number;
     smallUomSelected: number;
     bigUomSelected: number;
+    userLogin='';
 
     constructor(
         public productService: ProductService,
@@ -50,12 +52,14 @@ export class ProductModalComponent implements OnInit {
         public brandService: BrandService,
         public lookupService: LookupService,
         public productGroupService: ProductGroupService,
+        private localStorage: LocalStorageService,
     ) { }
 
     ngOnInit() {
         console.log('obj to edit -> ', this.objEdit);
         console.log(this.statusRec);
-        
+        this.userLogin = this.localStorage.retrieve('user-login').toUpperCase()
+
         // ADDNEW
         if (this.statusRec === 'addnew') {
             this.setDefaultValue();
@@ -157,6 +161,10 @@ export class ProductModalComponent implements OnInit {
 
     async save() {
 
+        if (! await this.confirmSave()) {
+            return ;
+        }
+
         if (! await this.validateProduct()) {
             return ;
         }
@@ -184,6 +192,31 @@ export class ProductModalComponent implements OnInit {
                 console.log('Toast err');
             }
         });
+    }
+
+    async confirmSave() {
+
+        var isValid = true;
+        
+       
+        await Swal.fire({
+            title : 'Confirm',
+            text : 'Apakah anda yakin untuk menyimpan data ini ' + this.userLogin + '  ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+                console.log('result confirm ===>', result)
+                if (!result.value) {
+                    isValid = false;   
+                    return isValid;
+                }
+        });
+        
+        return isValid;
     }
 
     async validateProduct() {

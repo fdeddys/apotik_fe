@@ -411,7 +411,7 @@ export class DirectSalesPaymentModalComponent implements OnInit {
 
     cancelSO() {
         Swal.fire({
-            title : 'Confirm',
+            title : 'CANCEL SALES-ORDER',
             text : 'Are you sure to Cancel this Sales Order ?',
             type : 'info',
             showCancelButton: true,

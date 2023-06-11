@@ -45,6 +45,7 @@ export class AdjustmentEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
+    userLogin='';
 
     warehouses: Warehouse[];
     warehouseSelected: Warehouse;
@@ -77,6 +78,8 @@ export class AdjustmentEditComponent implements OnInit {
         }
         this.loadData(+id);
         this.setToday();
+        this.userLogin = this.localStorage.retrieve('user-login').toUpperCase()
+
     }
 
 
@@ -179,10 +182,18 @@ export class AdjustmentEditComponent implements OnInit {
             return;
         }
         this.warehouses = result.body.contents;
+       
+        
     }
 
     setDefaultWarehouse() {
-        this.warehouseSelected = this.adjustment.warehouse ;
+        if (this.adjustment.warehouse.id==0){
+            this.warehouseSelected = this.warehouses[0] ;
+            this.adjustment.warehouseId = this.warehouseSelected.id;
+        } else {
+            this.warehouseSelected = this.adjustment.warehouse ;
+        }
+        
     }
 
     calculateTotal() {
@@ -452,7 +463,7 @@ export class AdjustmentEditComponent implements OnInit {
 
         Swal.fire({
             title : 'Confirm',
-            text : 'Are you sure to approve ?',
+            text : 'Are you sure to approve ' + this.userLogin + '  ?',
             type : 'info',
             showCancelButton: true,
             confirmButtonText : 'Ok',
@@ -468,6 +479,8 @@ export class AdjustmentEditComponent implements OnInit {
 
 
     approveProccess() {
+        this.adjustment.warehouse = this.warehouseSelected;
+        this.adjustment.warehouseId = this.warehouseSelected.id;
         this.adjustmentService.approve(this.adjustment)
             .subscribe(
                 (res) => {

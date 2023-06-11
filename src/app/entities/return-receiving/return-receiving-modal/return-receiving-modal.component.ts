@@ -511,7 +511,7 @@ export class ReturnReceivingModalComponent implements OnInit {
         if (res.body.contents.length > 0) {
             console.log("isi detail ", res)
             this.returnReceiveDetails = res.body.contents;
-            // this.totalData = res.body.totalRow;
+            this.totalData = res.body.totalRow;
             this.calculateTotal();
             this.clearDataAdded();
         }
