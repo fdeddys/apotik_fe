@@ -63,7 +63,7 @@ export class ReportPaymentComponent implements OnInit {
         let tgl2 = this.getSelectedDate2();
         console.log('tg  bettwen ',tgl1, ' : ', tgl2);
 
-        let filename = "report-payment-cash" + tgl1 + "+" + tgl2 +  ".xlsx"; 
+        let filename = "report-payment" + tgl1 + "+" + tgl2 +  ".xlsx"; 
         this.spinner.show();
         setTimeout(() => {
             this.spinner.hide();

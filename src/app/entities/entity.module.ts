@@ -40,6 +40,7 @@ import { PaymentSupplierModule } from './payment-supplier/payment-supplier.modul
 import { ReportServiceService } from './report/report-service/report-service.service';
 import { ReportServiceModule } from './report/report-service/report-service.module';
 import { ReportPaymentSupplierModule } from './report/report-payment-supplier/report-payment-supplier.module';
+import { ApotikParamModule } from './apotik-param/apotik-param.module';
 
 @NgModule({
     imports: [
@@ -79,7 +80,8 @@ import { ReportPaymentSupplierModule } from './report/report-payment-supplier/re
         StockInfoBatchModule,
         PaymentSupplierModule,
         ReportServiceModule,
-        ReportPaymentSupplierModule
+        ReportPaymentSupplierModule,
+        ApotikParamModule
     ],
     entryComponents: [],
     providers: [],

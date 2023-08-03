@@ -37,6 +37,13 @@ export class AdjustmentDetailService {
             .pipe(map((res: HttpResponse<AdjustmentDetail>) => this.convertResponse(res)));
     }
 
+    updateQtyById(adjustmentDetail: AdjustmentDetail): Observable<HttpResponse<AdjustmentDetail>> {
+
+        const copy = this.convert(adjustmentDetail);
+        return this.http.post<AdjustmentDetail>(`${this.serverUrl}/updateqty`, copy, { observe: 'response' })
+            .pipe(map((res: HttpResponse<AdjustmentDetail>) => this.convertResponse(res)));
+    }
+
     private convert(adjustmentDetail: AdjustmentDetail): AdjustmentDetail {
         const copy: AdjustmentDetail = Object.assign({}, adjustmentDetail);
         return copy;
@@ -52,11 +59,13 @@ export class AdjustmentDetailService {
         return copyOb;
     }
 
-    deleteById(id: number): Observable<AdjustmentDetail> {
+    deleteById(id: number, idAdj:number): Observable<AdjustmentDetail> {
 
-        const newresourceUrl = this.serverUrl + `/${id}`;
+        const newresourceUrl = this.serverUrl + `/${id}/${idAdj}`;
 
         return this.http.delete<AdjustmentDetail>(newresourceUrl);
     }
+
+    
 
 }

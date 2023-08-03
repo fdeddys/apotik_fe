@@ -257,19 +257,29 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     calculateTotal() {
-        this.total = 0;
 
-        var subtotal = 0 ;
-        var disc = 0;
-        this.purchaseOrderDetails.forEach(purchaseOrderDetail => {
-            subtotal = (purchaseOrderDetail.price * purchaseOrderDetail.qty);
-            disc = (purchaseOrderDetail.disc1  * subtotal) /100
-            subtotal -=disc;
-            this.total += subtotal ;
-        });
+        this.purchaseOrderService.findByIdPO(this.purchaseOrder.id)
+            .subscribe(
+                (res => {
+                    this.total= res.total
+                    this.grandTotal=res.total
+                    
+                })
+            );
 
-        this.taxAmount = this.purchaseOrder.isTax == true ? Math.floor(this.total / 10) : 0;
-        this.grandTotal = this.total + this.taxAmount;
+        // this.total = 0;
+
+        // var subtotal = 0 ;
+        // var disc = 0;
+        // this.purchaseOrderDetails.forEach(purchaseOrderDetail => {
+        //     subtotal = (purchaseOrderDetail.price * purchaseOrderDetail.qty);
+        //     disc = (purchaseOrderDetail.disc1  * subtotal) /100
+        //     subtotal -=disc;
+        //     this.total += subtotal ;
+        // });
+
+        // this.taxAmount = this.purchaseOrder.isTax == true ? Math.floor(this.total / 10) : 0;
+        // this.grandTotal = this.total + this.taxAmount;
     }
 
 

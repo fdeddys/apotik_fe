@@ -189,6 +189,7 @@ export class ProductModalComponent implements OnInit {
                 Swal.fire('Success', 'Save success ', 'info');
                 this.modalService.dismissAll('refresh');
             } else {
+                Swal.fire('Error', result.body.errDesc, 'error');
                 console.log('Toast err');
             }
         });

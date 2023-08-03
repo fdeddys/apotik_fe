@@ -37,6 +37,14 @@ export class AdjustmentService {
         return this.http.post<AdjustmentPageDto[]>(newresourceUrl, req['filter'], { observe: 'response' });
     }
 
+    findByIdAdj(id: number): Observable<any> {
+
+        const pathAdjustmentDetailUrl = SERVER_PATH + 'adjustment';
+
+        return this.http
+            .get<Adjustment>(`${this.serverUrl}/${id}`)
+    }
+
     findById(id: number, totalRec: number): Observable<any> {
 
         const pathAdjustmentDetailUrl = SERVER_PATH + 'adjustment-detail';

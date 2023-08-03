@@ -207,6 +207,8 @@ export class ReturnReceivingModalComponent implements OnInit {
     processReturnReceive(result: ReturnReceive) {
         console.log('isi Return Data result', result);
         this.returnReceive = result;
+        this.total = result.total
+        this.grandTotal = result.grandTotal
 
         this.returnReceiveDetails = result.detail;
         this.totalData = result.totalRow;
@@ -222,14 +224,15 @@ export class ReturnReceivingModalComponent implements OnInit {
     }
 
     calculateTotal() {
-        this.total = 0;
+        this.getTotalRp(this.returnReceive.id)
+        // this.total = 0;
 
-        this.returnReceiveDetails.forEach(returnReceiveDetail => {
-            this.total += this.getTotal(returnReceiveDetail)
-        });
+        // this.returnReceiveDetails.forEach(returnReceiveDetail => {
+        //     this.total += this.getTotal(returnReceiveDetail)
+        // });
 
-        this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
-        this.grandTotal = this.total + this.taxAmount;
+        // this.taxAmount = this.isTax === true ? Math.floor(this.total / 10) : 0;
+        // this.grandTotal = this.total + this.taxAmount;
     }
 
     processSupplier(result: HttpResponse<SupplierPageDto>) {
@@ -374,13 +377,28 @@ export class ReturnReceivingModalComponent implements OnInit {
                     this.spinner.hide();
                     if (res.body.errCode === '00') {
                         this.reloadDetail(this.returnReceive.id);
-                       
+                      
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
                 }),
                 () => {
                     this.spinner.hide();
+                },
+            );
+    }
+
+    getTotalRp(returnId){
+
+
+        this.returnReceiveService
+            .findById(returnId)
+            .subscribe(
+                (res => {
+                    this.total = res.total
+                    this.grandTotal = res.grandTotal
+                }),
+                () => {
                 },
             );
     }

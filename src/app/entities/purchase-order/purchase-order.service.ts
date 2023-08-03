@@ -41,6 +41,13 @@ export class PurchaseOrderService {
     }
 
 
+    findByIdPO(id: number): Observable<any> {
+
+        const pathOrderDetailUrl = SERVER_PATH + 'purchase-order-detail';
+
+        return this.http.get<PurchaseOrder>(`${this.serverUrl}/${id}`)
+    }
+
     findById(id: number): Observable<any> {
 
         const pathOrderDetailUrl = SERVER_PATH + 'purchase-order-detail';

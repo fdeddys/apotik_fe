@@ -97,7 +97,7 @@
                         <td style="width: 30%;">Product</td>
                         <td style="width: 15%;">Hpp</td>
                         <td style="width: 5%;">Qty</td>
-                        <td style="width: 5%;">Unit</td>
+                        <td style="width: 5%;">HPP</td>
                         <td style="width: 10%;">#</td>
                     </tr>
                     <tr>
@@ -127,7 +127,7 @@
         </div>
         <div *ngIf="adjustment">
             <!-- {{adjustmentDetails | json}} -->
-            <div style="height:350px; padding: 5px 15px 5px 15px; ">
+            <div style="height: 380px; padding: 5px 15px 5px 15px; ">
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
@@ -135,7 +135,8 @@
                             <th scope="col">Product</th>
                             <th scope="col">Hpp</th>
                             <th scope="col">Qty</th>
-                            <th scope="col">Unit</th>
+                            <th scope="col">UOM</th>
+                            <th scope="col">HPP</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,7 +149,15 @@
                             </td>
                             <td>{{adjustmentDetail.product.name}}</td>
                             <td>{{adjustmentDetail.hpp | number:'0.0-0' }}</td>
-                            <td>{{adjustmentDetail.qty | number:'0.0-0' }}</td>
+                            <!-- <td>{{adjustmentDetail.qty | number:'0.0-0' }}</td> -->
+                            <td>
+                                <input type="number" [(ngModel)]="adjustmentDetail.qty" placeholder="input qty">
+                                <button type="button"
+                                    (click)="updateQty(adjustmentDetail)" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-check fa-lg"></i>
+                                </button>
+                            </td>
+                            <td>{{adjustmentDetail.uom.name }}</td>
                             <td>{{ (adjustmentDetail.hpp * adjustmentDetail.qty )  | number:'0.0-0'  }}
                             </td>
                         </tr>

@@ -70,6 +70,7 @@ export class ReceivingDetail {
         
         public smallUom?: Lookup,
         public qtyUomSmall?: number,
+        public qtyWh?: number,
 
         public errCode?: string,
         public errDesc?: string,

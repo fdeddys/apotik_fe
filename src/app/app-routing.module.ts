@@ -48,6 +48,7 @@ import { StockInfoBatchComponent } from './entities/stock-info-batch/stock-info-
 import { PaymentSupplierComponent } from './entities/payment-supplier/payment-supplier.component';
 import { PaymentSupplierEditComponent } from './entities/payment-supplier/payment-supplier-edit/payment-supplier-edit.component';
 import { ReportPaymentSupplierComponent } from './entities/report/report-payment-supplier/report-payment-supplier.component';
+import { ApotikParamComponent } from './entities/apotik-param/apotik-param.component';
 
 
 const routes: Routes = [
@@ -110,6 +111,7 @@ const routes: Routes = [
                     { path: 'stock-batch', component: StockInfoBatchComponent },
                     { path: 'payment-supplier', component: PaymentSupplierComponent },
                     { path: 'payment-supplier/:id', component: PaymentSupplierEditComponent },
+                    { path: 'apotik-param', component: ApotikParamComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

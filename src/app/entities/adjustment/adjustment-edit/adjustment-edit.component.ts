@@ -197,11 +197,20 @@ export class AdjustmentEditComponent implements OnInit {
     }
 
     calculateTotal() {
-        this.total = 0;
+        // this.total = 0;
 
-        this.adjustmentDetails.forEach(adjustmentDetail => {
-            this.total = this.total + (adjustmentDetail.hpp * adjustmentDetail.qty) ;
-        });
+        // this.adjustmentDetails.forEach(adjustmentDetail => {
+        //     this.total = this.total + (adjustmentDetail.hpp * adjustmentDetail.qty) ;
+        // });
+        this.adjustmentService
+            .findByIdAdj(this.adjustment.id)
+            .subscribe(
+                (res => {
+                    this.adjustment.total  = res.total
+                }),
+                () => {
+                },
+        );
     }
 
     getItem(event: any) {
@@ -391,9 +400,10 @@ export class AdjustmentEditComponent implements OnInit {
 
             this.adjustmentDetails = res.body.contents;
             this.totalData = res.body.totalRow;
-            this.calculateTotal();
-            this.clearDataAdded();
+           
         }
+        this.calculateTotal();
+        this.clearDataAdded();
     }
 
     confirmDelItem (adjustmentDtl: AdjustmentDetail) {
@@ -408,14 +418,29 @@ export class AdjustmentEditComponent implements OnInit {
         .then(
             (result) => {
             if (result.value) {
-                    this.delItem(adjustmentDtl.id);
+                    this.delItem(adjustmentDtl.id, adjustmentDtl.adjustmentId);
                 }
             });
     }
 
-    delItem(idDetail: number) {
+    updateQty(adjustmentDtl: AdjustmentDetail) {
         this.adjustmentDetailService
-            .deleteById(idDetail)
+            .updateQtyById(adjustmentDtl)
+            .subscribe
+                (res => {
+                    if (res.body.errCode === '00') {
+                        Swal.fire('Success', "Success", 'info');
+                        this.reloadDetail(this.adjustment.id);
+                    } else {
+                        Swal.fire('Error', res.body.errDesc, 'error');
+                    }
+                }
+            ); 
+    }
+
+    delItem(idDetail: number, idAdjustment: number) {
+        this.adjustmentDetailService
+            .deleteById(idDetail, idAdjustment)
             .subscribe(
                 (res: AdjustmentDetail) => {
                     if (res.errCode === '00') {

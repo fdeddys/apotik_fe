@@ -89,7 +89,7 @@
                             <th scope="col">Saldo </th>
                             <th scope="col">HPP</th>
                             <th scope="col">Reff No</th>
-                            <!-- <th scope="col">Total </th> -->
+                            <th scope="col">User</th>
                             <th scope="col">Desc</th>
                         </tr>
                     </thead>
@@ -104,7 +104,7 @@
                             <td>{{historyStock.saldo  }}</td>
                             <td>{{historyStock.hpp | number:'0.0-0'}}</td>
                             <td>{{historyStock.reffNo}}</td>
-                            <!-- <td>{{historyStock.total | number:'0.0-0' }}</td> -->
+                            <td>{{historyStock.lastUpdateBy  }}</td>
                             <td>{{historyStock.description  }}</td>
                         </tr>
                     </tbody>

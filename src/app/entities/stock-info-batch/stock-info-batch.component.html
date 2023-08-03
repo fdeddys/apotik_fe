@@ -13,6 +13,12 @@
                 <tbody style="color: cornflowerblue;">
 
                     <tr>
+                        <td>Product Name :</td>
+                        <td>
+                            <input type="text"  size="50%" [(ngModel)]="productName">
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Batch No:</td>
                         <td>
                             <input type="text"  size="50%" [(ngModel)]="batchNo">
@@ -54,6 +60,7 @@
                             <th scope="col"> RECEIVING </th>
                             <th scope="col">Product</th>
                             <th scope="col">Qty Receive</th>
+                            <th scope="col">Qty Warehouse</th>
                             <th scope="col">UOM</th>
                             <th scope="col">Batch No</th>
                             <th scope="col">Expired Date</th>
@@ -68,6 +75,7 @@
                             </td>
                             <td>{{receivingDetail.product.name   }}</td>
                             <td>{{receivingDetail.qty}}</td>
+                            <td>{{receivingDetail.qtyWh}}</td>
                             <td>{{receivingDetail.uom.name }}</td>
                             <td>{{receivingDetail.batchNo  }}</td>
                             <td>{{receivingDetail.ed }}</td>

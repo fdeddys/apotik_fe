@@ -24,6 +24,7 @@ export class StockInfoBatchComponent implements OnInit {
     curPage =1;
     receivingDetails: ReceivingDetail[];
     stocks: Stock[];
+    productName='';
     
     batchNo: string = '';    
     uomSelected = '';
@@ -62,6 +63,7 @@ export class StockInfoBatchComponent implements OnInit {
                 expiredStart : this.getSelectedDate(this.selectedDateStart),
                 expiredEnd: this.getSelectedDate(this.selectedDateEnd),
                 batch: this.batchNo,
+                productName: this.productName,
             }
            
         }).subscribe(
