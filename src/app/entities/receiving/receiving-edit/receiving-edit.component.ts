@@ -23,6 +23,7 @@ import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { async } from '@angular/core/testing';
 import { PurchaseOrderService } from '../../purchase-order/purchase-order.service';
+import * as moment from 'moment';
 
 @Component({
     selector: 'op-receiving-edit',
@@ -74,6 +75,9 @@ export class ReceivingEditComponent implements OnInit {
     curPage =1;
     totalRecord =0;
     taxPercent = 0;
+
+    multiDelete : number[]= [];
+    multiDeleteDesc : String[]= [];
 
     constructor(
         private route: ActivatedRoute,
@@ -207,7 +211,7 @@ export class ReceivingEditComponent implements OnInit {
 
     loadWarehousePromise() {
 
-        this.warehouseService.getWarehouse()
+        this.warehouseService.getWarehouseIn()
             .toPromise()
             .then(
                 (response: HttpResponse<WarehouseDto>) => {
@@ -286,14 +290,14 @@ export class ReceivingEditComponent implements OnInit {
         //             this.warehouses = dataWh.contents;
         //             this.warehouseSelected = this.warehouses[0] ;
         //             console.log('set wh selected ', this.warehouseSelected);
-        //             console.log("load ww promise");
+        //             console.log("load ww promise"e);
         //         }
         //     )
     }
 
 
     loadWarehouse() {
-        this.warehouseService.getWarehouse()
+        this.warehouseService.getWarehouseIn()
             .subscribe(
             (response: HttpResponse<WarehouseDto>) => {
                 if (response.body.contents.length <= 0) {
@@ -397,7 +401,7 @@ export class ReceivingEditComponent implements OnInit {
                 }
             });
         
-        let warehouseReq = this.warehouseService.getWarehouse();
+        let warehouseReq = this.warehouseService.getWarehouseIn();
 
         const requestArray = [];
         requestArray.push(receiveReq);
@@ -434,12 +438,39 @@ export class ReceivingEditComponent implements OnInit {
         } else {
             this.isTax = false
         }
-
+        this.setSelectedDate(this.receive.receiveDate) 
         // this.receiveDetails = result.detail;
         // console.log('isi receive detauil', this.receiveDetails);
         // this.calculateTotal();
 
         // this.receive.detail = null;
+    }
+
+    setSelectedDate(curDate: string) {
+        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
+        };
+    }
+
+    fieldsChange(values:any, obj: ReceivingDetail) {
+        // console.log(JSON.stringify(obj) , " - " , obj.id, " - " , values.currentTarget.checked);
+        if (values.currentTarget.checked){
+            this.multiDelete.push(obj.id);
+            this.multiDeleteDesc.push(obj.product.name)
+            console.log(obj.id)
+        } else {
+            console.log("remove " ,  obj.id)
+            var index = this.multiDelete.indexOf(obj.id);
+            if (index !== -1) {
+                this.multiDelete.splice(index, 1);
+                this.multiDeleteDesc.splice(index, 1);
+            }
+            
+        }
     }
 
     calculateTotal() {
@@ -796,6 +827,52 @@ export class ReceivingEditComponent implements OnInit {
         console.log('exit ya..');
     }
 
+    confirmDeleteMulti(){
+
+        Swal.fire({
+            title : 'Confirm',
+            text : 'Are you sure to cancel [ ' + this.multiDeleteDesc.toString() + ' ] ?',
+            type : 'info',
+            showCancelButton: true,
+            confirmButtonText : 'Ok',
+            cancelButtonText : 'Cancel'
+        })
+        .then(
+            (result) => {
+            if (result.value) {
+                    this.delMultiItem();
+                }
+            });
+    }
+
+
+    delMultiItem() {
+        this.spinner.show();
+
+        setTimeout(() => {
+            this.spinner.hide();
+        }, 5000);
+
+        this.receiveDetailService
+            .deleteMultipleById(this.multiDelete)
+            .subscribe(
+                (res) => {
+                    if (res.body.errCode === '00') {
+                        Swal.fire('Success', 'Data deleted', 'info');
+                        this.reloadDetail(this.receive.id);
+                        this.spinner.hide();
+                    } else {
+                        Swal.fire('Failed', 'Data deleted ', 'info');
+                    }
+                },
+                ()=> {
+                    this.spinner.hide();
+                }
+            );
+    }
+
+   
+
     confirmDelItem (receiveDtl: ReceivingDetail) {
         Swal.fire({
             title : 'Confirm',
@@ -812,6 +889,7 @@ export class ReceivingEditComponent implements OnInit {
                 }
             });
     }
+
 
     delItem(idDetail: number) {
         this.receiveDetailService
@@ -1089,6 +1167,8 @@ export class ReceivingEditComponent implements OnInit {
     }
 
     loadPage() {
+        this.multiDelete=[];
+        this.multiDeleteDesc=[];
         this.copyDataToShowData();
         this.fillGridDetail();
     }

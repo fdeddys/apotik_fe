@@ -65,4 +65,14 @@ export class ReceivingDetailService {
         return this.http.delete<ReceivingDetail>(newresourceUrl );
     }
 
+    deleteMultipleById(multiId: number[]): Observable<HttpResponse<ReceivingDetail>> {
+
+        const newresourceUrl = this.serverUrl + `/deleteMulti`;
+
+        // return this.http.delete<ReceivingDetail>(newresourceUrl );
+        return this.http.post<ReceivingDetail>(newresourceUrl, multiId, { observe: 'response' })
+            .pipe(map((res: HttpResponse<ReceivingDetail>) => this.convertResponse(res)));
+    }
+
+
 }

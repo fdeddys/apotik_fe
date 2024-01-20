@@ -18,6 +18,7 @@ import { WarehouseService } from '../../warehouse/warehouse.service';
 import { ReturnReceivingDetailService } from '../return-receiving-detail.service';
 import { LastPriceDto, ReturnReceive, ReturnReceiveDetail, ReturnReceiveDetailPageDto } from '../return-receiving.model';
 import { ReturnReceivingService } from '../return-receiving.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'op-return-receiving-modal',
@@ -214,8 +215,18 @@ export class ReturnReceivingModalComponent implements OnInit {
         this.totalData = result.totalRow;
         console.log('isi return detail', this.returnReceiveDetails);
         this.calculateTotal();
-
+        this.setSelectedDate(this.returnReceive.returnDate)
         this.returnReceive.detail = null;
+    }
+
+    setSelectedDate(curDate: string) {
+        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
+        };
     }
 
     processDetail(result: HttpResponse<ReturnReceiveDetailPageDto>) {
@@ -273,7 +284,7 @@ export class ReturnReceivingModalComponent implements OnInit {
 
     loadWarehouse() {
         this.warehouseService
-            .getWarehouse()
+            .getWarehouseIn()
             .subscribe(
                 (response: HttpResponse<WarehouseDto>) => {
                     if (response.body.errCode != "00") {

@@ -152,7 +152,7 @@
                             <!-- <td>{{adjustmentDetail.qty | number:'0.0-0' }}</td> -->
                             <td>
                                 <input type="number" [(ngModel)]="adjustmentDetail.qty" placeholder="input qty">
-                                <button type="button"
+                                <button type="button"  *ngIf="adjustment.status == 10 || adjustment.status == 0"
                                     (click)="updateQty(adjustmentDetail)" class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-check fa-lg"></i>
                                 </button>

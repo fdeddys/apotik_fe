@@ -276,7 +276,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     loadWarehouse() {
         this.warehouseService
-            .getWarehouse()
+            .getWarehouseOut()
             .subscribe(
                 (response: HttpResponse<WarehouseDto>) => {
                     if (response.body.errCode != "00") {

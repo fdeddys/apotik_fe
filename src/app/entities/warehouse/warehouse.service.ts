@@ -22,6 +22,18 @@ export class WarehouseService {
         return this.http.get<WarehouseDto>(newresourceUrl, { observe: 'response' });
     }
 
+    getWarehouseIn(req?: any): Observable<HttpResponse<WarehouseDto>> {
+
+        var newresourceUrl = this.serverUrl;
+        return this.http.get<WarehouseDto>(newresourceUrl + '/in', { observe: 'response' });
+    }
+
+    getWarehouseOut(req?: any): Observable<HttpResponse<WarehouseDto>> {
+
+        var newresourceUrl = this.serverUrl;
+        return this.http.get<WarehouseDto>(newresourceUrl + '/out', { observe: 'response' });
+    }
+
     async getWarehousePromise(req?: any) {
 
         var newresourceUrl = this.serverUrl;

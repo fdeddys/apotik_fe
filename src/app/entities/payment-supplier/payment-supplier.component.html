@@ -5,9 +5,15 @@
         <div>
             <form>
                 <div class="row">
-                    <div class="col-md-9 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label for="date1">Filter</label>
+                        
                         <div>
+                            <span style="margin-right: 20px;margin-left: 1px;">PS No.</span>
+                            <input style="width: 100px;"  type="text" id="psno" 
+                                [(ngModel)]='searchTerm.paymentNo'
+                                name="psno" >
+
                             <span style="margin-right: 20px;margin-left: 1px;">Order Date : </span>
                             <input type="text" ngbDatepicker #d="ngbDatepicker" 
                                 readonly [(ngModel)]="dateStart" 

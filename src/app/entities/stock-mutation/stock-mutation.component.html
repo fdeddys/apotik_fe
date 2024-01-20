@@ -6,6 +6,29 @@
             <form>
                 <div class="row">
                     <div class="col-md-3 mb-3">
+                        <label for="searchSupp">MT No</label>
+                        <input style="width: 100%;" type="text" class="form-control" id="searchSupp" [(ngModel)]='searchTerm.stockMutationNumber'
+                            name="searchSupplier" placeholder="Enter Supplier Name">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="startDate">Start Date</label>
+                        <div>
+                            <input type="text" name="startDate" style="width: 80%;" ngbDatepicker #d1="ngbDatepicker"  [(ngModel)]="startDate" />
+                            <button (click)="d1.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="endDate">End Date</label>
+                        <div>
+                            <input type="text" name="endDate" style="width: 80%;" ngbDatepicker #d2="ngbDatepicker"  [(ngModel)]="endDate" />
+                            <button (click)="d2.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-3 mb-3">
                         <label for="brandCodeInput">Code</label>
                         <input type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.code'
                             name="searchCode" placeholder="Enter Code">
@@ -14,7 +37,7 @@
                         <label for="brandNameInput">Name</label>
                         <input type="text" class="form-control" id="brandNameInput" [(ngModel)]='searchTerm.name'
                             name="searchName" placeholder="Enter Name">
-                    </div>
+                    </div> -->
                     <!-- <div class="col-md-3 mb-3">
                         <label for="loookupDesctiptionInput">Description</label>
                         <input type="text" class="form-control" id="loookupDesctiptionInput"

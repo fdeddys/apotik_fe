@@ -18,6 +18,7 @@ import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { isNumber } from 'lodash';
 import { PurchaseOrderModalComponent } from '../purchase-order-modal/purchase-order-modal.component';
+import { load } from '@angular/core/src/render3';
 
 @Component({
   selector: 'op-purchase-order-edit',
@@ -442,7 +443,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             .subscribe(
                 (res => {
                     if (res.body.errCode === '00') {
-                        this.reloadDetail(this.purchaseOrder.id);
+                        this.reloadDetail(this.purchaseOrder.id, false);
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -553,11 +554,21 @@ export class PurchaseOrderEditComponent implements OnInit {
         return purchaseOrderDetail;
     }
 
-    reloadDetail(id: number) {
+    reloadDetail(id: number, deldata: boolean) {
+        let loadPage =1
+        if (deldata) {
+            // jika delete data, tidak boleh ke halaman 1
+            if (this.purchaseOrderDetails.length > 1){
+                loadPage = this.curPage;
+            }
+        } else {
+            this.curPage=1
+        }
+
         this.purchaseOrderDetailService
             .findByPurchaseOrderId({
                 count: 10,
-                page: 1,
+                page: loadPage,
                 filter : {
                     purchaseOrderId: id,
                 }
@@ -636,7 +647,7 @@ export class PurchaseOrderEditComponent implements OnInit {
                 (res: PurchaseOrderDetail) => {
                     if (res.errCode === '00') {
                         Swal.fire('Success', 'Data cancelled', 'info');
-                        this.reloadDetail(this.purchaseOrder.id);
+                        this.reloadDetail(this.purchaseOrder.id, true);
                     } else {
                         Swal.fire('Failed', 'Data failed cancelled', 'info');
                     }
@@ -826,12 +837,12 @@ export class PurchaseOrderEditComponent implements OnInit {
             this.closeResult = `Closed with: ${result}`;
             console.log(this.closeResult);
             this.curPage = 1;
-            this.reloadDetail(this.purchaseOrder.id);
+            this.reloadDetail(this.purchaseOrder.id, false);
         }, (reason) => {
             console.log(reason);
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
             console.log(this.closeResult);
-            this.reloadDetail(this.purchaseOrder.id);
+            this.reloadDetail(this.purchaseOrder.id, false);
         });
     }
 

@@ -504,7 +504,8 @@ export class AdjustmentEditComponent implements OnInit {
 
 
     approveProccess() {
-        this.adjustment.warehouse = this.warehouseSelected;
+        // this.adjustment.warehouse = this.warehouseSelected;
+        console.log('selected : ' , this.warehouseSelected.id)
         this.adjustment.warehouseId = this.warehouseSelected.id;
         this.adjustmentService.approve(this.adjustment)
             .subscribe(

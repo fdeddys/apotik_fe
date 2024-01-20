@@ -6,6 +6,7 @@ import { TOTAL_RECORD_PER_PAGE } from 'src/app/shared/constants/base-constant';
 import { StockMutation, StockMutationPageDto } from './stock-mutation.model';
 import { StockMutationService } from './stock-mutation.service';
 import { Location } from '@angular/common';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'op-stock-mutation',
@@ -20,10 +21,14 @@ export class StockMutationComponent implements OnInit {
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
-        code: '',
-        name: '',
+        stockMutationNumber: '',
+        startDate: '',
+        endDate: '',
     };
     closeResult: string;
+    startDate: NgbDateStruct;
+    endDate : NgbDateStruct;
+    
     constructor(
         private route: Router,
         private stockMutationService: StockMutationService,
@@ -31,7 +36,27 @@ export class StockMutationComponent implements OnInit {
         private spinner: NgxSpinnerService,
     ) { }
 
+
+    setToday() {
+        const today = new Date();
+
+        
+        this.startDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+
+        this.endDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+
+    }
+
     ngOnInit() {
+        this.setToday() ;
         this.loadAll(this.curPage);
     }
 
@@ -39,7 +64,34 @@ export class StockMutationComponent implements OnInit {
         this.loadAll(this.curPage);
     }
 
+    getStartDate(): string{
+
+        const month = ('0' + this.startDate.month).slice(-2);
+        const day = ('0' + this.startDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.startDate.year + '-' + month + '-' + day + tz;
+    }
+
+    getEndDate(): string{
+
+        const month = ('0' + this.endDate.month).slice(-2);
+        const day = ('0' + this.endDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.endDate.year + '-' + month + '-' + day + tz;
+    }
+
     loadAll(page) {
+        this.searchTerm.startDate = '';
+        if (this.startDate !== null) {
+            this.searchTerm.startDate = this.getStartDate();
+        } 
+        this.searchTerm.endDate = '';
+        if (this.endDate !== null) {
+            this.searchTerm.endDate = this.getEndDate();
+        } 
+
         this.spinner.show();
         this.stockMutationService.filter({
             filter: this.searchTerm,
@@ -78,8 +130,9 @@ export class StockMutationComponent implements OnInit {
 
     resetFilter() {
         this.searchTerm = {
-            code: '',
-            name: '',
+            stockMutationNumber: '',
+            startDate: '',
+            endDate: '',
         };
         this.loadAll(1);
     }

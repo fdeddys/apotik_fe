@@ -21,7 +21,7 @@ export class PurchaseOrderComponent implements OnInit {
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
-        pono: '',
+        purchaseOrderNumber: '',
         status: -1,
         startDate:'',
         endDate:'',
@@ -143,9 +143,9 @@ export class PurchaseOrderComponent implements OnInit {
         if (postatus!==null) {
             this.statusSelected = Number(postatus)
         }
-        let pono = sessionStorage.getItem("po:pono")
-        if (pono!==null) {
-            this.searchTerm.pono = pono
+        let purchaseOrderNumber = sessionStorage.getItem("po:purchaseOrderNumber")
+        if (purchaseOrderNumber!==null) {
+            this.searchTerm.purchaseOrderNumber = purchaseOrderNumber
         }
         let supplierName = sessionStorage.getItem("po:supplierName")
         if (supplierName!==null) {
@@ -178,10 +178,11 @@ export class PurchaseOrderComponent implements OnInit {
         sessionStorage.setItem("po:startDate",this.searchTerm.startDate )
         sessionStorage.setItem("po:endDate",this.searchTerm.endDate)
         sessionStorage.setItem("po:status",this.statusSelected.toString())
-        sessionStorage.setItem("po:pono",this.searchTerm.pono)
+        sessionStorage.setItem("po:purchaseOrderNumber",this.searchTerm.purchaseOrderNumber)
         sessionStorage.setItem("po:supplierName",this.searchTerm.supplierName)
         sessionStorage.setItem("po:page",page)
 
+        // this.searchTerm.purchaseOrderNumber = this.searchTerm.purchaseOrderNumber;
 
         this.spinner.show();
         this.purchaseOrderService.filter({
@@ -224,7 +225,7 @@ export class PurchaseOrderComponent implements OnInit {
 
     resetFilter() {
         this.searchTerm = {
-            pono: '',
+            purchaseOrderNumber: '',
             status: -1,
             startDate:'',
             endDate:'',

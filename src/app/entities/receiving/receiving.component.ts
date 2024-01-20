@@ -27,6 +27,7 @@ export class ReceivingComponent implements OnInit {
         startDate:'',
         endDate:'',
         supplierName: '',
+        purchaseOrderNo: '',
     };
     closeResult: string;
 
@@ -125,6 +126,11 @@ export class ReceivingComponent implements OnInit {
         if (supplierName!==null) {
             this.searchTerm.supplierName = supplierName
         }
+        let purchaseOrderNo = sessionStorage.getItem("receive:purchaseOrderNo")
+        if (purchaseOrderNo!==null) {
+            this.searchTerm.purchaseOrderNo = purchaseOrderNo
+        }
+        
     }
 
     getStartDate(): string{
@@ -164,7 +170,8 @@ export class ReceivingComponent implements OnInit {
         sessionStorage.setItem("receive:status",this.statusSelected.toString())
         sessionStorage.setItem("receive:receiveNumber",this.searchTerm.receiveNumber)
         sessionStorage.setItem("receive:supplierName",this.searchTerm.supplierName)
-
+        sessionStorage.setItem("receive:purchaseOrderNo",this.searchTerm.purchaseOrderNo)
+        
 
         this.receiveService.filter({
             filter: this.searchTerm,
@@ -208,6 +215,7 @@ export class ReceivingComponent implements OnInit {
             startDate:'',
             endDate:'',
             supplierName:'',
+            purchaseOrderNo:''
         };
         this.loadAll(1);
     }
