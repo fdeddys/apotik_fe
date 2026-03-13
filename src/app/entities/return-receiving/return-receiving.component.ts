@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ReturnReceivingService } from './return-receiving.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { LookupStatusRR } from '../lookup/lookup.model';
 
 @Component({
   selector: 'op-return-receiving',
@@ -19,16 +21,44 @@ export class ReturnReceivingComponent implements OnInit {
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
-        no: '',
+        returnNo: '',
         name: '',
+        startDate:'',
+        endDate:'',
+        status: 0,
     };
     closeResult: string;
+    startDate: NgbDateStruct;
+    endDate : NgbDateStruct;
+    listStatuses: LookupStatusRR[]=[];
+    statusSelected: number;
     constructor(
         private route: Router,
         private returnReceiveService: ReturnReceivingService,
         private location: Location,
         private spinner: NgxSpinnerService,
     ) { }
+
+    setToday() {
+        const today = new Date();
+        
+       
+        this.startDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+         
+        
+        this.endDate = {
+            year: today.getFullYear(),
+            day: today.getDate(),
+            month: today.getMonth() + 1,
+        };
+        
+
+        
+    }
 
     ngOnInit() {
         let name = sessionStorage.getItem("return-receive:name")
@@ -38,9 +68,10 @@ export class ReturnReceivingComponent implements OnInit {
 
         let no = sessionStorage.getItem("return-receive:no")
         if (no!==null) {
-            this.searchTerm.no = no
+            this.searchTerm.returnNo = no
         }
-
+        this.setToday();
+        this.setListStatus();
 
         this.loadAll(this.curPage);
     }
@@ -51,8 +82,19 @@ export class ReturnReceivingComponent implements OnInit {
 
     loadAll(page) {
         this.spinner.show();
+        this.searchTerm.startDate = '';
+        if (this.startDate !== null) {
+            this.searchTerm.startDate = this.getStartDate();
+        } 
+        this.searchTerm.endDate = '';
+        if (this.endDate !== null) {
+            this.searchTerm.endDate = this.getEndDate();
+        }
+        this.searchTerm.status = +this.statusSelected;
+        sessionStorage.setItem("return-receive:startDate",this.searchTerm.startDate )
+        sessionStorage.setItem("return-receive:endDate",this.searchTerm.endDate)
         sessionStorage.setItem("return-receive:name",this.searchTerm.name)
-        sessionStorage.setItem("return-receive:no",this.searchTerm.no)
+        sessionStorage.setItem("return-receive:no",this.searchTerm.returnNo)
         this.returnReceiveService.filter({
             filter: this.searchTerm,
             page: page,
@@ -66,6 +108,25 @@ export class ReturnReceivingComponent implements OnInit {
         );
         console.log(page);
     }
+
+    setListStatus(){
+        var statusAll =new LookupStatusRR(0, 'ALL');
+        var status1 = new LookupStatusRR(10, 'Outstanding');
+        var status2 = new LookupStatusRR(20, 'Submit');
+        var status3 = new LookupStatusRR(30, 'Cancel');
+
+        this.listStatuses.push(statusAll);
+        this.listStatuses.push(status1);
+        this.listStatuses.push(status2);
+        this.listStatuses.push(status3);
+        let rrstatus = sessionStorage.getItem("return-receive:status")
+        if (rrstatus==null) {
+            this.statusSelected = 0;
+        } else{
+            this.statusSelected = Number(rrstatus)
+        }
+        // console.log('all status ', this.listStatuses)
+    }  
 
     addNew() {
         this.route.navigate(['/main/return-receive/', 0 ]);
@@ -91,8 +152,11 @@ export class ReturnReceivingComponent implements OnInit {
 
     resetFilter() {
         this.searchTerm = {
-            no: '',
+            returnNo: '',
             name: '',
+            startDate:'',
+            endDate:'',
+            status:0,
         };
         this.loadAll(1);
     }
@@ -123,4 +187,21 @@ export class ReturnReceivingComponent implements OnInit {
         return statusName;
     }
 
+    getStartDate(): string{
+
+        const month = ('0' + this.startDate.month).slice(-2);
+        const day = ('0' + this.startDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.startDate.year + '-' + month + '-' + day + tz;
+    }
+
+    getEndDate(): string{
+
+        const month = ('0' + this.endDate.month).slice(-2);
+        const day = ('0' + this.endDate.day).slice(-2);
+        const tz = 'T00:00:00+07:00';
+
+        return this.endDate.year + '-' + month + '-' + day + tz;
+    }
 }

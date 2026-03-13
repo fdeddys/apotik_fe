@@ -5,6 +5,11 @@
         <div>
             <form>
                 <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="brandCodeInput">Payment no</label>
+                        <input type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.paymentNo'
+                            name="paymentNo" placeholder="Enter paymentNo">
+                    </div>
                     <div class="col-md-9 mb-3">
                         <label for="date1">Filter</label>
                         <div>

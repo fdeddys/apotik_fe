@@ -20,7 +20,7 @@ export class SalesOrderComponent implements OnInit {
     totalData = 0;
     totalRecord = TOTAL_RECORD_PER_PAGE;
     searchTerm = {
-        code: '',
+        orderNumber: '',
         name: '',
         description : '',
         isCash: false,
@@ -195,7 +195,7 @@ export class SalesOrderComponent implements OnInit {
 
     resetFilter() {
         this.searchTerm = {
-            code: '',
+            orderNumber: '',
             name: '',
             description : '',
             isCash: false,

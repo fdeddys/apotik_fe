@@ -7,13 +7,44 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label for="brandCodeInput">Return no</label>
-                        <input type="text" class="form-control" id="search_no" [(ngModel)]='searchTerm.no'
+                        <input type="text" class="form-control" id="search_no" [(ngModel)]='searchTerm.returnNo'
                             name="searchCode" placeholder="Enter No">
                     </div>
                     <div class="col-md-3 mb-3">
                         <label for="brandNameInput">Name</label>
                         <input type="text" class="form-control" id="search_customer" [(ngModel)]='searchTerm.name'
                             name="searchName" placeholder="Enter Name">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="startDate">Start Date</label>
+                        <div>
+                            <input type="text" name="startDate"  ngbDatepicker #d1="ngbDatepicker"  [(ngModel)]="startDate" />
+                            <button (click)="d1.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="endDate">End Date</label>
+                        <div>
+                            <input type="text" name="endDate" ngbDatepicker #d2="ngbDatepicker"  [(ngModel)]="endDate" />
+                            <button (click)="d2.toggle()">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                     <div class="col-md-2 mb-2">
+                        <label for="loookupDesctiptionInput">Status</label>
+                        <!-- <input type="text" class="form-control" id="loookupDesctiptionInput"
+                            [(ngModel)]='searchTerm.status' name="searchDescription"
+                            placeholder="Enter Description"> -->
+                        <select [(ngModel)]="statusSelected" class="form-control"
+                            [ngModelOptions]="{standalone: true}">
+                            <option *ngFor="let listStatus of listStatuses" [value]="listStatus.code">
+                                {{listStatus.name}}
+                            </option>
+                        </select>
+                        status : {{statusSelected}}
                     </div>
                 </div>
                 <div class="btn-group" role="group">

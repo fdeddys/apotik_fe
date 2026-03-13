@@ -562,7 +562,8 @@ export class PurchaseOrderEditComponent implements OnInit {
                 loadPage = this.curPage;
             }
         } else {
-            this.curPage=1
+            // this.curPage=1
+            loadPage = this.curPage;
         }
 
         this.purchaseOrderDetailService
@@ -836,10 +837,11 @@ export class PurchaseOrderEditComponent implements OnInit {
         modalRef.result.then((result) => {
             this.closeResult = `Closed with: ${result}`;
             console.log(this.closeResult);
-            this.curPage = 1;
+            // this.curPage = 1;
+            console.log("Close modal ", this.curPage)
             this.reloadDetail(this.purchaseOrder.id, false);
         }, (reason) => {
-            console.log(reason);
+            console.log('reason  ==>', reason);
             this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
             console.log(this.closeResult);
             this.reloadDetail(this.purchaseOrder.id, false);

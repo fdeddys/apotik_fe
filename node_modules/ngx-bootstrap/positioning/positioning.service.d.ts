@@ -1,4 +1,4 @@
-import { ElementRef, RendererFactory2 } from '@angular/core';
+import { ElementRef, RendererFactory2, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Options } from './models';
 export interface PositioningOptions {
@@ -33,7 +33,7 @@ export declare class PositioningService {
     private positionElements;
     private triggerEvent$;
     private isDisabled;
-    constructor(rendererFactory: RendererFactory2, platformId: number);
+    constructor(ngZone: NgZone, rendererFactory: RendererFactory2, platformId: number);
     position(options: PositioningOptions): void;
     readonly event$: Observable<number | Event>;
     disable(): void;

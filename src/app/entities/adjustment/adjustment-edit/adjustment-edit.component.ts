@@ -15,6 +15,7 @@ import { WarehouseService } from '../../warehouse/warehouse.service';
 import { GlobalComponent } from 'src/app/shared/global-component';
 import { LocalStorageService } from 'ngx-webstorage';
 import { isNumber } from 'lodash';
+import * as moment from 'moment';
 
 @Component({
   selector: 'op-adjustment-edit',
@@ -165,11 +166,23 @@ export class AdjustmentEditComponent implements OnInit {
 
     }
 
+    setSelectedDate(curDate: string) {
+        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        const today = new Date();
+        this.selectedDate = {
+            year: curDates.getFullYear() ,
+            day: curDates.getDate(),
+            month: curDates.getMonth() + 1,
+        };
+    }
+
     processAdjustment(result: Adjustment) {
         console.log('isi adjustment result', result);
         this.totalData = result.totalRow;
         this.adjustment = result;
         this.adjustmentDetails = result.detail;
+
+        this.setSelectedDate(result.adjustmentDate) 
 
         console.log('isi adjustment detauil', this.adjustmentDetails);
         this.calculateTotal();

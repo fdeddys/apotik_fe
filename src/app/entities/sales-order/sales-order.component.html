@@ -5,11 +5,7 @@
         <div>
             <form>
                 <div class="row" *ngIf="false">
-                    <div class="col-md-3 mb-3">
-                        <label for="brandCodeInput">Code</label>
-                        <input type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.code'
-                            name="searchCode" placeholder="Enter Code">
-                    </div>
+                    
                     <div class="col-md-3 mb-3">
                         <label for="brandNameInput">Name</label>
                         <input type="text" class="form-control" id="brandNameInput" [(ngModel)]='searchTerm.name'
@@ -23,7 +19,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    
+                    <div class="col-md-3 mb-3">
+                        <label for="brandCodeInput">Order no</label>
+                        <input type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.orderNumber'
+                            name="searchCode" placeholder="Enter no">
+                    </div>
                     <div class="col-md-2 mb-2">
                         <label for="startDate">Start Date</label>
                         <div>

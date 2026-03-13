@@ -268,7 +268,7 @@ export class PaymentSupplierEditComponent implements OnInit {
         // this.selectedDate = curDates;
     }
 
-    calculateTotal() {
+    calculateTotalx() {
         this.total = 0;
 
         var subtotal = 0 ;
@@ -276,6 +276,19 @@ export class PaymentSupplierEditComponent implements OnInit {
             subtotal += detail.total ;
         });
         this.total = subtotal ;
+    }
+
+    calculateTotal() {
+
+        this.paymentSupplierService.findById(this.paymentSupplier.id)
+            .subscribe(
+                (res => {
+                    this.total= res.total
+                    // this.grandTotal=res.total
+                    
+                })
+            );
+
     }
 
 

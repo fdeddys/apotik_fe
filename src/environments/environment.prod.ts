@@ -5,12 +5,13 @@ export const environment = {
   // server apotik
   // APIEndpoint:'http://192.168.100.200:8800/'
 
-  // APIEndpoint:'http://192.168.100.200:8800/'
+  APIEndpoint:'http://192.168.100.200:8800/'
   // untuk floren
   // APIEndpoint:'http://localhost:7700/'
 
   // Untuk jaringan hamachi
-  APIEndpoint:'http://25.24.202.47:8800/'
+  // APIEndpoint:'http://25.24.202.47:8800/'
+  // APIEndpoint:'http://25.64.90.7:8800/'
 
   // jaringan LAN apotik
   // APIEndpoint:'http://192.168.1.1:8800/'

@@ -40,7 +40,6 @@
                         <select [(ngModel)]="statusSelected" class="form-control"
                             [ngModelOptions]="{standalone: true}">
                             <option *ngFor="let listStatus of listStatuses" [value]="listStatus.id">
-                                {{listStatus.name}}
                             </option>
                         </select>
                     </div>

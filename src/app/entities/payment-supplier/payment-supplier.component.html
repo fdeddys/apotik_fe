@@ -63,6 +63,7 @@
                         <th></th>
                         <th scope="col">Payment Reff</th>
                         <th scope="col">Payment No.</th>
+                        <th scope="col">Supplier</th>
                         <th scope="col" class='centerText' >Date</th>
                         <th scope="col" class='centerText' >Status</th>
                         <th scope="col" class='rightText' >Total</th>
@@ -79,6 +80,7 @@
                         </td>
                         <td>{{paymentSupplier.paymentReff}}</td>
                         <td>{{paymentSupplier.paymentNo}}</td>
+                        <td class='centerText' >{{paymentSupplier.supplier.name}} </td>
                         <!-- <td class='centerText' >{{paymentSupplier.paymentDate | date:'dd-MMM-yyyy'}}</td> -->
                         <td class='centerText' >{{ getDate(paymentSupplier) }}</td>
                         <td class='centerText' >{{getStatus(paymentSupplier.status)}} </td>

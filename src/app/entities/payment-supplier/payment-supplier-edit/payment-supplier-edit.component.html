@@ -154,6 +154,7 @@
                             <th *ngIf ="paymentSupplier"></th>
                             <th scope="col">Receive</th>
                             <th scope="col">Receive Date</th>
+                            <th scope="col">Supplier</th>
                             <th scope="col">Total</th>
                         </tr>
                     </thead>
@@ -169,6 +170,7 @@
                             </td>
                             <td>{{paymentSupplierDetail.receive.receiveNo}}</td>
                             <td>{{paymentSupplierDetail.receive.receiveDate | date:'dd-MMM-yyyy'}}</td>
+                            <td>{{paymentSupplierDetail.receive.supplier.name }}</td>
                             <td>{{paymentSupplierDetail.total   | number:'0.0-0'  }}</td>
                         </tr>
                     </tbody>

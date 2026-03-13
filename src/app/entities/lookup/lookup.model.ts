@@ -46,3 +46,10 @@ export class LookupTemplate {
         public qty?: number,
     ) {}
 }
+
+export class LookupStatusRR {
+    constructor (
+        public code?: number,
+        public name?: string,
+    ) {}
+}
