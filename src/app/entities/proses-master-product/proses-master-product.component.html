@@ -1,0 +1,77 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <h5 class="card-title" style="color: tomato;">Update data master product</h5>
+
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="clearData()">
+                Clear Data <i class="fa fa-eraser fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm" (click)="fileInput.click()">
+                Upload File CSV <i class="fa fa-file-excel-o fa-lg"></i>
+            </button>
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" style="display: none;" />
+
+            <button type="button" class="btn btn-outline-success btn-sm" (click)="uploadToServer()">
+                Upload to Server <i class="fa fa-upload fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="prosesToDatabase()">
+                Proses to Database <i class="fa fa-database fa-lg"></i>
+            </button>
+        </div>
+
+        <span *ngIf="fileUpload" class="badge badge-warning"
+            style="margin-left: 15px; font-size: 13px; padding: 6px 10px;">
+            Selected: {{ fileUpload.name }}
+        </span>
+
+        <div
+            style="margin-top: 15px; background-color: #fdfefe; border: 1px solid #dee2e6; border-radius: 6px; padding: 12px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <strong style="color: #495057; font-size: 13.5px; display: block; margin-bottom: 6px;">
+                <i class="fa fa-info-circle text-info"></i> Cara Pakai:
+            </strong>
+            <textarea class="form-control" readonly rows="9"
+                style="font-size: 12.5px; font-family: inherit; resize: none; background-color: #f8f9fa; color: #495057; line-height: 1.6; border: 1px solid #ced4da;">1. download data di master product, tombol 'export data'
+2. buka file hasil download data menggunakan excel dan perbaiki
+3. jika sudah selesai, hapus baris header dan nama column
+4. save file excel tersebut menjadi file csv ( comma delimited )
+5. 'clear data' jika di grid ada data
+6. 'upload file csv' sesuai file pada step no 4
+7. 'upload to server' lalu check lagi apakah data sudah benar
+8. 'proses to server' untuk update data ke database</textarea>
+        </div>
+
+        <br>
+
+        <div style="height:450px; overflow-y: auto; padding: 5px 15px 5px 15px; ">
+            <table class="table table-sm table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No</th>
+                        <th style="width: 15%;">Code</th>
+                        <th style="width: 35%;">Nama</th>
+                        <th style="width: 15%;">PLU</th>
+                        <th style="width: 15%;">Harga Jual</th>
+                        <th style="width: 15%;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let prod of productList; let idx = index">
+                        <td>{{ idx + 1 }}</td>
+                        <td>{{ prod.code }}</td>
+                        <td>{{ prod.nama }}</td>
+                        <td>{{ prod.plu }}</td>
+                        <td>{{ prod.hargaJual | number:'0.0-0' }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="prod.status === 1 ? 'badge-success' : 'badge-danger'">
+                                {{ prod.status === 1 ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="productList.length === 0">
+                        <td colspan="6" class="text-center text-muted">No data loaded. Please upload a CSV file.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

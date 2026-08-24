@@ -13,6 +13,7 @@ import { AccessMatrixComponent } from './entities/access-matrix/access-matrix.co
 import { ProductGroupComponent } from './entities/product-group/product-group.component';
 import { BrandComponent } from './entities/brand/brand.component';
 import { CustomerComponent } from './entities/customer/customer.component';
+import { PelangganComponent } from './entities/pelanggan/pelanggan.component';
 import { SupplierComponent } from './entities/supplier/supplier.component';
 import { ProductComponent } from './entities/product/product.component';
 import { SalesOrderComponent } from './entities/sales-order/sales-order.component';
@@ -49,6 +50,7 @@ import { PaymentSupplierComponent } from './entities/payment-supplier/payment-su
 import { PaymentSupplierEditComponent } from './entities/payment-supplier/payment-supplier-edit/payment-supplier-edit.component';
 import { ReportPaymentSupplierComponent } from './entities/report/report-payment-supplier/report-payment-supplier.component';
 import { ApotikParamComponent } from './entities/apotik-param/apotik-param.component';
+import { ProsesMasterProductComponent } from './entities/proses-master-product/proses-master-product.component';
 
 
 const routes: Routes = [
@@ -63,13 +65,14 @@ const routes: Routes = [
                 canActivateChild: [AuthGuard],
                 children: [
                     // { path: '', loadChildren: ()=> DashboardModule  },
-                    { path: '', component: DashboardComponent  },
+                    { path: '', component: DashboardComponent },
                     { path: '404', component: Page404Component },
                     { path: 'user', component: UserComponent },
                     // { path: 'user/change-password', component: UserChangePasswordComponent },
                     { path: 'product-group', component: ProductGroupComponent },
                     { path: 'brand', component: BrandComponent },
                     { path: 'customer', component: CustomerComponent },
+                    { path: 'pelanggan', component: PelangganComponent },
                     { path: 'lookup', component: LookupComponent },
                     { path: 'role', component: RoleComponent },
                     { path: 'system-parameter', component: SystemParameterComponent },
@@ -78,15 +81,15 @@ const routes: Routes = [
                     { path: 'product', component: ProductComponent },
                     { path: 'salesman', component: SalesmanComponent },
                     { path: 'warehouse', component: WarehouseComponent },
-                    { path: 'sales-order', component: SalesOrderComponent,  data: { animation: 'sales-order', cash: false }  },
-                    { path: 'sales-order/:id', component: SalesOrderEditComponent , data: { animation: 'sales-order-edit', cash: false  }},
-                    { path: 'direct-sales', component: SalesOrderComponent,  data: { cash: true }  },
-                    { path: 'direct-sales/:id', component: SalesOrderEditComponent , data: { cash: true  }},
-                    { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full'},
+                    { path: 'sales-order', component: SalesOrderComponent, data: { animation: 'sales-order', cash: false } },
+                    { path: 'sales-order/:id', component: SalesOrderEditComponent, data: { animation: 'sales-order-edit', cash: false } },
+                    { path: 'direct-sales', component: SalesOrderComponent, data: { cash: true } },
+                    { path: 'direct-sales/:id', component: SalesOrderEditComponent, data: { cash: true } },
+                    { path: 'sales-order', redirectTo: 'sales-order/0', pathMatch: 'full' },
                     { path: 'payment', component: PaymentComponent },
                     { path: 'payment/:id', component: PaymentModalComponent },
-                    { path: 'sales-order-return', component: SalesOrderReturnComponent , data: { cash: true }  },
-                    { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent,  data: { cash: true }  },
+                    { path: 'sales-order-return', component: SalesOrderReturnComponent, data: { cash: true } },
+                    { path: 'sales-order-return/:id', component: SalesOrderReturnEditComponent, data: { cash: true } },
                     { path: 'receive', component: ReceivingComponent },
                     { path: 'receive/:id', component: ReceivingEditComponent },
                     { path: 'return-receive', component: ReturnReceivingComponent },
@@ -100,7 +103,7 @@ const routes: Routes = [
                     { path: 'stock-opname', component: StockOpnameComponent },
                     { path: 'stock-opname/:id', component: StockOpnameEditComponent },
                     { path: 'purchase-order', component: PurchaseOrderComponent },
-                    { path: 'purchase-order/:id', component: PurchaseOrderEditComponent },
+                    { path: 'purchase-order/:typePo/:id', component: PurchaseOrderEditComponent },
                     // { path: 'direct-sales-payment', component: DirectSalesPaymentComponent },
                     // { path: 'direct-sales-payment', loadChildren:'./entities/direct-sales-payment/direct-sales-payment.module#DirectSalesPaymentModule' },
                     // { path: 'direct-sales-payment', loadChildren: ()=> DirectSalesPaymentModule },
@@ -112,6 +115,7 @@ const routes: Routes = [
                     { path: 'payment-supplier', component: PaymentSupplierComponent },
                     { path: 'payment-supplier/:id', component: PaymentSupplierEditComponent },
                     { path: 'apotik-param', component: ApotikParamComponent },
+                    { path: 'proses-master-product', component: ProsesMasterProductComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

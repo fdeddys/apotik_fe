@@ -64,6 +64,17 @@
             </tr>
 
             <tr>
+                <td>Sediaan</td>
+                <td>
+                    <select [(ngModel)]="sediaanSelected" class="form-control" [ngModelOptions]="{standalone: true}">
+                        <option *ngFor="let sediaan of sediaans" [value]="sediaan.id">
+                            {{sediaan.name}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
                 <td>HPP</td>
                 <td>
                     {{product.hpp | currency :'':'':'0.0-0'}}
@@ -149,6 +160,17 @@
                     <select [(ngModel)]="statusSelected" class="form-control" [ngModelOptions]="{standalone: true}">
                         <option *ngFor="let status of statuses" [value]="status">
                             {{status}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Tipe PO</td>
+                <td>
+                    <select [(ngModel)]="tipePoSelected" class="form-control" [ngModelOptions]="{standalone: true}">
+                        <option *ngFor="let t of tipePos" [value]="t.value">
+                            {{t.name}}
                         </option>
                     </select>
                 </td>

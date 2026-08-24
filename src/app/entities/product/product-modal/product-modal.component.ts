@@ -28,6 +28,12 @@ export class ProductModalComponent implements OnInit {
     statuses = ['Active', 'Inactive'];
     statusSelected: string;
 
+    tipePos = [
+        { name: 'PO Standar', value: '0' },
+        { name: 'PO Prekursor/OTT', value: '1' }
+    ];
+    tipePoSelected: string;
+
     sellPriceTypes = ['byPrice', 'byPercent'];
     sellPriceTypeSelected: string;
 
@@ -37,12 +43,14 @@ export class ProductModalComponent implements OnInit {
     isFormDirty: Boolean = false;
     smallUoms: Lookup[];
     bigUoms: Lookup[];
+    sediaans: Lookup[];
     brands: Brand[];
     productGroups: ProductGroup[];
     productGroupSelected: number;
     brandSelected: number;
     smallUomSelected: number;
     bigUomSelected: number;
+    sediaanSelected: number;
     userLogin='';
 
     constructor(
@@ -80,6 +88,7 @@ export class ProductModalComponent implements OnInit {
                 } else {
                     this.statusSelected = this.statuses[1];
                 }
+                this.tipePoSelected = this.product.tipePo || '0';
                 this.sellPriceTypeSelected = this.sellPriceTypes[this.product.sellPriceType];
                 this.findAllLookup();
             }
@@ -123,6 +132,7 @@ export class ProductModalComponent implements OnInit {
         if (result.body.errCode === '00' ) {
             this.bigUoms = result.body.contents;
             this.smallUoms = result.body.contents;
+            this.sediaans = result.body.contents;
         }
     }
 
@@ -142,11 +152,13 @@ export class ProductModalComponent implements OnInit {
         if (this.statusRec === 'addnew') {
             this.bigUomSelected = this.bigUoms[0].id;
             this.smallUomSelected = this.smallUoms[0].id;
+            this.sediaanSelected = 35;
             this.brandSelected = this.brands[0].id;
             this.productGroupSelected = this.productGroups[0].id;
         } else {
             this.bigUomSelected = this.product.bigUomId;
             this.smallUomSelected = this.product.smallUomId;
+            this.sediaanSelected = this.product.sediaanId || 35;
             this.brandSelected = this.product.brandId;
             this.productGroupSelected = this.product.productGroupId;
         }
@@ -157,6 +169,7 @@ export class ProductModalComponent implements OnInit {
         this.product.qtyUom = 1;
         this.statusSelected = this.statuses[0];
         this.sellPriceTypeSelected = this.sellPriceTypes[0];
+        this.tipePoSelected = '0';
     }
 
     async save() {
@@ -175,11 +188,14 @@ export class ProductModalComponent implements OnInit {
         this.product.ProductGroup = null;
         this.smallUoms = null;
         this.bigUoms = null;
+        this.sediaans = null;
         this.product.status = (this.statusSelected === 'Active' ? 1 : 0);
         this.product.brandId = Number(this.brandSelected);
         this.product.productGroupId =  Number(this.productGroupSelected);
         this.product.smallUomId = Number(this.smallUomSelected);
         this.product.bigUomId = Number(this.bigUomSelected);
+        this.product.sediaanId = Number(this.sediaanSelected);
+        this.product.tipePo = this.tipePoSelected;
         this.product.sellPriceType = this.sellPriceTypes.findIndex(sellPrice=> sellPrice ===  this.sellPriceTypeSelected ) ;
         // this.product.bankId = this.bankSelected;
         this.productService.save(this.product).subscribe(result => {

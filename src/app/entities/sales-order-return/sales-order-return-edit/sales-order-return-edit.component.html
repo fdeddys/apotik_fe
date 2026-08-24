@@ -6,16 +6,20 @@
             <button type="button" class="btn btn-outline-info btn-sm" (click)="addNew()">Add New
                 <i class="fa fa-plus-circle fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrderReturn.status === 0 || salesOrderReturn.status === 10" class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
+            <button type="button" *ngIf="salesOrderReturn.status === 0 || salesOrderReturn.status === 10"
+                class="btn btn-outline-success btn-sm" (click)="saveHdr('addnew', null)">Save
                 <i class="fa fa-save fa-lg"></i>
             </button>
-            <button type="button"  *ngIf="salesOrderReturn.status === 10" class="btn btn-outline-primary btn-sm" (click)="approve()">Submint
+            <button type="button" *ngIf="salesOrderReturn.status === 10" class="btn btn-outline-primary btn-sm"
+                (click)="approve()">Submint
                 <i class="fa fa-thumbs-o-up fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrderReturn.status === 10"  class="btn btn-outline-danger btn-sm" (click)="reject()">Cancel
+            <button type="button" *ngIf="salesOrderReturn.status === 10" class="btn btn-outline-danger btn-sm"
+                (click)="reject()">Cancel
                 <i class="fa fa-times fa-lg"></i>
             </button>
-            <button type="button" *ngIf="salesOrderReturn.status === 20 " class="btn btn-outline-warning btn-sm" (click)="preview('return-so')">Preview
+            <button type="button" *ngIf="salesOrderReturn.status === 20 " class="btn btn-outline-warning btn-sm"
+                (click)="preview('return-so')">Preview
                 <i class="fa fa-print fa-lg"></i>
             </button>
             <!-- <button type="button" *ngIf="salesOrderReturn.status === 20 " class="btn btn-outline-danger btn-sm" (click)="createInvoice()">Create Invoice
@@ -48,7 +52,7 @@
                         <td>Total</td>
                         <td>
                             <span style="color: blue;">
-                                    {{ total | number:'0.0-0'}}
+                                {{ total | number:'0.0-0'}}
                             </span>
                         </td>
                     </tr>
@@ -64,23 +68,23 @@
                         <td>
                             <!-- <input type="text" readonly size="50%" [(ngModel)]="taxAmount"> -->
                             <span style="color: blue;">
-                                    {{ taxAmount | number:'0.0-0'}}
+                                {{ taxAmount | number:'0.0-0'}}
                             </span>
                         </td>
                     </tr>
                     <tr>
                         <td>Customer</td>
                         <td *ngIf="customers">
-                            <input id="typeahead-basic"  [attr.disabled]="isCash ? 'true' : null" type="text" [(ngModel)]="customerSelected"  
-                                [ngbTypeahead]="searchCustomer" [resultFormatter]="formatter"
-                                [inputFormatter]="formatter" />
-                                [ {{customerSelected.id}} ] 
+                            <input id="typeahead-basic" [attr.disabled]="isCash ? 'true' : null" type="text"
+                                [(ngModel)]="customerSelected" [ngbTypeahead]="searchCustomer"
+                                [resultFormatter]="formatter" [inputFormatter]="formatter" />
+                            [ {{customerSelected.id}} ]
                         </td>
                         <td>Grand total</td>
                         <td>
                             <!-- <input type="text" readonly size="50%" [(ngModel)]="grandTotal"> -->
                             <span style="color: blue;">
-                                    {{ grandTotal | number:'0.0-0'}}
+                                {{ grandTotal | number:'0.0-0'}}
                             </span>
                         </td>
                     </tr>
@@ -95,24 +99,26 @@
                         <td>
                             <span *ngIf="salesmans">
                                 <select id="select-type-basic" [(ngModel)]="salesmanSelected" style="width: 80%;">
-                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id"  class="form-control">
-                                    {{salesman.name}}
+                                    <option *ngFor="let salesman of salesmans" [value]="salesman.id"
+                                        class="form-control">
+                                        {{salesman.name}}
                                     </option>
                                 </select>
-                                [ {{salesmanSelected}} ] 
+                                [ {{salesmanSelected}} ]
                             </span>
                         </td>
                         <td></td>
                         <td></td>
                     </tr>
-                    
+
                     <tr>
                         <td>Warehouse [ {{warehouseSelected}} ]</td>
-                        <td >
-                            <span *ngIf="warehouses" >
-                                <select id="select-type-basic" [(ngModel)]="warehouseSelected" style="width: 80%;"  class="form-control"  >
-                                    <option *ngFor="let warehouse of warehouses" [value]="warehouse.id" >
-                                    {{warehouse.name}}
+                        <td>
+                            <span *ngIf="warehouses">
+                                <select id="select-type-basic" [(ngModel)]="warehouseSelected" style="width: 80%;"
+                                    class="form-control">
+                                    <option *ngFor="let warehouse of warehouses" [value]="warehouse.id">
+                                        {{warehouse.name}}
                                     </option>
                                 </select>
                             </span>
@@ -143,40 +149,37 @@
                 <tbody style="color: hotpink; background-color: ghostwhite;">
                     <tr>
                         <td>
-                            <input id="typeahead-http" type="text" [(ngModel)]="model" 
-                                [ngbTypeahead]="search"
-                                [resultFormatter]="formatterProdList" 
-                                [inputFormatter]="formatterProdInput" 
-                                placeholder="search product name" 
-                                (selectItem)="getItem($event)"
-                                size="50%"
-                                /> 
+                            <input id="typeahead-http" type="text" [(ngModel)]="model" [ngbTypeahead]="search"
+                                [resultFormatter]="formatterProdList" [inputFormatter]="formatterProdInput"
+                                placeholder="search product name" (selectItem)="getItem($event)" size="50%" />
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="priceAdded"  >
+                            <input type="number" [(ngModel)]="priceAdded">
                         </td>
-                       
+
                         <td>
-                            <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty" >
+                            <input type="number" [(ngModel)]="qtyAdded" placeholder="input qty">
                         </td>
                         <td>
                             {{uomAddedName}}
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="discAdded " placeholder="input disc" >
+                            <input type="number" [(ngModel)]="discAdded " placeholder="input disc">
                         </td>
                         <td>
-                            <input type="number" [(ngModel)]="disc2Added " placeholder="input disc" >
+                            <input type="number" [(ngModel)]="disc2Added " placeholder="input disc">
                         </td>
                         <td>
-                            {{  ( (priceAdded*qtyAdded) - discAdded  ) | number:'0.0-0' }}
+                            {{ ( (priceAdded*qtyAdded) - discAdded ) | number:'0.0-0' }}
                         </td>
-                        <td *ngIf ="salesOrderReturn">
-                            <button type="button"  *ngIf="salesOrderReturn.status === 10"  class="btn btn-outline-info btn-sm" (click)="addNewItem()">
+                        <td *ngIf="salesOrderReturn">
+                            <button type="button" *ngIf="salesOrderReturn.status === 10"
+                                class="btn btn-outline-info btn-sm" (click)="addNewItem()">
                                 <i class="fa fa-check fa-lg"></i>
                             </button>
                         </td>
                     </tr>
+                    {{model}}
                 </tbody>
             </table>
         </div>
@@ -186,7 +189,7 @@
                 <table class="table table-sm table-hover table-striped">
                     <thead>
                         <tr>
-                            <th *ngIf ="salesOrderReturn" style="width: 5%;"></th>
+                            <th *ngIf="salesOrderReturn" style="width: 5%;"></th>
                             <th scope="col" style="width: 20%;">Product</th>
                             <th scope="col" style="width: 10%;">Price</th>
                             <th scope="col" style="width: 10%;">Qty</th>
@@ -198,11 +201,15 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let salesOrderReturnDetail of salesOrderReturnDetails">
-                            <td *ngIf ="salesOrderReturn">
-                                <button type="button" *ngIf="salesOrderReturn.status === 10"  (click)="confirmDelItem(salesOrderReturnDetail)" class="btn btn-outline-danger btn-sm">
+                            <td *ngIf="salesOrderReturn">
+                                <button type="button" *ngIf="salesOrderReturn.status === 10"
+                                    (click)="confirmDelItem(salesOrderReturnDetail)"
+                                    class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-trash fa-lg"></i>
                                 </button>
-                                <button type="button" *ngIf="salesOrderReturn.status === 20"  (click)="confirmUpdateItem(salesOrderReturnDetail)" class="btn btn-outline-danger btn-sm">
+                                <button type="button" *ngIf="salesOrderReturn.status === 20"
+                                    (click)="confirmUpdateItem(salesOrderReturnDetail)"
+                                    class="btn btn-outline-danger btn-sm">
                                     <i class="fa fa-check fa-lg"></i>
                                 </button>
                             </td>
@@ -210,9 +217,9 @@
                             <td>{{salesOrderReturnDetail.price | number:'0.0-0' }}</td>
                             <td>{{salesOrderReturnDetail.qty | number:'0.0-0' }}</td>
                             <td>{{salesOrderReturnDetail.uom.name}}</td>
-                            <td>{{salesOrderReturnDetail.disc1  }}</td>
-                            <td>{{salesOrderReturnDetail.disc2  }}</td>
-                            <td>{{ getTotal(salesOrderReturnDetail) | number:'0.0-0' }}  </td>
+                            <td>{{salesOrderReturnDetail.disc1 }}</td>
+                            <td>{{salesOrderReturnDetail.disc2 }}</td>
+                            <td>{{ getTotal(salesOrderReturnDetail) | number:'0.0-0' }} </td>
                             <!-- <td>{{ (salesOrderReturnDetail.price * salesOrderReturnDetail.qtyOrder ) - salesOrderReturnDetail.disc1 | number:'0.0-0'  }}</td> -->
                         </tr>
                     </tbody>

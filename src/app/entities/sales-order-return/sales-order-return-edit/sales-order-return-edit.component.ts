@@ -23,9 +23,9 @@ import { SalesOrderReturn, SalesOrderReturnDetail } from '../sales-order-return.
 import { SalesOrderReturnService } from '../sales-order-return.service';
 
 @Component({
-  selector: 'op-sales-order-return-edit',
-  templateUrl: './sales-order-return-edit.component.html',
-  styleUrls: ['./sales-order-return-edit.component.css']
+    selector: 'op-sales-order-return-edit',
+    templateUrl: './sales-order-return-edit.component.html',
+    styleUrls: ['./sales-order-return-edit.component.css']
 })
 export class SalesOrderReturnEditComponent implements OnInit {
 
@@ -64,9 +64,9 @@ export class SalesOrderReturnEditComponent implements OnInit {
     qtyAdded = 0;
     uomAdded = 0;
     uomAddedName = '';
-    loadedWarehouse =false;
-    loadedSalesman =false;
-    loadedCustomer =false;
+    loadedWarehouse = false;
+    loadedSalesman = false;
+    loadedCustomer = false;
 
     isCash: boolean = false;
 
@@ -79,7 +79,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
         private salesOrderReturnDetailService: SalesOrderReturnDetailService,
         private spinner: NgxSpinnerService,
         private salesmanService: SalesmanService,
-        private warehouseService: WarehouseService,        
+        private warehouseService: WarehouseService,
         private localStorage: LocalStorageService,
     ) {
         this.total = 0;
@@ -99,12 +99,12 @@ export class SalesOrderReturnEditComponent implements OnInit {
             return;
         }
         let total = this.localStorage.retrieve('max_search_product');
-        if ( isNumber(total)) {
+        if (isNumber(total)) {
             this.totalRecordProduct = total;
         }
         this.route.data.subscribe(
             data => {
-                console.log("data===>",data.cash);
+                console.log("data===>", data.cash);
                 this.isCash = data.cash;
                 this.loadData(+id);
                 this.setToday();
@@ -173,7 +173,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .findBySalesOrderReturnId({
                 count: 10,
                 page: 1,
-                filter : {
+                filter: {
                     orderReturnId: orderId,
                 }
             });
@@ -207,7 +207,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     processOrderDetail(result: HttpResponse<SalesOrderDetailPageDto>) {
         this.fillDetail(result),
-        this.spinner.hide();
+            this.spinner.hide();
     }
 
     calculateTotal() {
@@ -230,7 +230,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     setCustomerDefault() {
         this.customerSelected = this.salesOrderReturn.customer;
-        console.log('set selected customer =>', this.customerSelected );
+        console.log('set selected customer =>', this.customerSelected);
     }
 
     setWarehouseSalesmanSelected() {
@@ -253,7 +253,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                     return;
                 }
                 this.customers = response.body.contents;
-                this.loadedCustomer = true ;
+                this.loadedCustomer = true;
                 this.loadNewData();
             });
     }
@@ -264,12 +264,12 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .subscribe(
                 (response: HttpResponse<SalesmanDto>) => {
                     if (response.body.errCode != "00") {
-                        Swal.fire('error',"Failed get data salesman", "error");
-                        return ;
+                        Swal.fire('error', "Failed get data salesman", "error");
+                        return;
                     }
                     this.salesmans = response.body.contents;
                     this.loadedSalesman = true;
-                    this.loadNewData();   
+                    this.loadNewData();
                 }
             );
     }
@@ -280,8 +280,8 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .subscribe(
                 (response: HttpResponse<WarehouseDto>) => {
                     if (response.body.errCode != "00") {
-                        Swal.fire('error',"Failed get data warehouse", "error");
-                        return ;
+                        Swal.fire('error', "Failed get data warehouse", "error");
+                        return;
                     }
                     this.warehouses = response.body.contents;
                     this.loadedWarehouse = true;
@@ -308,7 +308,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                             .indexOf(term.toLowerCase()) > -1
                     )
                     .slice(0, 10))
-    )
+        )
 
     search = (text$: Observable<string>) => {
         return text$.pipe(
@@ -330,12 +330,12 @@ export class SalesOrderReturnEditComponent implements OnInit {
     searchProd(term): Observable<any> {
 
         const filter = {
-                    name: term,
-                    code: '',
-                };
+            name: term,
+            code: '',
+        };
         const serverUrl = SERVER_PATH + 'product';
         const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
-        return  this.http.post(newresourceUrl, filter, { observe: 'response' })
+        return this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(
                     (response: HttpResponse<ProductPageDto>) => {
@@ -358,29 +358,29 @@ export class SalesOrderReturnEditComponent implements OnInit {
     }
 
     addNewItem() {
-        console.log('isisisiisis ', this.productIdAdded );
+        console.log('isisisiisis ', this.productIdAdded);
 
-        if (this.checkInputProductValid() === false ) {
+        if (this.checkInputProductValid() === false) {
             Swal.fire('Error', 'Product belum terpilih ! ', 'error');
-            return ;
+            return;
         }
 
-        if (this.checkInputNumberValid() === false ) {
+        if (this.checkInputNumberValid() === false) {
             Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0, disc max 100% ! ', 'error');
-            return ;
+            return;
         }
 
-       let returnOrderDetail = this.composeOrderReturnDetail();
+        let returnOrderDetail = this.composeOrderReturnDetail();
 
-       this.spinner.show();
-       this.salesOrderReturnDetailService
+        this.spinner.show();
+        this.salesOrderReturnDetailService
             .save(returnOrderDetail)
             .subscribe(
                 (res => {
                     this.spinner.hide();
                     if (res.body.errCode === '00') {
                         this.reloadDetail(this.salesOrderReturn.id);
-                       
+
                     } else {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
@@ -406,37 +406,37 @@ export class SalesOrderReturnEditComponent implements OnInit {
     checkInputNumberValid(): boolean {
         // let result = true;
 
-        if ( (isNaN(this.qtyAdded)) || (this.qtyAdded === null) ) {
+        if ((isNaN(this.qtyAdded)) || (this.qtyAdded === null)) {
             // result = false;
             return false;
         }
 
-        if ( (isNaN(this.priceAdded)) || (this.priceAdded === null) ) {
+        if ((isNaN(this.priceAdded)) || (this.priceAdded === null)) {
             // result = false;
             return false;
         }
 
-        if ((isNaN(this.discAdded)) || (this.discAdded === null) ) {
+        if ((isNaN(this.discAdded)) || (this.discAdded === null)) {
             // result = false;
             return false;
         }
 
-        if ( this.discAdded >100 ) {
+        if (this.discAdded > 100) {
             // result = false;
             return false;
         }
 
-        if ((isNaN(this.disc2Added)) || (this.disc2Added === null) ) {
+        if ((isNaN(this.disc2Added)) || (this.disc2Added === null)) {
             // result = false;
             return false;
         }
 
-        if ( this.disc2Added >100 ) {
+        if (this.disc2Added > 100) {
             // result = false;
             return false;
         }
 
-        if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
+        if (this.qtyAdded <= 0 || this.discAdded < 0) {
             return false;
         }
 
@@ -444,45 +444,21 @@ export class SalesOrderReturnEditComponent implements OnInit {
     }
 
     checkInputProductValid(): boolean {
-
-        let result = false;
-        // 1. jika belum pernah di isi
-        if ( this.model === undefined )  {
-            // return false ;
-            result = false;
-            return result;
+        // 1. jika belum pernah di isi / kosong
+        if (this.model === undefined || this.model === null) {
+            return false;
         }
 
-        // 2.  sudah diisi
-        // 2.a lalu di hapus
-        // 2.b bukan object karena belum memilih lagi, masih type string 
-        of(this.model).toPromise().then(
-            res => {
-                console.log('observable model ', res);
-                if ( !res ) {
-                    Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi ! ', 'error');
-                    // return false ;
-                    result = false;
-                }
-                const product =  res;
-                console.log('obser hasil akhir => ', product);
-                console.log('type [', typeof(product), '] ');
-                const typeObj = typeof(product);
-                if (typeObj == 'object') {
-                    result = true;
-                }
+        // 2. jika bertipe object (karena user memilih dari dropdown autocomplete)
+        const typeObj = typeof (this.model);
+        console.log('model => ', this.model);
+        console.log('type => ', typeObj);
 
-                // console.log(typeof(product) , '] [', typeof('product'))
-                // if (typeof(product) == typeof('product')) {
-                //     // console.log('masok pakeo 2');
-                //     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x,x ]! ', 'error');
-                //     result = false;
-                //     return result;
-                // }
-            }
-        );
-        // Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi [x]! ', 'error');
-        return result;
+        if (typeObj === 'object') {
+            return true;
+        }
+
+        return false;
     }
 
     reloadDetail(orderReturnId: number) {
@@ -491,20 +467,19 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .findBySalesOrderReturnId({
                 count: 10,
                 page: 1,
-                filter : {
+                filter: {
                     orderReturnId: orderReturnId,
                 }
             }).subscribe(
-                (res: HttpResponse<SalesOrderDetailPageDto>) => 
-                    {
-                        this.fillDetail(res),
+                (res: HttpResponse<SalesOrderDetailPageDto>) => {
+                    this.fillDetail(res),
                         this.spinner.hide();
-                    },
-                (res: HttpErrorResponse) =>{
+                },
+                (res: HttpErrorResponse) => {
                     console.log(res.message),
-                    this.spinner.hide();
-                    },
-                
+                        this.spinner.hide();
+                },
+
             );
     }
 
@@ -524,27 +499,27 @@ export class SalesOrderReturnEditComponent implements OnInit {
         this.productNameAdded = null;
         this.uomAdded = 0;
         this.qtyAdded = 1;
-        this.discAdded =0;
-        this.disc2Added =0;
+        this.discAdded = 0;
+        this.disc2Added = 0;
         this.model = null;
         this.uomAddedName = '';
     }
 
-    confirmDelItem (salesOrderReturnDetail: SalesOrderReturnDetail) {
+    confirmDelItem(salesOrderReturnDetail: SalesOrderReturnDetail) {
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to cancel [ ' + salesOrderReturnDetail.product.name + ' ] ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to cancel [ ' + salesOrderReturnDetail.product.name + ' ] ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.delItem(salesOrderReturnDetail.id);
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.delItem(salesOrderReturnDetail.id);
+                    }
+                });
     }
 
     delItem(idDetail: number) {
@@ -560,7 +535,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                         Swal.fire('Failed', 'Data failed cancelled', 'info');
                     }
                 },
-                () => {},
+                () => { },
                 () => {
                     this.spinner.hide();
                 }
@@ -570,19 +545,19 @@ export class SalesOrderReturnEditComponent implements OnInit {
     confirmUpdateItem(salesOrderReturnDetail: SalesOrderReturnDetail) {
 
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to Update  [' + salesOrderReturnDetail.qty + ']  ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to Update  [' + salesOrderReturnDetail.qty + ']  ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.updateQty(salesOrderReturnDetail.id, salesOrderReturnDetail.qty );
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.updateQty(salesOrderReturnDetail.id, salesOrderReturnDetail.qty);
+                    }
+                });
     }
 
     updateQty(idDetail: number, qtyReceive: number) {
@@ -606,7 +581,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                     this.spinner.hide();
                 }
             );
-    } 
+    }
 
     addNew() {
         this.total = 0;
@@ -618,17 +593,17 @@ export class SalesOrderReturnEditComponent implements OnInit {
         this.salesOrderReturn.id = 0;
         this.salesOrderReturn.status = 0;
         this.salesOrderReturnDetails = [];
-        this.setToday() ;
+        this.setToday();
         this.clearDataAdded();
 
-        if ( this.loadedWarehouse) {
-            if ( this.warehouses.length>0) {
+        if (this.loadedWarehouse) {
+            if (this.warehouses.length > 0) {
                 this.warehouseSelected = this.warehouses[0].id;
             }
         }
 
-        if ( this.loadedSalesman) {
-            if (this.salesmans.length >0 ) {
+        if (this.loadedSalesman) {
+            if (this.salesmans.length > 0) {
                 this.salesmanSelected = this.salesmans[0].id;
             }
         }
@@ -639,7 +614,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
                 this.setCustomerDefault();
             }
         }
-      
+
     }
 
     saveHdr() {
@@ -661,14 +636,14 @@ export class SalesOrderReturnEditComponent implements OnInit {
                         Swal.fire('Error', res.body.errDesc, 'error');
                     }
                 }),
-                () => {},
+                () => { },
                 () => {
                     this.spinner.hide();
                 }
             );
     }
 
-    getSelectedDate(): string{
+    getSelectedDate(): string {
 
         const month = ('0' + this.selectedDate.month).slice(-2);
         const day = ('0' + this.selectedDate.day).slice(-2);
@@ -679,24 +654,24 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     approve() {
 
-        if (!this.isValidDataApprove()){
+        if (!this.isValidDataApprove()) {
             return;
         }
 
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to approve ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to approve ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.approveProccess();
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.approveProccess();
+                    }
+                });
     }
 
     approveProccess() {
@@ -710,20 +685,20 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.spinner.hide();
-                    if (res.body.errCode === '00'){
+                    if (res.body.errCode === '00') {
                         Swal.fire('OK', 'Save success', 'success');
                         this.router.navigate(['/main/sales-order-return']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
                 },
-                () => { this.spinner.hide()},
-                () => {  }
+                () => { this.spinner.hide() },
+                () => { }
             );
     }
 
     isValidDataApprove(): boolean {
-        if (this.salesOrderReturn.id ===0) {
+        if (this.salesOrderReturn.id === 0) {
             Swal.fire('Error', 'Data no order belum di save !', 'error');
             return false;
         }
@@ -734,7 +709,7 @@ export class SalesOrderReturnEditComponent implements OnInit {
         return true;
     }
 
-    rejectProccess(){
+    rejectProccess() {
         this.salesOrderReturnService.reject(this.salesOrderReturn)
             .subscribe(
                 (res) => { console.log('success'); }
@@ -745,24 +720,24 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     reject() {
 
-        if (!this.isValidDataApprove()){
+        if (!this.isValidDataApprove()) {
             return;
         }
 
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to Reject ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to Reject ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.rejectProccess();
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.rejectProccess();
+                    }
+                });
     }
 
     preview(tipeReport) {
@@ -780,13 +755,13 @@ export class SalesOrderReturnEditComponent implements OnInit {
 
     }
 
-    getTotal(salesOrderReturnDetail : SalesOrderReturnDetail){
+    getTotal(salesOrderReturnDetail: SalesOrderReturnDetail) {
 
-        var total : number;
+        var total: number;
 
         total = salesOrderReturnDetail.price * salesOrderReturnDetail.qty;
-        total = total - ( total * salesOrderReturnDetail.disc1 /100)
-        total = total - ( total * salesOrderReturnDetail.disc2 /100)
+        total = total - (total * salesOrderReturnDetail.disc1 / 100)
+        total = total - (total * salesOrderReturnDetail.disc2 / 100)
 
         return total;
 
@@ -799,15 +774,15 @@ export class SalesOrderReturnEditComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.spinner.hide();
-                    if (res.body.errCode === '00'){
+                    if (res.body.errCode === '00') {
                         Swal.fire('OK', 'created  success', 'success');
                         this.router.navigate(['/main/sales-order-return']);
                     } else {
                         Swal.fire('Failed', res.body.errDesc, 'warning');
                     }
                 },
-                () => { this.spinner.hide()},
-                () => {  }
+                () => { this.spinner.hide() },
+                () => { }
             );
     }
 }

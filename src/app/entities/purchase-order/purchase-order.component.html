@@ -9,10 +9,15 @@
                         <input style="width: 100%;" type="text" class="form-control" id="brandCodeInput" [(ngModel)]='searchTerm.purchaseOrderNumber'
                             name="searchCode" placeholder="Enter Po Number">
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-2 mb-2">
                         <label for="searchSupp">Supplier Name</label>
                         <input style="width: 100%;" type="text" class="form-control" id="searchSupp" [(ngModel)]='searchTerm.supplierName'
                             name="searchSupplier" placeholder="Enter Supplier Name">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="searchPelanggan">Pelanggan Name</label>
+                        <input style="width: 100%;" type="text" class="form-control" id="searchPelanggan" [(ngModel)]='searchTerm.pelangganName'
+                            name="searchPelanggan" placeholder="Enter Pelanggan Name">
                     </div>
                     <div class="col-md-2 mb-2">
                         <label for="startDate">Start Date</label>
@@ -40,6 +45,16 @@
                         <select [(ngModel)]="statusSelected" class="form-control"
                             [ngModelOptions]="{standalone: true}">
                             <option *ngFor="let listStatus of listStatuses" [value]="listStatus.id">
+                                {{listStatus.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label for="searchTypePo">Type PO</label>
+                        <select [(ngModel)]="searchTerm.typePo" class="form-control"
+                            [ngModelOptions]="{standalone: true}">
+                            <option *ngFor="let t of listTypePos" [value]="t.id">
+                                {{t.name}}
                             </option>
                         </select>
                     </div>
@@ -51,8 +66,16 @@
                         class="fa fa-search fa-lg"></i></button> -->
                     <button type="button" (click)="resetFilter()" class="btn mr-2 btn-outline-danger btn-sm">Reset <i
                             class="fa fa-refresh fa-lg"></i></button>
-                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="addNew()">Addnew
-                        <i class="fa fa-plus-circle fa-lg"></i></button>
+                    <div ngbDropdown class="d-inline-block" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="dropdownAddNew" ngbDropdownToggle>
+                            Addnew <i class="fa fa-plus-circle fa-lg"></i>
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownAddNew">
+                            <button type="button" class="dropdown-item" (click)="addNew(0)">PO Standar</button>
+                            <button type="button" class="dropdown-item" (click)="addNew(1)">PO Prekursor</button>
+                            <button type="button" class="dropdown-item" (click)="addNew(2)">PO OTT</button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -65,6 +88,8 @@
                         <th scope="col">PO No</th>
                         <th scope="col" class='centerText' >Date</th>
                         <th scope="col">Supplier</th>
+                        <th scope="col">Pelanggan</th>
+                        <th scope="col">Type PO</th>
                         <!-- <th scope="col">Salesman</th> -->
                         <th scope="col" class='centerText' >Status</th>
                         <th scope="col" class='rightText' >Total</th>
@@ -82,6 +107,8 @@
                         <td>{{purchaseOrder.purchaseOrderNo}}</td>
                         <td class='centerText' >{{purchaseOrder.purchaseOrderDate | date:'dd-MMM-yyyy'}}</td>
                         <td>{{purchaseOrder.supplier.name }}</td>
+                        <td>{{purchaseOrder.pelanggan?.nama}}</td>
+                        <td>{{purchaseOrder.typePo === '1' ? 'PO Prekursor' : (purchaseOrder.typePo === '2' ? 'PO OTT' : 'PO Standar')}}</td>
                         <!-- <td>{{purchaseOrder.salesman.userName}}</td> -->
                         <td class='centerText' >{{getStatus(purchaseOrder.status)}} </td>
                         <td class='rightText'>{{purchaseOrder.grandTotal | number:'0.0-0' }}</td>

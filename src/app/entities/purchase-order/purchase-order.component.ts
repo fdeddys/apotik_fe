@@ -10,9 +10,9 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { LookupTemplate } from '../lookup/lookup.model';
 
 @Component({
-  selector: 'op-purchase-order',
-  templateUrl: './purchase-order.component.html',
-  styleUrls: ['./purchase-order.component.css']
+    selector: 'op-purchase-order',
+    templateUrl: './purchase-order.component.html',
+    styleUrls: ['./purchase-order.component.css']
 })
 export class PurchaseOrderComponent implements OnInit {
 
@@ -23,14 +23,22 @@ export class PurchaseOrderComponent implements OnInit {
     searchTerm = {
         purchaseOrderNumber: '',
         status: -1,
-        startDate:'',
-        endDate:'',
+        startDate: '',
+        endDate: '',
         supplierName: '',
+        pelangganName: '',
+        typePo: '',
     };
     startDate: NgbDateStruct;
-    endDate : NgbDateStruct;
-    listStatuses: LookupTemplate[]=[];
+    endDate: NgbDateStruct;
+    listStatuses: LookupTemplate[] = [];
     statusSelected: number;
+    listTypePos = [
+        { id: '', name: 'ALL' },
+        { id: '0', name: 'PO Standar' },
+        { id: '1', name: 'PO Prekursor' },
+        { id: '2', name: 'PO OTT' }
+    ];
     closeResult: string;
     constructor(
         private route: Router,
@@ -45,12 +53,12 @@ export class PurchaseOrderComponent implements OnInit {
         this.loadAll(this.curPage);
     }
 
-    setListStatus(){
-        var statusAll =new LookupTemplate(-1, '', 'ALL',0);
-        var status1 = new LookupTemplate(10, '', 'Outstanding',0);
-        var status2 = new LookupTemplate(20, '', 'Submit',0);
-        var status3 = new LookupTemplate(30, '', 'Cancel',0);
-        var status4 = new LookupTemplate(40, '', 'Receiving',0);
+    setListStatus() {
+        var statusAll = new LookupTemplate(-1, '', 'ALL', 0);
+        var status1 = new LookupTemplate(10, '', 'Outstanding', 0);
+        var status2 = new LookupTemplate(20, '', 'Submit', 0);
+        var status3 = new LookupTemplate(30, '', 'Cancel', 0);
+        var status4 = new LookupTemplate(40, '', 'Receiving', 0);
 
         this.listStatuses.push(statusAll);
         this.listStatuses.push(status1);
@@ -58,13 +66,13 @@ export class PurchaseOrderComponent implements OnInit {
         this.listStatuses.push(status3);
         this.listStatuses.push(status4);
         let postatus = sessionStorage.getItem("po:status")
-        if (postatus==null) {
+        if (postatus == null) {
             this.statusSelected = -1;
-        } else{
+        } else {
             this.statusSelected = Number(postatus)
         }
         // console.log('all status ', this.listStatuses)
-    }   
+    }
 
     onFilter() {
         this.loadAll(this.curPage);
@@ -74,11 +82,11 @@ export class PurchaseOrderComponent implements OnInit {
         this.searchTerm.startDate = '';
         if (this.startDate !== null) {
             this.searchTerm.startDate = this.getStartDate();
-        } 
+        }
         this.searchTerm.endDate = '';
         if (this.endDate !== null) {
             this.searchTerm.endDate = this.getEndDate();
-        } 
+        }
         // if (this.statusSelected.id != -1 ) {
         this.searchTerm.status = +this.statusSelected;
         // }
@@ -86,18 +94,18 @@ export class PurchaseOrderComponent implements OnInit {
         this.purchaseOrderService.export({
             filter: this.searchTerm,
         }).subscribe(dataBlob => {
-                console.log('data blob ==> ', dataBlob);
-                const newBlob = new Blob([dataBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                // const name = dataBlob.
-                const objBlob = window.URL.createObjectURL(newBlob);
-                const element = document.createElement("a");
-                element.href = objBlob;
-                element.download = "data.xlsx"
-                element.click();
-                this.spinner.hide();
+            console.log('data blob ==> ', dataBlob);
+            const newBlob = new Blob([dataBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            // const name = dataBlob.
+            const objBlob = window.URL.createObjectURL(newBlob);
+            const element = document.createElement("a");
+            element.href = objBlob;
+            element.download = "data.xlsx"
+            element.click();
+            this.spinner.hide();
 
-                // window.open(objBlob);
-            }
+            // window.open(objBlob);
+        }
         );
     }
 
@@ -119,9 +127,9 @@ export class PurchaseOrderComponent implements OnInit {
             };
         } else {
             this.startDate = {
-                year: Number (startdate.substring(0,4)),
-                month: Number (startdate.substring(5,7)),
-                day: Number (startdate.substring(8,10)),
+                year: Number(startdate.substring(0, 4)),
+                month: Number(startdate.substring(5, 7)),
+                day: Number(startdate.substring(8, 10)),
             };
         }
 
@@ -134,29 +142,37 @@ export class PurchaseOrderComponent implements OnInit {
             };
         } else {
             this.endDate = {
-                year: Number (enddate.substring(0,4)),
-                month: Number (enddate.substring(5,7)),
-                day: Number (enddate.substring(8,10)), 
+                year: Number(enddate.substring(0, 4)),
+                month: Number(enddate.substring(5, 7)),
+                day: Number(enddate.substring(8, 10)),
             }
         }
         let postatus = sessionStorage.getItem("po:status")
-        if (postatus!==null) {
+        if (postatus !== null) {
             this.statusSelected = Number(postatus)
         }
         let purchaseOrderNumber = sessionStorage.getItem("po:purchaseOrderNumber")
-        if (purchaseOrderNumber!==null) {
+        if (purchaseOrderNumber !== null) {
             this.searchTerm.purchaseOrderNumber = purchaseOrderNumber
         }
         let supplierName = sessionStorage.getItem("po:supplierName")
-        if (supplierName!==null) {
+        if (supplierName !== null) {
             this.searchTerm.supplierName = supplierName
+        }
+        let pelangganName = sessionStorage.getItem("po:pelangganName")
+        if (pelangganName !== null) {
+            this.searchTerm.pelangganName = pelangganName
+        }
+        let typePo = sessionStorage.getItem("po:typePo")
+        if (typePo !== null) {
+            this.searchTerm.typePo = typePo
         }
         let page = sessionStorage.getItem("po:page")
         console.log("get session page ===", page)
-        if (page!==null) {
+        if (page !== null) {
             this.curPage = Number(page)
         } else {
-            this.curPage =1;
+            this.curPage = 1;
         }
 
     }
@@ -166,21 +182,23 @@ export class PurchaseOrderComponent implements OnInit {
         this.searchTerm.startDate = '';
         if (this.startDate !== null) {
             this.searchTerm.startDate = this.getStartDate();
-        } 
+        }
         this.searchTerm.endDate = '';
         if (this.endDate !== null) {
             this.searchTerm.endDate = this.getEndDate();
-        } 
+        }
         // if (this.statusSelected.id != -1 ) {
         this.searchTerm.status = +this.statusSelected;
         // }
 
-        sessionStorage.setItem("po:startDate",this.searchTerm.startDate )
-        sessionStorage.setItem("po:endDate",this.searchTerm.endDate)
-        sessionStorage.setItem("po:status",this.statusSelected.toString())
-        sessionStorage.setItem("po:purchaseOrderNumber",this.searchTerm.purchaseOrderNumber)
-        sessionStorage.setItem("po:supplierName",this.searchTerm.supplierName)
-        sessionStorage.setItem("po:page",page)
+        sessionStorage.setItem("po:startDate", this.searchTerm.startDate)
+        sessionStorage.setItem("po:endDate", this.searchTerm.endDate)
+        sessionStorage.setItem("po:status", this.statusSelected.toString())
+        sessionStorage.setItem("po:purchaseOrderNumber", this.searchTerm.purchaseOrderNumber)
+        sessionStorage.setItem("po:supplierName", this.searchTerm.supplierName)
+        sessionStorage.setItem("po:pelangganName", this.searchTerm.pelangganName)
+        sessionStorage.setItem("po:typePo", this.searchTerm.typePo)
+        sessionStorage.setItem("po:page", page)
 
         // this.searchTerm.purchaseOrderNumber = this.searchTerm.purchaseOrderNumber;
 
@@ -194,25 +212,24 @@ export class PurchaseOrderComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res.message),
             () => {
                 this.spinner.hide();
-             }
+            }
         );
         console.log(page);
         // console.log(this.brand);
     }
 
-    addNew() {
-        this.route.navigate(['/main/purchase-order/', 0 ]);
+    addNew(typePo: number = 0) {
+        this.route.navigate(['/main/purchase-order/', typePo, 0]);
     }
 
     open(obj: PurchaseOrder) {
         console.log("nav ", obj);
-        this.route.navigate(['/main/purchase-order/' +  obj.id ]);
-
+        this.route.navigate(['/main/purchase-order/', obj.typePo || '0', obj.id]);
     }
 
     private onSuccess(data, headers) {
-        this.purchaseOrders=[]
-        if (data.contents ==null ) {
+        this.purchaseOrders = []
+        if (data.contents == null) {
             return;
         }
         this.purchaseOrders = data.contents;
@@ -227,9 +244,11 @@ export class PurchaseOrderComponent implements OnInit {
         this.searchTerm = {
             purchaseOrderNumber: '',
             status: -1,
-            startDate:'',
-            endDate:'',
-            supplierName:'',
+            startDate: '',
+            endDate: '',
+            supplierName: '',
+            pelangganName: '',
+            typePo: '',
         };
         this.loadAll(1);
     }
@@ -259,12 +278,12 @@ export class PurchaseOrderComponent implements OnInit {
             case 40:
                 statusName = 'Receiving';
                 break;
-            
+
         }
         return statusName;
     }
 
-    getStartDate(): string{
+    getStartDate(): string {
 
         const month = ('0' + this.startDate.month).slice(-2);
         const day = ('0' + this.startDate.day).slice(-2);
@@ -273,7 +292,7 @@ export class PurchaseOrderComponent implements OnInit {
         return this.startDate.year + '-' + month + '-' + day + tz;
     }
 
-    getEndDate(): string{
+    getEndDate(): string {
 
         const month = ('0' + this.endDate.month).slice(-2);
         const day = ('0' + this.endDate.day).slice(-2);

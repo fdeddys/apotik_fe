@@ -75,4 +75,20 @@ export class ProductService {
         const copyOb: Product = Object.assign({}, product);
         return copyOb;
     }
+
+    uploadCSV(formData: FormData): Observable<HttpResponse<any>> {
+        return this.http.post<any>(`${this.serverUrl}/upload`, formData, { observe: 'response' });
+    }
+
+    processUpdate(): Observable<HttpResponse<any>> {
+        return this.http.get<any>(`${this.serverUrl}/process-update`, { observe: 'response' });
+    }
+
+    clearTemplate(): Observable<HttpResponse<any>> {
+        return this.http.post<any>(`${this.serverUrl}/clear-template`, {}, { observe: 'response' });
+    }
+
+    getTemplateProducts(): Observable<HttpResponse<any>> {
+        return this.http.get<any>(`${this.serverUrl}/template`, { observe: 'response' });
+    }
 }

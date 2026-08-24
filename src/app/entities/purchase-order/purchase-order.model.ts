@@ -2,6 +2,7 @@ import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
 import { Supplier } from '../supplier/supplier.model';
+import { Pelanggan } from '../pelanggan/pelanggan.model';
 
 export class PurchaseOrder {
     constructor(
@@ -11,6 +12,11 @@ export class PurchaseOrder {
 
         public supplierId?: number,
         public supplier?: Supplier,
+
+        public pelangganId?: number,
+        public pelanggan?: Pelanggan,
+
+        public typePo?: string,
 
         public note?: string,
         public tax?: number,
@@ -31,6 +37,7 @@ export class PurchaseOrder {
         this.total = 0;
         this.grandTotal = 0;
         this.isTax = false;
+        this.typePo = '0';
     }
 }
 

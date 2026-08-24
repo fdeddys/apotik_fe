@@ -1,0 +1,59 @@
+<style>
+    input {
+        width: 100%;
+    }
+</style>
+<div class="modal-header" *ngIf="statusRec!=='View'">
+    <h4 class="modal-title">
+        <span class="badge badge-light" style="color:cornflowerblue">Pelanggan</span>
+    </h4>
+</div>
+<div class="modal-body">
+    <div *ngIf="pelanggan">
+        <table class="table table-sm table-striped">
+            <tr>
+                <th colspan="2">
+                    <button type="button" class="btn btn-outline-primary" style="color:green">
+                        Status <span class="badge badge-light" style="color:red"> {{statusRec}} </span>
+                        <span class="badge badge-light" style="color:purple"> {{viewMsg}}</span>
+                        <span class="sr-only">unread messages</span>
+                    </button>
+                </th>
+            </tr>
+            <tr>
+                <td>Tgl Masuk</td>
+                <td><input type="date" [(ngModel)]="tglMasukFormatted"></td>
+            </tr>
+            <tr>
+                <td>Nama</td>
+                <td><input type="text" maxlength="250" size="50%" [(ngModel)]="pelanggan.nama"></td>
+            </tr>
+            <tr>
+                <td>Instansi</td>
+                <td><input type="text" maxlength="250" size="50%" [(ngModel)]="pelanggan.instansi"></td>
+            </tr>
+            <tr>
+                <td>No STR</td>
+                <td><input type="text" maxlength="250" size="50%" [(ngModel)]="pelanggan.noStr"></td>
+            </tr>
+            <tr>
+                <td>Profesi</td>
+                <td><input type="text" maxlength="250" size="50%" [(ngModel)]="pelanggan.profesi"></td>
+            </tr>
+            <tr>
+                <td>No HP</td>
+                <td><input type="text" maxlength="250" size="50%" [(ngModel)]="pelanggan.noHp"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <div *ngIf="statusRec!=='View'">
+        <button type="button" class="btn btn-outline-danger" (click)="save()">Save
+            <i class="fa fa-save fa-lg"></i>
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="closeForm()">Close
+            <i class="fa fa-times fa-lg"></i>
+        </button>
+    </div>
+</div>

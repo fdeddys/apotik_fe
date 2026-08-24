@@ -23,6 +23,9 @@ export class Product {
         public BigUom?: Lookup,
         public bigUom?: Lookup,
 
+        public sediaanId?: number,
+        public sediaan?: Lookup,
+
         public status?: number,
         public qtyStock?: number,
         public qtyUom?: number,
@@ -34,12 +37,15 @@ export class Product {
 
         public qty?: number,
         public composition?: string,
+        public tipePo?: string,
     ) {
         this.name= '';
         this.qtyUom = 1;
         this.sellPriceType=1;
         this.status =1 ;
         this.sellPrice = 0;
+        this.tipePo = '0';
+        this.sediaanId = 35;
     }
 }
 

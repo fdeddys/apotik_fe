@@ -53,9 +53,11 @@
                         <th scope="col">Name</th>
                         <th scope="col">Composition</th>
                         <th scope="col">PLU</th>
+                        <th scope="col">Sediaan</th>
                         <!-- <th scope="col">Stock</th> -->
                         <th scope="col">UOM</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Tipe PO</th>
                         <th scope="col" class='centerText'>Update by</th>
                         <th scope="col" class='rightText' >Last Update</th>
                     </tr>
@@ -73,8 +75,10 @@
                         <td>{{product.name}}</td>
                         <td>{{product.composition}}</td>
                         <td>{{product.plu}}</td>
+                        <td>{{product.sediaan?.name}}</td>
                         <td>{{product.smallUom.name}}</td>
                         <td>{{ (product.status==1 ?'Active' : 'Inactive') | uppercase }}</td>
+                        <td>{{ product.tipePo === '1' ? 'PO Prekursor/OTT' : 'PO Standar' }}</td>
                         <!-- <td>{{product.name}}</td> -->
                         <td class='rightText'>{{product.lastUpdateBy  }}</td>
                         <td class='rightText'>{{product.lastUpdate | date:'dd-MMM-yyyy' }}</td>

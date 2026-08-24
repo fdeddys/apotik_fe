@@ -10,6 +10,8 @@ import { LookupTemplate } from '../../lookup/lookup.model';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { Supplier, SupplierPageDto } from '../../supplier/supplier.model';
 import { SupplierService } from '../../supplier/supplier.service';
+import { Pelanggan, PelangganPageDto } from '../../pelanggan/pelanggan.model';
+import { PelangganService } from '../../pelanggan/pelanggan.service';
 import { PurchaseOrderDetailService } from '../purchase-order-detail.service';
 import { PurchaseOrder, PurchaseOrderDetail, PurchaseOrderDetailPageDto } from '../purchase-order.model';
 import { PurchaseOrderService } from '../purchase-order.service';
@@ -21,9 +23,9 @@ import { PurchaseOrderModalComponent } from '../purchase-order-modal/purchase-or
 import { load } from '@angular/core/src/render3';
 
 @Component({
-  selector: 'op-purchase-order-edit',
-  templateUrl: './purchase-order-edit.component.html',
-  styleUrls: ['./purchase-order-edit.component.css']
+    selector: 'op-purchase-order-edit',
+    templateUrl: './purchase-order-edit.component.html',
+    styleUrls: ['./purchase-order-edit.component.css']
 })
 export class PurchaseOrderEditComponent implements OnInit {
 
@@ -31,10 +33,20 @@ export class PurchaseOrderEditComponent implements OnInit {
     purchaseOrder: PurchaseOrder;
     purchaseOrderDetails: PurchaseOrderDetail[];
 
-    uomLists : LookupTemplate[]=[];
+    uomLists: LookupTemplate[] = [];
 
-    suppliers: Supplier[]=[];
+    suppliers: Supplier[] = [];
     supplierSelected: number;
+
+    pelanggans: Pelanggan[] = [];
+    pelangganSelected: number;
+
+    typePos = [
+        { id: '0', name: 'PO Standar' },
+        { id: '1', name: 'PO Prekursor' },
+        { id: '2', name: 'PO OTT' }
+    ];
+    typePoSelected: string = '0';
 
     total: number;
     grandTotal: number;
@@ -57,12 +69,12 @@ export class PurchaseOrderEditComponent implements OnInit {
     // uomAdded = 0;
     // uomAddedName = '';
     // poUom :LookupTemplate;
-    poUom : number = 0;
+    poUom: number = 0;
     poUomQty = 0;
-    bigUomID : number=0;
+    bigUomID: number = 0;
 
-    curPage =1;
-    totalData =0;
+    curPage = 1;
+    totalData = 0;
 
     // modal
     closeResult: string;
@@ -70,6 +82,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private supplierService: SupplierService,
+        private pelangganService: PelangganService,
         private http: HttpClient,
         private purchaseOrderService: PurchaseOrderService,
         private purchaseOrderDetailService: PurchaseOrderDetailService,
@@ -85,22 +98,28 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     ngOnInit() {
         const id = this.route.snapshot.paramMap.get('id');
-        const isValidParam = isNaN(+id);
-        console.log('Param ==>', id, ' nan=>', isValidParam);
+        const typePo = this.route.snapshot.paramMap.get('typePo');
+        const isValidParam = isNaN(+id) || isNaN(+typePo);
+        console.log('Param ==>', id, 'typePo ==>', typePo, ' nan=>', isValidParam);
         this.setToday();
         if (isValidParam) {
             console.log('Invalid parameter ');
             this.backToLIst();
             return;
         }
+        this.typePoSelected = typePo || '0';
         let total = this.localStorage.retrieve('max_search_product');
-        if ( isNumber(total)) {
+        if (isNumber(total)) {
             this.totalRecordProduct = total;
         }
         this.suppliers.push({
-            id:0,
+            id: 0,
             name: "PLEASE SELECT SUPPLIER",
-            code:"",
+            code: "",
+        })
+        this.pelanggans.push({
+            id: 0,
+            nama: "PLEASE SELECT PELANGGAN",
         })
         this.loadData(+id);
     }
@@ -120,10 +139,10 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     setSelectedDate(curDate: string) {
-        let curDates = moment(curDate,"YYYY-MM-DD").toDate()
+        let curDates = moment(curDate, "YYYY-MM-DD").toDate()
         const today = new Date();
         this.selectedDate = {
-            year: curDates.getFullYear() ,
+            year: curDates.getFullYear(),
             day: curDates.getDate(),
             month: curDates.getMonth() + 1,
         };
@@ -134,6 +153,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         console.log('id ==>?', orderId);
         if (orderId === 0) {
             this.loadSupplier();
+            this.loadPelanggan();
             this.loadNewData();
             return;
         }
@@ -154,7 +174,7 @@ export class PurchaseOrderEditComponent implements OnInit {
                     Swal.fire('error', 'failed get supplier data !', 'error');
                     return;
                 }
-                this.suppliers= this.suppliers.concat(response.body.contents);
+                this.suppliers = this.suppliers.concat(response.body.contents);
                 if (this.purchaseOrder.id === 0) {
                     this.purchaseOrder.supplier = this.suppliers[0];
                     this.setSupplierDefault();
@@ -162,9 +182,41 @@ export class PurchaseOrderEditComponent implements OnInit {
             });
     }
 
+    loadPelanggan() {
+        this.pelangganService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                name: '',
+            },
+        }).subscribe(
+            (response: HttpResponse<PelangganPageDto>) => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get pelanggan data !', 'error');
+                    return;
+                }
+                this.pelanggans = this.pelanggans.concat(response.body.contents);
+                if (this.purchaseOrder.id === 0) {
+                    this.purchaseOrder.pelanggan = this.pelanggans[0];
+                    this.setPelangganDefault();
+                }
+            });
+    }
+
     setSupplierDefault() {
         this.supplierSelected = this.purchaseOrder.supplier.id;
-        console.log('set selected supplier =>', this.supplierSelected );
+        console.log('set selected supplier =>', this.supplierSelected);
+    }
+
+    setPelangganDefault() {
+        if (this.purchaseOrder && this.purchaseOrder.pelanggan) {
+            this.pelangganSelected = this.purchaseOrder.pelanggan.id;
+        } else if (this.purchaseOrder && this.purchaseOrder.pelangganId) {
+            this.pelangganSelected = this.purchaseOrder.pelangganId;
+        } else {
+            this.pelangganSelected = 0;
+        }
+        console.log('set selected pelanggan =>', this.pelangganSelected);
     }
 
     loadNewData() {
@@ -181,12 +233,17 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.purchaseOrder.id = 0;
         this.purchaseOrder.status = 0;
         this.purchaseOrderDetails = [];
-        this.setToday() ;
+        this.setToday();
         this.clearDataAdded();
-        if (this.suppliers !== undefined) {
+        if (this.suppliers !== undefined && this.suppliers.length > 0) {
             this.purchaseOrder.supplier = this.suppliers[0];
             this.setSupplierDefault();
         }
+        if (this.pelanggans !== undefined && this.pelanggans.length > 0) {
+            this.purchaseOrder.pelanggan = this.pelanggans[0];
+            this.setPelangganDefault();
+        }
+        this.purchaseOrder.typePo = this.typePoSelected;
         // ini langsung generate no jika add new
         this.saveHdr()
     }
@@ -197,11 +254,11 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.productNameAdded = null;
         // this.uomAdded = 0;
         this.poUomQty = 0;
-        this.poUom ;
+        this.poUom;
         this.bigUomID = 0;
         this.qtyAdded = 1;
         this.model = null;
-        this.uomLists =[];
+        this.uomLists = [];
         // this.uomAddedName = '';
     }
 
@@ -218,11 +275,19 @@ export class PurchaseOrderEditComponent implements OnInit {
             }
         });
 
+        let pelangganReq = this.pelangganService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                name: '',
+            }
+        });
+
         let purchaseOrderDetailReq = this.purchaseOrderDetailService
             .findByPurchaseOrderId({
                 count: 10,
                 page: 1,
-                filter : {
+                filter: {
                     purchaseOrderId: orderId,
                 }
             });
@@ -231,12 +296,15 @@ export class PurchaseOrderEditComponent implements OnInit {
         requestArray.push(purchaseOrderReq);
         requestArray.push(supplierReq);
         requestArray.push(purchaseOrderDetailReq);
+        requestArray.push(pelangganReq);
 
         forkJoin(requestArray).subscribe(results => {
             this.processPurchaseOrder(results[0]);
             this.processSupplier(results[1]);
             this.processPurchaseOrderDtil(results[2]);
+            this.processPelanggan(results[3]);
             this.setSupplierDefault();
+            this.setPelangganDefault();
         });
 
     }
@@ -253,6 +321,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         console.log('isi purchaseOrder detauil', this.purchaseOrderDetails);
         this.calculateTotal();
         this.setSelectedDate(this.purchaseOrder.purchaseOrderDate);
+        this.typePoSelected = this.purchaseOrder.typePo || '0';
         // this.selectedDate = this.purchaseOrder.purchaseOrderDate;
         this.purchaseOrder.detail = null;
     }
@@ -262,9 +331,9 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.purchaseOrderService.findByIdPO(this.purchaseOrder.id)
             .subscribe(
                 (res => {
-                    this.total= res.total
-                    this.grandTotal=res.total
-                    
+                    this.total = res.total
+                    this.grandTotal = res.total
+
                 })
             );
 
@@ -295,7 +364,14 @@ export class PurchaseOrderEditComponent implements OnInit {
             return;
         }
         // this.suppliers = result.body.contents;
-        this.suppliers= this.suppliers.concat(result.body.contents);
+        this.suppliers = this.suppliers.concat(result.body.contents);
+    }
+
+    processPelanggan(result: HttpResponse<PelangganPageDto>) {
+        if (result.body.contents.length < 0) {
+            return;
+        }
+        this.pelanggans = this.pelanggans.concat(result.body.contents);
     }
 
     getItem(event: any) {
@@ -305,12 +381,12 @@ export class PurchaseOrderEditComponent implements OnInit {
         console.log('get item ==>', event);
         this.productIdAdded = event.item.id;
         this.priceAdded = 0;
-        this.discAdded =0;
+        this.discAdded = 0;
         this.productNameAdded = event.item.name;
         // this.uomAdded = event.item.smallUomId;
         // this.uomAddedName = event.item.smallUom.name;
-        
-        let biglUom: LookupTemplate = new LookupTemplate()  ;
+
+        let biglUom: LookupTemplate = new LookupTemplate();
         biglUom.name = event.item.bigUom.name + " [ " + event.item.qtyUom + " " + event.item.smallUom.name + " ]";
         biglUom.code = event.item.bigUom.code;
         biglUom.id = event.item.bigUom.id;
@@ -319,10 +395,10 @@ export class PurchaseOrderEditComponent implements OnInit {
 
         // this.poUom = biglUom;
         this.poUom = +event.item.bigUom.id;
-        this.poUomQty =event.item.qtyUom;
+        this.poUomQty = event.item.qtyUom;
         this.bigUomID = +event.item.bigUom.id;
 
-        let smallUom: LookupTemplate = new LookupTemplate()  ;
+        let smallUom: LookupTemplate = new LookupTemplate();
         smallUom.name = event.item.smallUom.name;
         smallUom.id = event.item.smallUom.id;
         smallUom.code = event.item.smallUom.code;
@@ -331,9 +407,9 @@ export class PurchaseOrderEditComponent implements OnInit {
 
         this.purchaseOrderService.findLastPrice(event.item.id).toPromise().then(
             res => {
-                console.log("hasil cek harga ",res)
+                console.log("hasil cek harga ", res)
                 if (res.errCode == "00") {
-                    if (res.price == 0 ) {
+                    if (res.price == 0) {
                         this.priceAdded = res.hpp;
                     } else {
                         this.priceAdded = res.price;
@@ -341,8 +417,8 @@ export class PurchaseOrderEditComponent implements OnInit {
                     // disc nya ga di ambil 
                     // 16 JUNI
                     // this.discAdded = res.disc1;
-                    this.discAdded =0
-                } 
+                    this.discAdded = 0
+                }
             }
         )
     }
@@ -368,12 +444,13 @@ export class PurchaseOrderEditComponent implements OnInit {
     searchProd(term): Observable<any> {
 
         const filter = {
-                    name: term,
-                    code: '',
-                };
+            name: term,
+            code: '',
+            tipePo: (this.typePoSelected === '1' || this.typePoSelected === '2') ? '1' : '',
+        };
         const serverUrl = SERVER_PATH + 'product';
         const newresourceUrl = serverUrl + `/page/1/count/${this.totalRecordProduct}`;
-        return  this.http.post(newresourceUrl, filter, { observe: 'response' })
+        return this.http.post(newresourceUrl, filter, { observe: 'response' })
             .pipe(
                 map(
                     (response: HttpResponse<ProductPageDto>) => {
@@ -385,7 +462,7 @@ export class PurchaseOrderEditComponent implements OnInit {
 
 
     formatterProdList(value: any) {
-        return value.name ;
+        return value.name;
     }
 
     formatterProdInput(value: any) {
@@ -421,24 +498,24 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     // Tomvol add item
     addNewItem() {
-        console.log('isisisiisis ', this.productIdAdded );
+        console.log('isisisiisis ', this.productIdAdded);
 
         // if (this.checkInputValid() === false) {
         //     return ;
         // }
-        if (this.checkInputProductValid() === false ) {
+        if (this.checkInputProductValid() === false) {
             Swal.fire('Error', 'Product belum terpilih ! ', 'error');
-            return ;
+            return;
         }
 
-        if (this.checkInputNumberValid() === false ) {
+        if (this.checkInputNumberValid() === false) {
             Swal.fire('Error', 'Check price / disc / qty must be numeric, price and qty must greater than 0 ! ', 'error');
-            return ;
+            return;
         }
 
-       let purchaseOrderDetail = this.composePurchaseOrderDetail();
+        let purchaseOrderDetail = this.composePurchaseOrderDetail();
 
-       this.purchaseOrderDetailService
+        this.purchaseOrderDetailService
             .save(purchaseOrderDetail)
             .subscribe(
                 (res => {
@@ -455,7 +532,7 @@ export class PurchaseOrderEditComponent implements OnInit {
 
         let result = false;
         // 1. jika belum pernah di isi
-        if ( this.model === undefined )  {
+        if (this.model === undefined) {
             // return false ;
             result = false;
             return result;
@@ -467,15 +544,15 @@ export class PurchaseOrderEditComponent implements OnInit {
         of(this.model).toPromise().then(
             res => {
                 console.log('observable model ', res);
-                if ( !res ) {
+                if (!res) {
                     Swal.fire('Error', 'Product belum terpilih, silahlan pilih lagi ! ', 'error');
                     // return false ;
                     result = false;
                 }
-                const product =  res;
+                const product = res;
                 console.log('obser hasil akhir => ', product);
-                console.log('type [', typeof(product), '] ');
-                const typeObj = typeof(product);
+                console.log('type [', typeof (product), '] ');
+                const typeObj = typeof (product);
                 if (typeObj == 'object') {
                     result = true;
                     return result;
@@ -496,28 +573,28 @@ export class PurchaseOrderEditComponent implements OnInit {
     checkInputNumberValid(): boolean {
         // let result = true;
 
-        if ( (isNaN(this.qtyAdded)) || (this.qtyAdded === null) ) {
+        if ((isNaN(this.qtyAdded)) || (this.qtyAdded === null)) {
             // result = false;
             return false;
         }
 
-        if ( (isNaN(this.priceAdded)) || (this.priceAdded === null) ) {
+        if ((isNaN(this.priceAdded)) || (this.priceAdded === null)) {
             // result = false;
             return false;
         }
 
-        if ((isNaN(this.discAdded)) || (this.discAdded === null) ) {
+        if ((isNaN(this.discAdded)) || (this.discAdded === null)) {
             // result = false;
             return false;
         }
 
-        if (this.qtyAdded <= 0 || this.discAdded < 0 ) {
+        if (this.qtyAdded <= 0 || this.discAdded < 0) {
             // this.priceAdded <= 0 ||
             // result = false;
             return false;
         }
 
-        if ( (this.priceAdded * this.qtyAdded ) < this.discAdded ) {
+        if ((this.priceAdded * this.qtyAdded) < this.discAdded) {
             // result = false;
             return false;
         }
@@ -555,10 +632,10 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     reloadDetail(id: number, deldata: boolean) {
-        let loadPage =1
+        let loadPage = 1
         if (deldata) {
             // jika delete data, tidak boleh ke halaman 1
-            if (this.purchaseOrderDetails.length > 1){
+            if (this.purchaseOrderDetails.length > 1) {
                 loadPage = this.curPage;
             }
         } else {
@@ -570,13 +647,13 @@ export class PurchaseOrderEditComponent implements OnInit {
             .findByPurchaseOrderId({
                 count: 10,
                 page: loadPage,
-                filter : {
+                filter: {
                     purchaseOrderId: id,
                 }
             }).subscribe(
                 (res: HttpResponse<PurchaseOrderDetailPageDto>) => this.fillDetail(res),
                 (res: HttpErrorResponse) => console.log(res.message),
-                () => {}
+                () => { }
             );
     }
 
@@ -585,7 +662,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         if (res.body.contents.length > 0) {
 
             this.purchaseOrderDetails = res.body.contents;
-            this.totalData  = res.body.totalRow;
+            this.totalData = res.body.totalRow;
             this.calculateTotal();
             this.clearDataAdded();
         }
@@ -593,19 +670,19 @@ export class PurchaseOrderEditComponent implements OnInit {
 
     cancelSubmit() {
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to cancel submit [ ' + this.purchaseOrder.purchaseOrderNo + ' ] ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to cancel submit [ ' + this.purchaseOrder.purchaseOrderNo + ' ] ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.cancelSubmitProses();
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.cancelSubmitProses();
+                    }
+                });
     }
 
     cancelSubmitProses() {
@@ -624,21 +701,21 @@ export class PurchaseOrderEditComponent implements OnInit {
             );
     }
 
-    confirmDelItem (purchaseOrderDtl: PurchaseOrderDetail) {
+    confirmDelItem(purchaseOrderDtl: PurchaseOrderDetail) {
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to cancel [ ' + purchaseOrderDtl.product.name + ' ] ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to cancel [ ' + purchaseOrderDtl.product.name + ' ] ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.delItem(purchaseOrderDtl.id);
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.delItem(purchaseOrderDtl.id);
+                    }
+                });
     }
 
     delItem(idDetail: number) {
@@ -659,6 +736,9 @@ export class PurchaseOrderEditComponent implements OnInit {
     saveHdr() {
         this.purchaseOrder.supplier = null;
         this.purchaseOrder.supplierId = +this.supplierSelected;
+        this.purchaseOrder.pelanggan = null;
+        this.purchaseOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : null;
+        this.purchaseOrder.typePo = this.typePoSelected;
         this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         // this.purchaseOrder.isTax =this.isTax;
         // this.purchaseOrder.supplierId = 0;
@@ -678,7 +758,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             );
     }
 
-    getSelectedDate(): string{
+    getSelectedDate(): string {
 
         const month = ('0' + this.selectedDate.month).slice(-2);
         const day = ('0' + this.selectedDate.day).slice(-2);
@@ -690,25 +770,27 @@ export class PurchaseOrderEditComponent implements OnInit {
     approve() {
 
         this.purchaseOrder.supplierId = +this.supplierSelected;
+        this.purchaseOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : null;
+        this.purchaseOrder.typePo = this.typePoSelected;
         this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         if (!this.isValidDataApprove()) {
             return;
         }
 
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to approve ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to approve ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.approveProccess();
-                }
-            });
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.approveProccess();
+                    }
+                });
     }
 
 
@@ -716,7 +798,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.purchaseOrderService.approve(this.purchaseOrder)
             .subscribe(
                 (res) => {
-                    if (res.body.errCode === '00'){
+                    if (res.body.errCode === '00') {
                         Swal.fire('OK', 'Save success', 'success');
                         this.router.navigate(['/main/purchase-order']);
                     } else {
@@ -727,12 +809,12 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     isValidDataApprove(): boolean {
-        if (this.purchaseOrder.id ===0) {
+        if (this.purchaseOrder.id === 0) {
             Swal.fire('Error', 'Data no order belum di save !', 'error');
             return false;
         }
 
-        if (this.purchaseOrder.supplierId ===0) {
+        if (this.purchaseOrder.supplierId === 0) {
             Swal.fire('Error', 'Data supplier belum di save !', 'error');
             return false;
         }
@@ -779,29 +861,29 @@ export class PurchaseOrderEditComponent implements OnInit {
     reject() {
 
         Swal.fire({
-            title : 'Confirm',
-            text : 'Are you sure to cancel ?',
-            type : 'info',
+            title: 'Confirm',
+            text: 'Are you sure to cancel ?',
+            type: 'info',
             showCancelButton: true,
-            confirmButtonText : 'Ok',
-            cancelButtonText : 'Cancel'
+            confirmButtonText: 'Ok',
+            cancelButtonText: 'Cancel'
         })
-        .then(
-            (result) => {
-            if (result.value) {
-                    this.rejectProses();
+            .then(
+                (result) => {
+                    if (result.value) {
+                        this.rejectProses();
+                    }
                 }
-            }
-        );
+            );
 
 
     }
-        
+
     rejectProses() {
         this.purchaseOrderService.reject(this.purchaseOrder.id)
             .subscribe(
                 (res) => {
-                    if (res.body.errCode === '00'){
+                    if (res.body.errCode === '00') {
                         Swal.fire('OK', 'Save success', 'success');
                         this.router.navigate(['/main/purchase-order']);
                     } else {
@@ -817,7 +899,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             .findByPurchaseOrderId({
                 count: 10,
                 page: this.curPage,
-                filter : {
+                filter: {
                     purchaseOrderId: this.purchaseOrder.id,
                 }
             })
@@ -829,7 +911,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     }
 
     openEdit(obj) {
-        console.log( obj);
+        console.log(obj);
 
         const modalRef = this.modalService.open(PurchaseOrderModalComponent, { size: 'lg' });
         modalRef.componentInstance.purchaseOrderDetail = obj;

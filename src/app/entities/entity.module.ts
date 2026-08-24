@@ -12,6 +12,7 @@ import { LookupGroupModule } from './lookup-group/lookup-group.module';
 import { ProductGroupModule } from './product-group/product-group.module';
 import { BrandModule } from './brand/brand.module';
 import { CustomerModule } from './customer/customer.module';
+import { PelangganModule } from './pelanggan/pelanggan.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { ProductModule } from './product/product.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
@@ -41,6 +42,7 @@ import { ReportServiceService } from './report/report-service/report-service.ser
 import { ReportServiceModule } from './report/report-service/report-service.module';
 import { ReportPaymentSupplierModule } from './report/report-payment-supplier/report-payment-supplier.module';
 import { ApotikParamModule } from './apotik-param/apotik-param.module';
+import { ProsesMasterProductModule } from './proses-master-product/proses-master-product.module';
 
 @NgModule({
     imports: [
@@ -56,6 +58,7 @@ import { ApotikParamModule } from './apotik-param/apotik-param.module';
         ProductGroupModule,
         BrandModule,
         CustomerModule,
+        PelangganModule,
         SupplierModule,
         ProductModule,
         SalesOrderModule,
@@ -81,7 +84,8 @@ import { ApotikParamModule } from './apotik-param/apotik-param.module';
         PaymentSupplierModule,
         ReportServiceModule,
         ReportPaymentSupplierModule,
-        ApotikParamModule
+        ApotikParamModule,
+        ProsesMasterProductModule
     ],
     entryComponents: [],
     providers: [],
