@@ -6,6 +6,8 @@ import { ModalDismissReasons, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-b
 import { SalesOrder, SalesOrderDetail, SalesOrderDetailPageDto } from '../sales-order.model';
 import { Customer, CustomerPageDto } from '../../customer/customer.model';
 import { CustomerService } from '../../customer/customer.service';
+import { Pelanggan, PelangganPageDto } from '../../pelanggan/pelanggan.model';
+import { PelangganService } from '../../pelanggan/pelanggan.service';
 import { HttpResponse, HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { SERVER_PATH } from 'src/app/shared/constants/base-constant';
@@ -41,6 +43,8 @@ export class SalesOrderEditComponent implements OnInit {
      */
     customers: Customer[];
     customerSelected: Customer;
+    pelanggans: Pelanggan[] = [];
+    pelangganSelected: number;
     salesmans: Salesman[];
     salesmanSelected: number;
     warehouses: Warehouse[];
@@ -79,6 +83,7 @@ export class SalesOrderEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private customerService: CustomerService,
+        private pelangganService: PelangganService,
         private http: HttpClient,
         private orderService: SalesOrderService,
         private orderDetailService: SalesOrderDetailService,
@@ -120,6 +125,10 @@ export class SalesOrderEditComponent implements OnInit {
             }
         );
         this.taxPercent = GlobalComponent.tax
+        this.pelanggans.push({
+            id: 0,
+            nama: "PLEASE SELECT PELANGGAN",
+        });
 
     }
 
@@ -159,6 +168,7 @@ export class SalesOrderEditComponent implements OnInit {
         console.log('id ==>?', orderId);
 
         this.loadCustomer();
+        this.loadPelanggan();
         this.loadSalesman();
         this.loadWarehouse();
         if (orderId === 0) {
@@ -204,14 +214,25 @@ export class SalesOrderEditComponent implements OnInit {
             }
         });
 
+        let pelangganReq = this.pelangganService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                name: '',
+            }
+        });
+
         const requestArray = [];
         requestArray.push(orderReq);
         requestArray.push(customerReq);
+        requestArray.push(pelangganReq);
 
         forkJoin(requestArray).subscribe(results => {
             this.processOrder(results[0]);
             this.processCustomer(results[1]);
+            this.processPelanggan(results[2]);
             this.setCustomerDefault();
+            this.setPelangganDefault();
             this.setWarehouseSalesmanSelected();
             this.spinner.hide();
         });
@@ -312,6 +333,45 @@ export class SalesOrderEditComponent implements OnInit {
                 }
                 this.customers = response.body.contents;
             });
+    }
+
+    loadPelanggan() {
+        this.pelangganService.filter({
+            page: 1,
+            count: 10000,
+            filter: {
+                name: '',
+            },
+        }).subscribe(
+            (response: HttpResponse<PelangganPageDto>) => {
+                if (response.body.contents.length <= 0) {
+                    Swal.fire('error', 'failed get pelanggan data !', 'error');
+                    return;
+                }
+                this.pelanggans = this.pelanggans.concat(response.body.contents);
+                if (this.salesOrder.id === 0) {
+                    let defaultPelanggan = this.pelanggans.find(p => p.id === 1);
+                    this.salesOrder.pelanggan = defaultPelanggan || this.pelanggans[0];
+                    this.setPelangganDefault();
+                }
+            });
+    }
+
+    setPelangganDefault() {
+        if (this.salesOrder && this.salesOrder.pelanggan) {
+            this.pelangganSelected = this.salesOrder.pelanggan.id;
+        } else if (this.salesOrder && this.salesOrder.pelangganId) {
+            this.pelangganSelected = this.salesOrder.pelangganId;
+        } else {
+            this.pelangganSelected = 0;
+        }
+    }
+
+    processPelanggan(result: HttpResponse<PelangganPageDto>) {
+        if (result.body.contents.length < 0) {
+            return;
+        }
+        this.pelanggans = this.pelanggans.concat(result.body.contents);
     }
 
     loadSalesman() {
@@ -732,6 +792,11 @@ export class SalesOrderEditComponent implements OnInit {
             this.salesOrder.customer = this.customers[0];
             this.setCustomerDefault();
         }
+        if (this.pelanggans !== undefined && this.pelanggans.length > 0) {
+            let defaultPelanggan = this.pelanggans.find(p => p.id === 1);
+            this.salesOrder.pelanggan = defaultPelanggan || this.pelanggans[0];
+            this.setPelangganDefault();
+        }
         this.setToday() ;
         this.clearDataAdded();
         // if (this.customers !== undefined) {
@@ -745,6 +810,8 @@ export class SalesOrderEditComponent implements OnInit {
         this.spinner.show();
         this.salesOrder.customer = null;
         this.salesOrder.customerId = 99999999;
+        this.salesOrder.pelanggan = null;
+        this.salesOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : 1;
         // this.customerSelected.id;
         this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
@@ -826,6 +893,7 @@ export class SalesOrderEditComponent implements OnInit {
         } else {
             this.salesOrder.customerId = this.customerSelected.id;
         }
+        this.salesOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : 1;
         this.salesOrder.warehouseId = +this.warehouseSelected;
         this.salesOrder.orderDate = this.getSelectedDate();
         this.salesOrder.salesmanId = +this.salesmanSelected;

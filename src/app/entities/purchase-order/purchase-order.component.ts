@@ -26,7 +26,6 @@ export class PurchaseOrderComponent implements OnInit {
         startDate: '',
         endDate: '',
         supplierName: '',
-        pelangganName: '',
         typePo: '',
     };
     startDate: NgbDateStruct;
@@ -159,10 +158,7 @@ export class PurchaseOrderComponent implements OnInit {
         if (supplierName !== null) {
             this.searchTerm.supplierName = supplierName
         }
-        let pelangganName = sessionStorage.getItem("po:pelangganName")
-        if (pelangganName !== null) {
-            this.searchTerm.pelangganName = pelangganName
-        }
+
         let typePo = sessionStorage.getItem("po:typePo")
         if (typePo !== null) {
             this.searchTerm.typePo = typePo
@@ -196,7 +192,6 @@ export class PurchaseOrderComponent implements OnInit {
         sessionStorage.setItem("po:status", this.statusSelected.toString())
         sessionStorage.setItem("po:purchaseOrderNumber", this.searchTerm.purchaseOrderNumber)
         sessionStorage.setItem("po:supplierName", this.searchTerm.supplierName)
-        sessionStorage.setItem("po:pelangganName", this.searchTerm.pelangganName)
         sessionStorage.setItem("po:typePo", this.searchTerm.typePo)
         sessionStorage.setItem("po:page", page)
 
@@ -247,7 +242,6 @@ export class PurchaseOrderComponent implements OnInit {
             startDate: '',
             endDate: '',
             supplierName: '',
-            pelangganName: '',
             typePo: '',
         };
         this.loadAll(1);

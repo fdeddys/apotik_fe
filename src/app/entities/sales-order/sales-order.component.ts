@@ -26,6 +26,7 @@ export class SalesOrderComponent implements OnInit {
         isCash: false,
         startDate:'',
         endDate:'',
+        pelangganName: '',
     };
     moduleTitle: string = "";
     isCash: boolean = false;
@@ -74,6 +75,10 @@ export class SalesOrderComponent implements OnInit {
                 month: Number (enddate.substring(5,7)),
                 day: Number (enddate.substring(8,10)), 
             }
+        }
+        let pelangganName = sessionStorage.getItem("sales-order:pelangganName")
+        if (pelangganName !== null) {
+            this.searchTerm.pelangganName = pelangganName
         }
         let page = sessionStorage.getItem("sales-order:page")
         console.log("get session page ===", page)
@@ -136,6 +141,7 @@ export class SalesOrderComponent implements OnInit {
 
         sessionStorage.setItem("sales-order:startDate",this.searchTerm.startDate )
         sessionStorage.setItem("sales-order:endDate",this.searchTerm.endDate)
+        sessionStorage.setItem("sales-order:pelangganName",this.searchTerm.pelangganName)
         sessionStorage.setItem("sales-order:page",page)
 
         this.salesOrderService.filter({
@@ -201,6 +207,7 @@ export class SalesOrderComponent implements OnInit {
             isCash: false,
             startDate:'',
             endDate:'',
+            pelangganName: '',
         };
         this.loadAll(1);
     }

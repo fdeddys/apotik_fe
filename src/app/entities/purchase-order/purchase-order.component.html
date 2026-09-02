@@ -14,11 +14,7 @@
                         <input style="width: 100%;" type="text" class="form-control" id="searchSupp" [(ngModel)]='searchTerm.supplierName'
                             name="searchSupplier" placeholder="Enter Supplier Name">
                     </div>
-                    <div class="col-md-2 mb-2">
-                        <label for="searchPelanggan">Pelanggan Name</label>
-                        <input style="width: 100%;" type="text" class="form-control" id="searchPelanggan" [(ngModel)]='searchTerm.pelangganName'
-                            name="searchPelanggan" placeholder="Enter Pelanggan Name">
-                    </div>
+
                     <div class="col-md-2 mb-2">
                         <label for="startDate">Start Date</label>
                         <div>
@@ -88,7 +84,7 @@
                         <th scope="col">PO No</th>
                         <th scope="col" class='centerText' >Date</th>
                         <th scope="col">Supplier</th>
-                        <th scope="col">Pelanggan</th>
+
                         <th scope="col">Type PO</th>
                         <!-- <th scope="col">Salesman</th> -->
                         <th scope="col" class='centerText' >Status</th>
@@ -107,7 +103,7 @@
                         <td>{{purchaseOrder.purchaseOrderNo}}</td>
                         <td class='centerText' >{{purchaseOrder.purchaseOrderDate | date:'dd-MMM-yyyy'}}</td>
                         <td>{{purchaseOrder.supplier.name }}</td>
-                        <td>{{purchaseOrder.pelanggan?.nama}}</td>
+
                         <td>{{purchaseOrder.typePo === '1' ? 'PO Prekursor' : (purchaseOrder.typePo === '2' ? 'PO OTT' : 'PO Standar')}}</td>
                         <!-- <td>{{purchaseOrder.salesman.userName}}</td> -->
                         <td class='centerText' >{{getStatus(purchaseOrder.status)}} </td>

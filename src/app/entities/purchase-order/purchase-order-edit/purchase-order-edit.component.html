@@ -95,17 +95,7 @@
                         <td rowspan="2"><textarea rows="3" style="min-width: 90%"
                                 [(ngModel)]="purchaseOrder.note"></textarea></td>
                     </tr>
-                    <tr>
-                        <td>Pelanggan</td>
-                        <td *ngIf="pelanggans">
-                            <select [(ngModel)]="pelangganSelected" style="width: 90%;" class="form-control"
-                                [ngModelOptions]="{standalone: true}">
-                                <option *ngFor="let pelanggan of pelanggans" [value]="pelanggan.id">
-                                    {{pelanggan.nama}}
-                                </option>
-                            </select>
-                        </td>
-                    </tr>
+
                     <tr>
                         <td>Type PO</td>
                         <td>

@@ -51,6 +51,7 @@ import { PaymentSupplierEditComponent } from './entities/payment-supplier/paymen
 import { ReportPaymentSupplierComponent } from './entities/report/report-payment-supplier/report-payment-supplier.component';
 import { ApotikParamComponent } from './entities/apotik-param/apotik-param.component';
 import { ProsesMasterProductComponent } from './entities/proses-master-product/proses-master-product.component';
+import { PurchasePriceHistoryComponent } from './entities/purchase-price-history/purchase-price-history.component';
 
 
 const routes: Routes = [
@@ -116,6 +117,7 @@ const routes: Routes = [
                     { path: 'payment-supplier/:id', component: PaymentSupplierEditComponent },
                     { path: 'apotik-param', component: ApotikParamComponent },
                     { path: 'proses-master-product', component: ProsesMasterProductComponent },
+                    { path: 'purchase-price-history', component: PurchasePriceHistoryComponent },
                     { path: '**', component: Page404Component },
                 ]
             }

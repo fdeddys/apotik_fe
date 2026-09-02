@@ -1,0 +1,64 @@
+.table-matrix-wrapper {
+    max-height: 65vh;
+    overflow: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.matrix-table {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.matrix-table thead th {
+    background-color: #f8fafc;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-top: none;
+    vertical-align: middle;
+    user-select: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.matrix-table tbody td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.col-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    cursor: col-resize;
+    user-select: none;
+    height: 100%;
+    z-index: 10;
+}
+
+.col-resizer:hover {
+    background-color: #0d6efd;
+}
+
+.price-val {
+    cursor: pointer;
+    font-weight: 500;
+    color: #0d6efd;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.price-val:hover {
+    background-color: #e7f1ff;
+    color: #0a58ca;
+}

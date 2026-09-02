@@ -1,4 +1,5 @@
 import { Customer} from '../customer/customer.model';
+import { Pelanggan } from '../pelanggan/pelanggan.model';
 import { User } from '../user/user.model';
 import { Product } from '../product/product.model';
 import { Lookup } from '../lookup/lookup.model';
@@ -13,6 +14,8 @@ export class SalesOrder {
         public deliveryDate?: string,
         public customerId?: number,
         public customer?: Customer,
+        public pelangganId?: number,
+        public pelanggan?: Pelanggan,
 
         public warehouseId?: number,
         public warehouse?: Warehouse,

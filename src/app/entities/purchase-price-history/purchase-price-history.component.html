@@ -1,0 +1,108 @@
+<div class="card border-primary">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0" style="color: navy; font-weight: 600;">
+                <i class="fa fa-th mr-2"></i>Matrix Product Supplier
+            </h5>
+            <!-- <span class="badge badge-info p-2" *ngIf="totalData > 0">
+                Total: {{ totalData }} Obat
+            </span> -->
+        </div>
+
+        <!-- Filter Area -->
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Cari nama obat (tekan Enter)..."
+                        [(ngModel)]="searchProductName" (keyup.enter)="onSearch()" />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-primary" (click)="onSearch()">
+                            Cari
+                        </button>
+                        <button type="button" class="btn btn-outline-info" (click)="resetFilters()">
+                            <i class="fa fa-refresh mr-1"></i>Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Matrix View -->
+        <div class="table-responsive table-matrix-wrapper mb-3">
+            <table class="table table-sm table-bordered table-striped table-hover matrix-table">
+                <thead>
+                    <tr>
+                        <th #thNo style="width: 45px; text-align: center;">
+                            No
+                            <span class="col-resizer" (mousedown)="onMouseDownResize($event, thNo)"></span>
+                        </th>
+                        <th #thKode style="width: 100px;">
+                            Kode
+                            <span class="col-resizer" (mousedown)="onMouseDownResize($event, thKode)"></span>
+                        </th>
+                        <th #thNama style="width: 250px;">
+                            Nama Obat
+                            <span class="col-resizer" (mousedown)="onMouseDownResize($event, thNama)"></span>
+                        </th>
+                        <th #thSatuan style="width: 80px;">
+                            Satuan
+                            <span class="col-resizer" (mousedown)="onMouseDownResize($event, thSatuan)"></span>
+                        </th>
+
+                        <!-- Dynamic Columns for all suppliers (Sumbu X) -->
+                        <th #thSupp *ngFor="let s of suppliers" style="width: 140px; text-align: center;"
+                            [title]="s.name">
+                            {{ s.name }}
+                            <span class="col-resizer" (mousedown)="onMouseDownResize($event, thSupp)"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Product Rows (Sumbu Y) -->
+                    <tr *ngFor="let p of products; let idx = index">
+                        <td class="text-center text-muted">{{ (curPage - 1) * totalRecord + idx + 1 }}</td>
+                        <td><span>{{ p.productCode }}</span></td>
+                        <td>{{ p.productName }}</td>
+                        <td>{{ p.uomName }}</td>
+
+                        <!-- Cell (X, Y) -->
+                        <td *ngFor="let s of suppliers" class="text-right">
+                            <span *ngIf="p.prices && p.prices[s.id]" class="price-val"
+                                [ngbTooltip]="getTooltip(p.prices[s.id])" placement="top" container="body">
+                                {{ p.prices[s.id].netPrice | number:'0.0-0' }}
+                            </span>
+                            <span *ngIf="!p.prices || !p.prices[s.id]" class="text-muted">-</span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="products && products.length === 0">
+                        <td [attr.colspan]="4 + (suppliers ? suppliers.length : 0)" class="text-center py-4 text-muted">
+                            <i class="fa fa-info-circle mr-1"></i> Data obat tidak ditemukan.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination & Page Size Selector -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap" *ngIf="totalData > 0">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+                <span class="mr-2 text-muted small">Tampilkan:</span>
+                <input type="number" min="1" max="1000" class="form-control form-control-sm text-center d-inline-block"
+                    style="width: 75px;" [(ngModel)]="totalRecord" (keyup.enter)="onChangePageSize()"
+                    (blur)="onChangePageSize()" />
+                <span class="ml-2 text-muted small">obat per halaman</span>
+                <span class="mx-3 text-muted">|</span>
+                <small class="text-muted">
+                    Halaman {{ curPage }} dari {{ Math.ceil(totalData / totalRecord) || 1 }} (Total {{ totalData }}
+                    data)
+                </small>
+            </div>
+            <ngb-pagination size="sm" [collectionSize]="totalData" [(page)]="curPage" [pageSize]="totalRecord"
+                [maxSize]="5" [boundaryLinks]="true" (pageChange)="loadPage(curPage)">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

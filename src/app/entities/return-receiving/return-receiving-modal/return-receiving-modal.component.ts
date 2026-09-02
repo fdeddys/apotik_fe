@@ -269,6 +269,7 @@ export class ReturnReceivingModalComponent implements OnInit {
             filter: {
                 code: '',
                 name: '',
+                status: '1',
             },
         }).subscribe(
             (response: HttpResponse<SupplierPageDto>) => {

@@ -163,6 +163,7 @@ export class ReceivingEditComponent implements OnInit {
             filter: {
                 code: '',
                 name: '',
+                status: '1',
             },
         }).subscribe(
             (response: HttpResponse<SupplierPageDto>) => {
@@ -185,6 +186,7 @@ export class ReceivingEditComponent implements OnInit {
             filter: {
                 code: '',
                 name: '',
+                status: '1',
             },
         })
         .toPromise()

@@ -10,8 +10,7 @@ import { LookupTemplate } from '../../lookup/lookup.model';
 import { Product, ProductPageDto } from '../../product/product.model';
 import { Supplier, SupplierPageDto } from '../../supplier/supplier.model';
 import { SupplierService } from '../../supplier/supplier.service';
-import { Pelanggan, PelangganPageDto } from '../../pelanggan/pelanggan.model';
-import { PelangganService } from '../../pelanggan/pelanggan.service';
+
 import { PurchaseOrderDetailService } from '../purchase-order-detail.service';
 import { PurchaseOrder, PurchaseOrderDetail, PurchaseOrderDetailPageDto } from '../purchase-order.model';
 import { PurchaseOrderService } from '../purchase-order.service';
@@ -38,8 +37,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     suppliers: Supplier[] = [];
     supplierSelected: number;
 
-    pelanggans: Pelanggan[] = [];
-    pelangganSelected: number;
+
 
     typePos = [
         { id: '0', name: 'PO Standar' },
@@ -82,7 +80,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private supplierService: SupplierService,
-        private pelangganService: PelangganService,
+
         private http: HttpClient,
         private purchaseOrderService: PurchaseOrderService,
         private purchaseOrderDetailService: PurchaseOrderDetailService,
@@ -117,10 +115,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             name: "PLEASE SELECT SUPPLIER",
             code: "",
         })
-        this.pelanggans.push({
-            id: 0,
-            nama: "PLEASE SELECT PELANGGAN",
-        })
+
         this.loadData(+id);
     }
 
@@ -153,7 +148,6 @@ export class PurchaseOrderEditComponent implements OnInit {
         console.log('id ==>?', orderId);
         if (orderId === 0) {
             this.loadSupplier();
-            this.loadPelanggan();
             this.loadNewData();
             return;
         }
@@ -167,6 +161,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             filter: {
                 code: '',
                 name: '',
+                status: '1',
             },
         }).subscribe(
             (response: HttpResponse<SupplierPageDto>) => {
@@ -182,41 +177,9 @@ export class PurchaseOrderEditComponent implements OnInit {
             });
     }
 
-    loadPelanggan() {
-        this.pelangganService.filter({
-            page: 1,
-            count: 10000,
-            filter: {
-                name: '',
-            },
-        }).subscribe(
-            (response: HttpResponse<PelangganPageDto>) => {
-                if (response.body.contents.length <= 0) {
-                    Swal.fire('error', 'failed get pelanggan data !', 'error');
-                    return;
-                }
-                this.pelanggans = this.pelanggans.concat(response.body.contents);
-                if (this.purchaseOrder.id === 0) {
-                    this.purchaseOrder.pelanggan = this.pelanggans[0];
-                    this.setPelangganDefault();
-                }
-            });
-    }
-
     setSupplierDefault() {
         this.supplierSelected = this.purchaseOrder.supplier.id;
         console.log('set selected supplier =>', this.supplierSelected);
-    }
-
-    setPelangganDefault() {
-        if (this.purchaseOrder && this.purchaseOrder.pelanggan) {
-            this.pelangganSelected = this.purchaseOrder.pelanggan.id;
-        } else if (this.purchaseOrder && this.purchaseOrder.pelangganId) {
-            this.pelangganSelected = this.purchaseOrder.pelangganId;
-        } else {
-            this.pelangganSelected = 0;
-        }
-        console.log('set selected pelanggan =>', this.pelangganSelected);
     }
 
     loadNewData() {
@@ -239,10 +202,7 @@ export class PurchaseOrderEditComponent implements OnInit {
             this.purchaseOrder.supplier = this.suppliers[0];
             this.setSupplierDefault();
         }
-        if (this.pelanggans !== undefined && this.pelanggans.length > 0) {
-            this.purchaseOrder.pelanggan = this.pelanggans[0];
-            this.setPelangganDefault();
-        }
+
         this.purchaseOrder.typePo = this.typePoSelected;
         // ini langsung generate no jika add new
         this.saveHdr()
@@ -275,14 +235,6 @@ export class PurchaseOrderEditComponent implements OnInit {
             }
         });
 
-        let pelangganReq = this.pelangganService.filter({
-            page: 1,
-            count: 10000,
-            filter: {
-                name: '',
-            }
-        });
-
         let purchaseOrderDetailReq = this.purchaseOrderDetailService
             .findByPurchaseOrderId({
                 count: 10,
@@ -296,15 +248,12 @@ export class PurchaseOrderEditComponent implements OnInit {
         requestArray.push(purchaseOrderReq);
         requestArray.push(supplierReq);
         requestArray.push(purchaseOrderDetailReq);
-        requestArray.push(pelangganReq);
 
         forkJoin(requestArray).subscribe(results => {
             this.processPurchaseOrder(results[0]);
             this.processSupplier(results[1]);
             this.processPurchaseOrderDtil(results[2]);
-            this.processPelanggan(results[3]);
             this.setSupplierDefault();
-            this.setPelangganDefault();
         });
 
     }
@@ -367,12 +316,7 @@ export class PurchaseOrderEditComponent implements OnInit {
         this.suppliers = this.suppliers.concat(result.body.contents);
     }
 
-    processPelanggan(result: HttpResponse<PelangganPageDto>) {
-        if (result.body.contents.length < 0) {
-            return;
-        }
-        this.pelanggans = this.pelanggans.concat(result.body.contents);
-    }
+
 
     getItem(event: any) {
         // event.preventDefault();
@@ -594,10 +538,10 @@ export class PurchaseOrderEditComponent implements OnInit {
             return false;
         }
 
-        if ((this.priceAdded * this.qtyAdded) < this.discAdded) {
-            // result = false;
-            return false;
-        }
+        // if ((this.priceAdded * this.qtyAdded) < this.discAdded) {
+        //     // result = false;
+        //     return false;
+        // }
 
         return true;
     }
@@ -736,8 +680,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     saveHdr() {
         this.purchaseOrder.supplier = null;
         this.purchaseOrder.supplierId = +this.supplierSelected;
-        this.purchaseOrder.pelanggan = null;
-        this.purchaseOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : null;
+
         this.purchaseOrder.typePo = this.typePoSelected;
         this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         // this.purchaseOrder.isTax =this.isTax;
@@ -770,7 +713,7 @@ export class PurchaseOrderEditComponent implements OnInit {
     approve() {
 
         this.purchaseOrder.supplierId = +this.supplierSelected;
-        this.purchaseOrder.pelangganId = this.pelangganSelected > 0 ? +this.pelangganSelected : null;
+
         this.purchaseOrder.typePo = this.typePoSelected;
         this.purchaseOrder.purchaseOrderDate = this.getSelectedDate();
         if (!this.isValidDataApprove()) {

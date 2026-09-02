@@ -43,6 +43,7 @@ import { ReportServiceModule } from './report/report-service/report-service.modu
 import { ReportPaymentSupplierModule } from './report/report-payment-supplier/report-payment-supplier.module';
 import { ApotikParamModule } from './apotik-param/apotik-param.module';
 import { ProsesMasterProductModule } from './proses-master-product/proses-master-product.module';
+import { PurchasePriceHistoryModule } from './purchase-price-history/purchase-price-history.module';
 
 @NgModule({
     imports: [
@@ -85,7 +86,8 @@ import { ProsesMasterProductModule } from './proses-master-product/proses-master
         ReportServiceModule,
         ReportPaymentSupplierModule,
         ApotikParamModule,
-        ProsesMasterProductModule
+        ProsesMasterProductModule,
+        PurchasePriceHistoryModule
     ],
     entryComponents: [],
     providers: [],

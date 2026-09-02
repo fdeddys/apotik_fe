@@ -94,6 +94,19 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Pelanggan</td>
+                        <td *ngIf="pelanggans">
+                            <select [(ngModel)]="pelangganSelected" style="width: 80%;" class="form-control"
+                                [ngModelOptions]="{standalone: true}">
+                                <option *ngFor="let pelanggan of pelanggans" [value]="pelanggan.id">
+                                    {{pelanggan.nama}}
+                                </option>
+                            </select>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
                         <td>Status</td>
                         <td>
                             {{getStatus(salesOrder.status)}}
